@@ -1,10 +1,10 @@
-﻿/* ============================================================
-   WOW.ZNAHIDKA вЂ” BASE DESIGN SYSTEM
+/* ============================================================
+   WOW.ZNAHIDKA — BASE DESIGN SYSTEM
    Premium Dark Sneaker Marketplace
    ============================================================ */
 
 :root {
-  /* в”Ђв”Ђ Backgrounds (Luxury Light вЂ” Farfetch / Apple Store) в”Ђв”Ђ */
+  /* ── Backgrounds (Luxury Light — Farfetch / Apple Store) ── */
   --bg:        #ffffff;
   --bg2:       #f5f5f7;
   --bg3:       #ebebed;
@@ -13,15 +13,15 @@
   --bg-glass:  rgba(255,255,255,0.92);
   --bg-card:   #ffffff;
 
-  /* в”Ђв”Ђ Text (Apple Ink) в”Ђв”Ђ */
+  /* ── Text (Apple Ink) ── */
   --text:        #1d1d1f;
   --text-dim:    rgba(29,29,31,0.60);
   --text-muted:  rgba(29,29,31,0.35);
 
-  /* в”Ђв”Ђ Accents в”Ђв”Ђ */
+  /* ── Accents ── */
   --accent:      #1d1d1f;
   --accent-inv:  #ffffff;
-  --red:         #3D52A0;
+  --red:         #ff3352;
   --red-dim:     rgba(255,51,82,0.08);
   --red-glow:    rgba(255,51,82,0.20);
   --orange:      #ff4500;
@@ -32,19 +32,19 @@
   --blue-dim:    rgba(0,113,227,0.08);
   --gold:        #f5a623;
 
-  /* в”Ђв”Ђ Borders в”Ђв”Ђ */
+  /* ── Borders ── */
   --border:        rgba(0,0,0,0.07);
   --border-hover:  rgba(0,0,0,0.14);
   --border-accent: rgba(0,0,0,0.22);
 
-  /* в”Ђв”Ђ Shadows в”Ђв”Ђ */
+  /* ── Shadows ── */
   --shadow-sm:  0 1px 4px  rgba(0,0,0,0.08);
   --shadow:     0 2px 16px rgba(0,0,0,0.10);
   --shadow-lg:  0 8px 40px rgba(0,0,0,0.16);
-  --shadow-red: 0 6px 24px #3D52A038;
+  --shadow-red: 0 6px 24px rgba(255,51,82,0.22);
   --shadow-glow:0 0 0 1px rgba(0,0,0,0.05);
 
-  /* в”Ђв”Ђ Radius в”Ђв”Ђ */
+  /* ── Radius ── */
   --r-xs:   6px;
   --r-sm:   10px;
   --r:      14px;
@@ -52,22 +52,22 @@
   --r-xl:   28px;
   --r-full: 100px;
 
-  /* в”Ђв”Ђ Layout в”Ђв”Ђ */
+  /* ── Layout ── */
   --nav-h:       64px;
   --header-h:    58px;
-  --gender-h:    52px;
+  --gender-h:    0px;
   --max-w:       480px;
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* в”Ђв”Ђ Transitions в”Ђв”Ђ */
+  /* ── Transitions ── */
   --ease:      cubic-bezier(.16,1,.3,1);
   --ease-out:  cubic-bezier(.4,0,.6,1);
   --t-fast:    .14s;
   --t-base:    .24s;
   --t-slow:    .4s;
 
-  /* в”Ђв”Ђ Typography Scale в”Ђв”Ђ */
+  /* ── Typography Scale ── */
   --fs-xs:   10px;
   --fs-sm:   12px;
   --fs-base: 14px;
@@ -77,7 +77,7 @@
   --fs-2xl:  30px;
   --fs-3xl:  38px;
 
-  /* в”Ђв”Ђ Font Weights в”Ђв”Ђ */
+  /* ── Font Weights ── */
   --fw-regular:   400;
   --fw-medium:    500;
   --fw-semibold:  600;
@@ -85,14 +85,14 @@
   --fw-extrabold: 800;
   --fw-black:     900;
 
-  /* в”Ђв”Ђ Letter Spacing в”Ђв”Ђ */
+  /* ── Letter Spacing ── */
   --ls-tight:     -0.02em;
   --ls-normal:     0em;
   --ls-wide:       0.04em;
   --ls-wider:      0.08em;
   --ls-ultrawide:  0.14em;
 
-  /* в”Ђв”Ђ Z-Index Scale в”Ђв”Ђ */
+  /* ── Z-Index Scale ── */
   --z-header:  200;
   --z-gender:  201;
   --z-overlay: 300;
@@ -102,24 +102,24 @@
   --z-toast:   9000;
   --z-splash:  9999;
 
-  /* в”Ђв”Ђ Blur в”Ђв”Ђ */
+  /* ── Blur ── */
   --blur-sm:  8px;
   --blur-md:  16px;
   --blur-lg:  24px;
   --blur-xl:  40px;
 
-  /* в”Ђв”Ђ Card Shadows (cards float on --bg2 grey canvas) в”Ђв”Ђ */
+  /* ── Card Shadows (cards float on --bg2 grey canvas) ── */
   --shadow-card:       0 1px 3px rgba(0,0,0,0.05), 0 4px 14px rgba(0,0,0,0.07);
   --shadow-card-hover: 0 6px 28px rgba(0,0,0,0.11), 0 2px 8px rgba(0,0,0,0.05);
   --shadow-card-lift:  0 16px 48px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.07);
 }
 
-/* в”Ђв”Ђ DESKTOP: widen app to 600px в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── DESKTOP: widen app to 600px ───────────────── */
 @media (min-width: 640px) {
   :root { --max-w: 600px; }
 }
 
-/* в”Ђв”Ђ RESET в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── RESET ─────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -150,11 +150,11 @@ a     { text-decoration: none; color: inherit; }
 
 ::-webkit-scrollbar { width: 0; height: 0; }
 
-/* в”Ђв”Ђ UTILITIES в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── UTILITIES ─────────────────────────────────── */
 .hidden  { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
-/* в”Ђв”Ђ ICON ARROWS (CSS chevrons, inherit currentColor) в”Ђв”Ђ */
+/* ── ICON ARROWS (CSS chevrons, inherit currentColor) ── */
 .i-arr, .i-arr-lg, .i-arr-back {
   display: inline-block; flex-shrink: 0;
   border-radius: 1.5px; vertical-align: middle;
@@ -178,7 +178,7 @@ a     { text-decoration: none; color: inherit; }
   transform: rotate(-45deg) translate(1px, 1px);
 }
 
-/* в”Ђв”Ђ LOADING SPINNER в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── LOADING SPINNER ───────────────────────────── */
 .loading-wrap { display: flex; align-items: center; justify-content: center; padding: 48px; }
 .spinner {
   width: 28px; height: 28px; border-radius: 50%;
@@ -187,7 +187,7 @@ a     { text-decoration: none; color: inherit; }
   animation: spin .7s linear infinite;
 }
 
-/* в”Ђв”Ђ SKELETON в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── SKELETON ──────────────────────────────────── */
 .skel {
   background: var(--bg3);
   border-radius: var(--r-sm);
@@ -215,7 +215,7 @@ a     { text-decoration: none; color: inherit; }
 .skel-card-line2 { height: 12px; margin: 0 11px; }
 .skel-card-price { height: 15px; margin: 7px 11px 13px; width: 55%; }
 
-/* в”Ђв”Ђ BADGE в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── BADGE ─────────────────────────────────────── */
 .badge {
   position: absolute; top: 3px; right: 3px;
   min-width: 17px; height: 17px;
@@ -226,7 +226,7 @@ a     { text-decoration: none; color: inherit; }
   padding: 0 4px; line-height: 1;
 }
 
-/* в”Ђв”Ђ TOAST в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+/* ── TOAST ─────────────────────────────────────── */
 #toasts {
   position: fixed;
   top: calc(var(--header-h) + var(--safe-top) + 10px);
@@ -250,4 +250,3 @@ a     { text-decoration: none; color: inherit; }
   line-height: 1.4;
 }
 .toast a { color: #ffffff; font-weight: 800; text-decoration: underline; }
-

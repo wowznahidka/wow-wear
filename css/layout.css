@@ -96,29 +96,36 @@ body { background: #f0f0f2; }
   box-shadow: 0 0 8px rgba(255,51,82,.5);
 }
 
-/* ── GENDER CHIPS — inline in catalog ───────────── */
+/* -- GENDER BAR -- fixed, below bottom nav -------- */
 #gender-toggle {
-  display: flex; gap: 8px; padding: 8px 16px 4px;
-  overflow-x: auto; scrollbar-width: none;
+  position: fixed;
+  bottom: var(--safe-bottom);
+  left: max(0px, calc(50% - var(--half-max)));
+  right: max(0px, calc(50% - var(--half-max)));
+  z-index: var(--z-gender);
+  height: var(--gender-h);
+  display: flex; align-items: center;
+  gap: 6px; padding: 0 10px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
 }
-#gender-toggle::-webkit-scrollbar { display: none; }
 .g-btn {
-  display: flex; align-items: center; gap: 5px;
-  padding: 7px 16px; border-radius: var(--r-full); flex-shrink: 0;
-  font-size: 13px; font-weight: 700; cursor: pointer;
-  background: var(--bg3); border: 1.5px solid var(--border);
-  color: var(--text-muted); transition: all .2s ease;
+  flex: 1; height: 32px;
+  border-radius: var(--r-full);
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  background: transparent; border: 1.5px solid transparent;
+  color: var(--text-muted); transition: all .18s ease;
   white-space: nowrap;
 }
 .g-btn:active { transform: scale(.93); }
 .g-btn.active {
-  background: var(--red); border-color: var(--red); color: #fff;
-  box-shadow: 0 3px 14px var(--red-glow);
+  background: var(--text); color: var(--accent-inv);
+  border-color: var(--text);
 }
-.g-lbl { font-size: 13px; font-weight: 700; }
-.g-cnt {
-  font-size: 10px; font-weight: 600; opacity: .7;
-}
+.g-lbl { font-size: 12px; font-weight: 700; }
+.g-cnt { font-size: 10px; font-weight: 600; opacity: .7; }
 .g-cnt.vis { opacity: 1; }
 
 /* ── PAGES ─────────────────────────────────────── */

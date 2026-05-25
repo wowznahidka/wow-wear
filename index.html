@@ -202,6 +202,11 @@
       </div>
     </div>
     <div class="search-sugg" id="search-sugg"></div>
+    <div id="gender-toggle" role="group" aria-label="Стать" data-active="mixed">
+      <button class="g-btn active" data-gender="mixed" onclick="setGender('mixed')" aria-pressed="true"><span class="g-lbl">Всі</span></button>
+      <button class="g-btn" data-gender="male" onclick="setGender('male')" aria-pressed="false"><span class="g-lbl">♂ Чоловік</span><span class="g-cnt" id="g-cnt-male"></span></button>
+      <button class="g-btn" data-gender="female" onclick="setGender('female')" aria-pressed="false"><span class="g-lbl">♀ Жінка</span><span class="g-cnt" id="g-cnt-female"></span></button>
+    </div>
     <div class="size-filter-wrap" role="group" aria-label="Фільтр розміру">
       <div class="size-filter-label" id="size-filter-label">Розмір</div>
       <div class="size-chips-row" id="size-chips-row" role="list" aria-labelledby="size-filter-label"></div>
@@ -298,25 +303,6 @@
   </button>
 </nav>
 
-<!-- ════════════════════════════════════════════════
-     GENDER TOGGLE
-     ════════════════════════════════════════════════ -->
-<div id="gender-toggle" role="group" aria-label="Каталог" data-active="mixed">
-  <div class="gender-pill">
-    <div class="gender-slider" aria-hidden="true"></div>
-    <button class="g-btn" data-gender="male" onclick="setGender('male')" aria-pressed="false">
-      <span class="g-lbl">Чоловік</span>
-      <span class="g-cnt" id="g-cnt-male"></span>
-    </button>
-    <button class="g-btn" data-gender="female" onclick="setGender('female')" aria-pressed="false">
-      <span class="g-lbl">Жінка</span>
-      <span class="g-cnt" id="g-cnt-female"></span>
-    </button>
-    <button class="g-btn active" data-gender="mixed" onclick="setGender('mixed')" aria-pressed="true">
-      <span class="g-lbl">Всі</span>
-    </button>
-  </div>
-</div>
 
 <!-- OVERLAY -->
 <div class="overlay" id="overlay" onclick="closeAllSheets()" aria-hidden="true"></div>
@@ -549,4 +535,5 @@
 
 </body>
 </html>
+
 

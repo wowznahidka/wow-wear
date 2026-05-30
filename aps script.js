@@ -7,8 +7,8 @@
 // ── ПОСТАЧАЛЬНИКИ ──────────────────────────────────────────
 // Додай ID Google Sheet постачальника і стать за замовчуванням
 const SUPPLIERS = [
-  { id: "1M-hjIl3FkwtuTZy_nT2DpGYd783m3REX7lCIyurUXQM", gender: "Жінка", margin: 400 },
-  // { id: "ДРУГИЙ_ПОСТАЧАЛЬНИК_ID", gender: "Жінка", margin: 350 },
+  { id: "1M-hjIl3FkwtuTZy_nT2DpGYd783m3REX7lCIyurUXQM", gender: "Жінка", margin: 400, name: "Angells одяг" },
+  { id: "1P6OMrMpgrozpZ_t5oV_uyeKIMope-qX6QZTbCFI8lnk", gender: "Жінка", margin: 400, name: "Angells білизна" },
 ];
 
 // ── МАРЖА ──────────────────────────────────────────────────
@@ -19,7 +19,7 @@ const MIN_PRODUCTS_SAFETY = 5;
 // ── ЗАГОЛОВКИ НАШОЇ ТАБЛИЦІ ────────────────────────────────
 const HEADERS = [
   "ID", "Бренд", "Назва", "Ціна", "Стара ціна",
-  "Фото", "Розміри", "Нове", "Стать", "Постачальник", "Колір"
+  "Фото", "Розміри", "Нове", "Стать", "Постачальник", "Колір", "Опис"
 ];
 
 // ── СТАТУСИ НАЯВНОСТІ ──────────────────────────────────────
@@ -63,6 +63,12 @@ function parsePrice(v) {
   const n = String(v).replace(/[^\d.,]/g, "").replace(",", ".");
   const num = parseFloat(n);
   return isNaN(num) ? 0 : Math.round(num);
+}
+
+function smartRoundPrice(price) {
+  // 199+400=599 → 590 | 289+400=689 → 690 | 650+400=1050 → 1090
+  if (price <= 0) return price;
+  return Math.ceil(price / 100) * 100 - 10;
 }
 
 function calcPrice(supplierPrice, margin) {
@@ -211,6 +217,8 @@ function parseAngellsSheet(rows, formulas, gender, margin, sheet) {
     const article   = normalize(String(row[2] || ""));
     const name      = normalize(String(row[3] || ""));
     const priceRaw  = parsePrice(row[4]);
+    const rrcPrice  = parsePrice(row[5]);  // РРЦ якщо є (білизна)
+    const desc      = normalize(String(row[6] || row[7] || ""));  // Опис
 
     if (!name || name.length < 2) continue;
     if (!isAvailableStatus(statusRaw)) continue;
@@ -218,13 +226,16 @@ function parseAngellsSheet(rows, formulas, gender, margin, sheet) {
 
     const sizes      = extractSizesFromRow(row, 5);
     const sizesStr   = sizes.length ? sizes.join(",") : "ONE SIZE";
-    const finalPrice = calcPrice(priceRaw, margin);
+    // РРЦ = готова роздрібна ціна від постачальника; якщо нема — додаємо маржу і округляємо
+    const finalPrice = rrcPrice > priceRaw
+      ? rrcPrice
+      : smartRoundPrice(calcPrice(priceRaw, margin));
     const brand      = extractBrand(name);
 
     products.push([
       article || `wear_${idCounter++}`,
       brand, name, finalPrice, priceRaw,
-      photo, sizesStr, "", gender || "Жінка", 0, "",
+      photo, sizesStr, "", gender || "Жінка", 0, "", desc,
     ]);
   }
 

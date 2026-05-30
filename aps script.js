@@ -19,7 +19,7 @@ const MIN_PRODUCTS_SAFETY = 5;
 // ── ЗАГОЛОВКИ НАШОЇ ТАБЛИЦІ ────────────────────────────────
 const HEADERS = [
   "ID", "Бренд", "Назва", "Ціна", "Стара ціна",
-  "Фото", "Розміри", "Нове", "Стать", "Постачальник", "Колір", "Опис"
+  "Фото", "Розміри", "Нове", "Стать", "Постачальник", "Колір", "Опис", "TG"
 ];
 
 // ── СТАТУСИ НАЯВНОСТІ ──────────────────────────────────────
@@ -235,7 +235,7 @@ function parseAngellsSheet(rows, formulas, gender, margin, sheet) {
     products.push([
       article || `wear_${idCounter++}`,
       brand, name, finalPrice, priceRaw,
-      photo, sizesStr, "", gender || "Жінка", 0, "", desc,
+      photo, sizesStr, "", gender || "Жінка", 0, "", desc, "",
     ]);
   }
 
@@ -283,6 +283,8 @@ function parseGenericFashionSheet(rows, formulas, gender, margin) {
       "",
       gender || "Жінка",
       0,
+      "",
+      "",
       "",
     ]);
   }
@@ -542,11 +544,16 @@ function doPost(e) {
       }
 
       if (found > 0) {
-        // Оновити фото (і розміри якщо порожні)
+        // Оновити фото, розміри, опис
         if (data.photo) sheet.getRange(found, photoCol).setValue(data.photo);
         if (data.sizes) {
           const curSizes = sheet.getRange(found, sizesCol).getValue();
           if (!curSizes || curSizes === 'ONE SIZE') sheet.getRange(found, sizesCol).setValue(data.sizes);
+        }
+        if (data.description) {
+          const descCol = HEADERS.indexOf("Опис") + 1;
+          const curDesc = sheet.getRange(found, descCol).getValue();
+          if (!curDesc) sheet.getRange(found, descCol).setValue(data.description);
         }
       } else {
         // Новий товар — додати рядок
@@ -559,6 +566,8 @@ function doPost(e) {
         newRow[HEADERS.indexOf("Розміри")]    = data.sizes   || 'ONE SIZE';
         newRow[HEADERS.indexOf("Стать")]      = data.gender === 'male' ? 'Чоловік' : 'Жінка';
         newRow[HEADERS.indexOf("Нове")]       = '1';
+        newRow[HEADERS.indexOf("Опис")]       = data.description || '';
+        newRow[HEADERS.indexOf("TG")]         = data.tg_link || '';
         sheet.appendRow(newRow);
       }
     }

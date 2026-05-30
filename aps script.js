@@ -16,6 +16,18 @@ const DEFAULT_MARGIN     = 400;   // +грн якщо не вказано в п�
 const MARGIN_PERCENT     = false; // false = фіксована, true = відсоток
 const MIN_PRODUCTS_SAFETY = 5;
 
+const ORD_COL = {
+  date: 0, fio: 1, phone: 2, city: 3, delivery: 4,
+  items: 5, total: 6, promo: 7, status: 8,
+  utmSrc: 9, utmCamp: 10, utmVideo: 11, npTrack: 12, notes: 13,
+};
+
+function jsonResp(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 // ── ЗАГОЛОВКИ НАШОЇ ТАБЛИЦІ ────────────────────────────────
 const HEADERS = [
   "ID", "Бренд", "Назва", "Ціна", "Стара ціна",
@@ -431,7 +443,14 @@ function sendTelegramMessage(text) {
 
 // ── doGet — САЙТ ЧИТАЄ КАТАЛОГ ─────────────────────────────
 
-function doGet() {
+function doGet(e) {
+  const action = (e && e.parameter && e.parameter.action) || '';
+  if (action === 'ping')      return jsonResp({ ok: true, ts: Date.now() });
+  if (action === 'orders')    return jsonResp(_adminGetOrders(e.parameter));
+  if (action === 'analytics') return jsonResp(_adminGetAnalytics());
+  if (action === 'referrals') return jsonResp(_adminGetReferrals());
+
+
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("Товари");
 
@@ -465,6 +484,9 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const ss   = SpreadsheetApp.getActiveSpreadsheet();
+
+        if (data.action === "updateStatus")   return jsonResp(_adminUpdateOrderStatus(data));
+    if (data.action === "updateReferral") return jsonResp(_adminUpdateReferral(data));
 
     if (data.action === "new_order") {
       let sheet = ss.getSheetByName("Orders");
@@ -512,6 +534,8 @@ function doPost(e) {
       if (cartItems.length) {
         autoRemoveOrderedSizes(ss, cartItems);
         _logSoldSizes(ss, cartItems, data.phone || "");
+      if (data.ref) _logReferral(ss, data.ref, data.phone || "", totalFormatted);
+
       }
     }
 
@@ -773,4 +797,117 @@ function debugParser() {
   const parsed = parseAngellsSheet(rows.slice(1), formulas.slice(1), supplier.gender, supplier.margin);
   Logger.log("Знайдено товарів: " + parsed.length);
   Logger.log(JSON.stringify(parsed.slice(0, 10)));
+}
+
+// ── ADMIN PANEL ─────────────────────────────────────────── //
+
+function _logReferral(ss, ref, phone, total) {
+  var sh = ss.getSheetByName('Referrals');
+  if (!sh) {
+    sh = ss.insertSheet('Referrals');
+    sh.appendRow(['Дата','Партнер (TG)','Код','Телефон покупця','Сума замовлення','Виплата партнеру','Статус']);
+    sh.getRange(1,1,1,7).setFontWeight('bold');
+  }
+  var code = ref.replace(/.*\((.+)\).*/, '$1').trim();
+  var tg   = ref.replace(/\s*\(.+\)/, '').trim();
+  sh.appendRow([new Date(), tg, code, "'" + phone, total, 150, 'Нараховано']);
+}
+
+function _adminGetOrders(params) {
+  params = params || {};
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Orders');
+  if (!sheet || sheet.getLastRow() < 1) return { orders: [], total: 0 };
+  const data  = sheet.getDataRange().getValues();
+  const limit = Number(params.limit) || 200;
+  const all = data.map((row, i) => ({
+    id:       i + 1,
+    date:     row[ORD_COL.date] instanceof Date ? row[ORD_COL.date].toISOString() : String(row[ORD_COL.date] || ''),
+    fio:      String(row[ORD_COL.fio]      || ''),
+    phone:    String(row[ORD_COL.phone]    || '').replace(/^'/, ''),
+    city:     String(row[ORD_COL.city]     || ''),
+    delivery: String(row[ORD_COL.delivery] || ''),
+    items:    String(row[ORD_COL.items]    || ''),
+    total:    String(row[ORD_COL.total]    || ''),
+    promo:    String(row[ORD_COL.promo]    || ''),
+    status:   String(row[ORD_COL.status]   || 'Нове'),
+    utmSrc:   String(row[ORD_COL.utmSrc]   || ''),
+    utmVideo: String(row[ORD_COL.utmVideo] || ''),
+    npTrack:  String(row.length > ORD_COL.npTrack ? row[ORD_COL.npTrack] : '') || '',
+    notes:    String(row.length > ORD_COL.notes   ? row[ORD_COL.notes]   : '') || '',
+    site:     'wear',
+  })).filter(o => o.fio || o.phone);
+  return { orders: all.slice().reverse().slice(0, limit), total: all.length, ts: Date.now() };
+}
+
+function _adminUpdateOrderStatus(body) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Orders');
+  if (!sheet) return { ok: false, error: 'no_sheet' };
+  const rowNum = parseInt(body.orderId);
+  if (!rowNum || rowNum < 1 || rowNum > sheet.getLastRow()) return { ok: false, error: 'invalid_row' };
+  if (body.status)                                         sheet.getRange(rowNum, ORD_COL.status  + 1).setValue(body.status);
+  if (body.np_track !== undefined && body.np_track !== '') sheet.getRange(rowNum, ORD_COL.npTrack + 1).setValue(body.np_track);
+  if (body.notes    !== undefined && body.notes    !== '') sheet.getRange(rowNum, ORD_COL.notes   + 1).setValue(body.notes);
+  return { ok: true };
+}
+
+function _adminGetAnalytics() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Orders');
+  const empty = { revenue7d:[0,0,0,0,0,0,0], orders7d:[0,0,0,0,0,0,0], labels7d:['Пн','Вт','Ср','Чт','Пт','Сб','Нд'], bySite:[], totalOrders:0, totalRevenue:0 };
+  if (!sheet || sheet.getLastRow() < 1) return empty;
+  const data   = sheet.getDataRange().getValues();
+  const orders = data.filter(r => r[ORD_COL.fio] || r[ORD_COL.phone]).map(row => {
+    const totalStr = String(row[ORD_COL.total] || '').replace(/[^\d.]/g, '');
+    const dateVal  = row[ORD_COL.date];
+    const dateStr  = dateVal instanceof Date ? dateVal.toISOString().slice(0,10) : String(dateVal || '').slice(0,10);
+    return { total: parseFloat(totalStr) || 0, date: dateStr, status: String(row[ORD_COL.status] || '') };
+  }).filter(o => o.status !== 'Скасовано' && o.status !== 'cancelled');
+  const now = new Date();
+  const labels = [], revenue = [], cnt = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const ds = d.toISOString().slice(0,10);
+    const day = orders.filter(o => o.date === ds);
+    labels.push(['Нд','Пн','Вт','Ср','Чт','Пт','Сб'][d.getDay()]);
+    revenue.push(day.reduce((s,o) => s + o.total, 0));
+    cnt.push(day.length);
+  }
+  const totalRevenue = orders.reduce((s,o) => s + o.total, 0);
+  return { revenue7d:revenue, orders7d:cnt, labels7d:labels, bySite:[{id:'wear',rev:totalRevenue,orders:orders.length,conv:0}], totalOrders:orders.length, totalRevenue, ts:Date.now() };
+}
+
+function _adminGetReferrals() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Referrals');
+  if (!sheet || sheet.getLastRow() <= 1) return { referrals: [], total: 0 };
+  const data      = sheet.getDataRange().getValues();
+  const hasHeader = String(data[0][0]).toLowerCase().startsWith('дата');
+  const rows      = hasHeader ? data.slice(1) : data;
+  const referrals = rows.filter(r => r[1] || r[2]).map((row, i) => ({
+    id:         i + 1,
+    date:       row[0] instanceof Date ? row[0].toISOString() : String(row[0] || ''),
+    tg:         String(row[1] || ''),
+    ref_code:   String(row[2] || ''),
+    phone:      String(row[3] || '').replace(/^'/, ''),
+    total:      String(row[4] || ''),
+    commission: Number(row[5]) || 150,
+    status:     String(row[6] || 'Нараховано'),
+  }));
+  return { referrals, total: referrals.length };
+}
+
+function _adminUpdateReferral(body) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Referrals');
+  if (!sheet) return { ok: false, error: 'no_sheet' };
+  const data      = sheet.getDataRange().getValues();
+  const hasHeader = String(data[0][0]).toLowerCase().startsWith('дата');
+  const offset    = hasHeader ? 1 : 0;
+  const rowNum    = parseInt(body.id) + offset;
+  if (!rowNum || rowNum < 1 || rowNum > sheet.getLastRow()) return { ok: false, error: 'invalid_row' };
+  if (body.status     !== undefined) sheet.getRange(rowNum, 7).setValue(body.status);
+  if (body.commission !== undefined) sheet.getRange(rowNum, 6).setValue(body.commission);
+  return { ok: true };
 }

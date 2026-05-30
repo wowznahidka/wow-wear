@@ -141,6 +141,42 @@ function fingerprint(p) {
   ].join("|");
 }
 
+// ── ФОТО З EMBEDDED IMAGES через Sheets API v4 ─────────────
+// Потрібно: Розширення → Служби → Google Sheets API → увімкнути
+// Повертає map { rowIndex: imageUrl }
+
+function extractEmbeddedPhotos(sheet) {
+  const photoMap = {};
+  try {
+    const ssId     = sheet.getParent().getId();
+    const sheetId  = sheet.getSheetId();
+    const response = Sheets.Spreadsheets.get(ssId, {
+      includeGridData: true,
+      ranges: [sheet.getName() + '!A:A'],
+    });
+
+    const sheetData = response.sheets.find(s => s.properties.sheetId === sheetId);
+    if (!sheetData || !sheetData.data || !sheetData.data[0].rowData) return photoMap;
+
+    sheetData.data[0].rowData.forEach((row, rowIdx) => {
+      if (!row.values || !row.values[0]) return;
+      const cell = row.values[0];
+
+      // In-cell image → userEnteredValue.imageValue або effectiveValue.imageValue
+      const imgVal = (cell.userEnteredValue  && cell.userEnteredValue.imageValue)
+                  || (cell.effectiveValue     && cell.effectiveValue.imageValue);
+
+      if (imgVal) {
+        const url = imgVal.sourceUri || imgVal.contentUri || '';
+        if (url) photoMap[rowIdx + 1] = url; // rowIdx 0-based → 1-based
+      }
+    });
+  } catch (e) {
+    // Sheets API не увімкнено або помилка — тихо пропускаємо
+  }
+  return photoMap;
+}
+
 // ── ПАРСЕР ФОРМАТУ ANGELLS ─────────────────────────────────
 // Структура таблиці Angells:
 //   A: Фото (embedded)
@@ -150,57 +186,45 @@ function fingerprint(p) {
 //   E: Ціна
 //   F+: Розміри (1-5 колонок)
 
-function parseAngellsSheet(rows, formulas, gender, margin) {
+function parseAngellsSheet(rows, formulas, gender, margin, sheet) {
   const products = [];
   let idCounter = 1;
+
+  // Витягуємо embedded photos якщо є sheet (рядок → URL)
+  const photoMap = sheet ? extractEmbeddedPhotos(sheet) : {};
 
   for (let r = 0; r < rows.length; r++) {
     const row = rows[r];
     if (!row || row.length < 4) continue;
 
-    // Знаходимо рядок-заголовок (перший рядок з "Наявність" або "Найменування")
     const rowStr = row.map(c => normalizeLower(String(c || ""))).join("|");
     if (rowStr.includes("найменування") || rowStr.includes("наявність") || rowStr.includes("ціна")) continue;
 
-    // Шукаємо де колонки (може зміщуватись)
-    let statusCol = -1, nameCol = -1, priceCol = -1, articleCol = -1;
-
-    for (let c = 0; c < row.length; c++) {
-      const v = normalizeLower(String(row[c] || ""));
-      if (!v) continue;
-      // Динамічне визначення позиції колонок по вмісту
-      if ((v.includes("наявн") || STATUS_AVAILABLE.some(s => v.startsWith(s)) || STATUS_SKIP.some(s => v.startsWith(s))) && statusCol < 0) statusCol = c;
-    }
-
     // Статична структура Angells: A=фото B=статус C=артикул D=назва E=ціна F+=розміри
-    // Рядки даних — не заголовки
-    let photoFormula = formulas[r] ? extractImageUrl(formulas[r][0] || "") : "";
-    const statusRaw  = normalize(String(row[1] || ""));
-    const article    = normalize(String(row[2] || ""));
-    const name       = normalize(String(row[3] || ""));
-    const priceRaw   = parsePrice(row[4]);
+    // rows передається як slice(1), тому реальний рядок у sheet = r + 2
+    const sheetRow     = r + 2;
+    const photoEmbedded = photoMap[sheetRow] || "";
+    const photoFormula  = formulas[r] ? extractImageUrl(formulas[r][0] || "") : "";
+    const photo        = photoEmbedded || photoFormula;
+
+    const statusRaw = normalize(String(row[1] || ""));
+    const article   = normalize(String(row[2] || ""));
+    const name      = normalize(String(row[3] || ""));
+    const priceRaw  = parsePrice(row[4]);
 
     if (!name || name.length < 2) continue;
     if (!isAvailableStatus(statusRaw)) continue;
     if (!priceRaw || priceRaw < 50) continue;
 
-    const sizes  = extractSizesFromRow(row, 5);
-    const sizesStr = sizes.length ? sizes.join(",") : "ONE SIZE";
+    const sizes      = extractSizesFromRow(row, 5);
+    const sizesStr   = sizes.length ? sizes.join(",") : "ONE SIZE";
     const finalPrice = calcPrice(priceRaw, margin);
-    const brand  = extractBrand(name);
+    const brand      = extractBrand(name);
 
     products.push([
-      article || `wear_${idCounter++}`,  // ID
-      brand,                              // Бренд
-      name,                               // Назва
-      finalPrice,                         // Ціна
-      priceRaw,                           // Стара ціна (ціна дропу = "стара")
-      photoFormula,                       // Фото
-      sizesStr,                           // Розміри
-      "",                                 // Нове
-      gender || "Жінка",                  // Стать
-      0,                                  // Постачальник
-      "",                                 // Колір
+      article || `wear_${idCounter++}`,
+      brand, name, finalPrice, priceRaw,
+      photo, sizesStr, "", gender || "Жінка", 0, "",
     ]);
   }
 
@@ -430,7 +454,11 @@ function doPost(e) {
     const ss   = SpreadsheetApp.getActiveSpreadsheet();
 
     if (data.action === "new_order") {
-      const sheet = ss.getSheetByName("Orders");
+      let sheet = ss.getSheetByName("Orders");
+      if (!sheet) {
+        sheet = ss.insertSheet("Orders");
+        sheet.appendRow(["Дата","ПІБ","Телефон","Місто","Доставка","Товари","Сума","Промокод","Статус","UTM Source","UTM Campaign","UTM Video"]);
+      }
       const totalFormatted = typeof data.total === "number"
         ? data.total + " ₴" : String(data.total || "");
 
@@ -471,6 +499,56 @@ function doPost(e) {
       if (cartItems.length) {
         autoRemoveOrderedSizes(ss, cartItems);
         _logSoldSizes(ss, cartItems, data.phone || "");
+      }
+    }
+
+    if (data.action === "upsert_product") {
+      const sheet    = ss.getSheetByName("Товари") || ss.insertSheet("Товари");
+      const lastRow  = sheet.getLastRow();
+      const idCol    = HEADERS.indexOf("ID") + 1;
+      const nameCol  = HEADERS.indexOf("Назва") + 1;
+      const photoCol = HEADERS.indexOf("Фото") + 1;
+      const sizesCol = HEADERS.indexOf("Розміри") + 1;
+
+      const inArticle = normalize(String(data.article || '')).toLowerCase();
+      const inName    = normalize(String(data.name    || '')).toLowerCase();
+
+      let found = -1;
+      if (lastRow > 1) {
+        const ids   = sheet.getRange(2, idCol,   lastRow - 1, 1).getValues();
+        const names = sheet.getRange(2, nameCol, lastRow - 1, 1).getValues();
+
+        for (let i = 0; i < ids.length; i++) {
+          const rowId   = String(ids[i][0]).toLowerCase().trim();
+          const rowName = String(names[i][0]).toLowerCase().trim();
+
+          // Матчинг: артикул → точний збіг; назва → збіг перших 15 символів
+          const articleMatch = inArticle && rowId.includes(inArticle);
+          const nameMatch    = inName && rowName.substring(0, 15) === inName.substring(0, 15);
+
+          if (articleMatch || nameMatch) { found = i + 2; break; }
+        }
+      }
+
+      if (found > 0) {
+        // Оновити фото (і розміри якщо порожні)
+        if (data.photo) sheet.getRange(found, photoCol).setValue(data.photo);
+        if (data.sizes) {
+          const curSizes = sheet.getRange(found, sizesCol).getValue();
+          if (!curSizes || curSizes === 'ONE SIZE') sheet.getRange(found, sizesCol).setValue(data.sizes);
+        }
+      } else {
+        // Новий товар — додати рядок
+        const newRow = new Array(HEADERS.length).fill('');
+        newRow[HEADERS.indexOf("ID")]         = data.article || ('tg_' + Date.now());
+        newRow[HEADERS.indexOf("Назва")]      = data.name    || '';
+        newRow[HEADERS.indexOf("Ціна")]       = data.price   || 0;
+        newRow[HEADERS.indexOf("Стара ціна")] = data.oldPrice || 0;
+        newRow[HEADERS.indexOf("Фото")]       = data.photo   || '';
+        newRow[HEADERS.indexOf("Розміри")]    = data.sizes   || 'ONE SIZE';
+        newRow[HEADERS.indexOf("Стать")]      = data.gender === 'male' ? 'Чоловік' : 'Жінка';
+        newRow[HEADERS.indexOf("Нове")]       = '1';
+        sheet.appendRow(newRow);
       }
     }
 
@@ -518,8 +596,9 @@ function updateMasterDB() {
   }
 
   try {
-    const masterSS    = SpreadsheetApp.getActiveSpreadsheet();
-    const masterSheet = masterSS.getSheetByName("Товари");
+    const masterSS = SpreadsheetApp.getActiveSpreadsheet();
+    let masterSheet = masterSS.getSheetByName("Товари");
+    if (!masterSheet) masterSheet = masterSS.insertSheet("Товари");
 
     masterSheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
 
@@ -547,7 +626,7 @@ function updateMasterDB() {
           const isAngells = headerRow.some(h => h.includes("найменування") || h.includes("наявн"));
 
           const parsed = isAngells
-            ? parseAngellsSheet(rows.slice(1), formulas.slice(1), supplier.gender, supplier.margin)
+            ? parseAngellsSheet(rows.slice(1), formulas.slice(1), supplier.gender, supplier.margin, sheet)
             : parseGenericFashionSheet(rows, formulas, supplier.gender, supplier.margin);
 
           if (parsed.length) supplierProducts = supplierProducts.concat(parsed);

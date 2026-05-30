@@ -586,13 +586,11 @@ function doPost(e) {
   }
 }
 
-// ── updateMasterDB — ВИМКНЕНО для WEAR ────────────────────
-// Каталог заповнюється через grabber.py → upsert_product
-// Не потрібен бо фото приходять разом з товарами через парсер
+// ── updateMasterDB — ОНОВЛЕННЯ КАТАЛОГУ ───────────────────
+// Читає наявність з Angells таблиці (В НАЯВНОСТІ / ПРОДАНО)
+// Зберігає фото які вже додані grabber.py через Telegraph
 
 function updateMasterDB() {
-  sendTelegramMessage("ℹ️ WOW.WEAR: каталог заповнюється через парсер @allegator_shop → Telegraph → GAS.");
-  return 0;
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(25000)) {
     sendTelegramMessage("⚠️ WOW.WEAR: lock не отримано, пропуск");

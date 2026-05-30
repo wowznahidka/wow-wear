@@ -47,7 +47,7 @@ function prodCardHtml(p, opts = {}) {
   const imgPart = p.image && p.image.startsWith('http')
     ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
          loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')">`
-    : `<div class="card-img-placeholder" aria-hidden="true">👟</div>`;
+    : `<div class="card-img-placeholder" aria-hidden="true">👗</div>`;
 
   const badgePart = p.isNew
     ? `<div class="prod-badge badge-new">NEW</div>`
@@ -327,7 +327,7 @@ function _setupScrollNudge(total) {
     const nudge = document.createElement('div');
     nudge.className = 'scroll-nudge';
     nudge.onclick = () => { nudge.remove(); changeTab('match'); };
-    nudge.innerHTML = `<p>👟 Ти переглянув ${total} пар</p><small>Свайпай у Match — знайди ідеальну 🔥</small>`;
+    nudge.innerHTML = `<p>👗 Ти переглянув ${total} моделей</p><small>Свайпай у Match — знайди свій стиль 🔥</small>`;
     sentinel.parentNode?.insertBefore(nudge, sentinel);
   }, { rootMargin: '0px', threshold: 0.5 });
   _scrollNudgeObserver.observe(sentinel);

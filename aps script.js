@@ -1,86 +1,56 @@
+// ============================================================
+//  WOW.WEAR — Google Apps Script
+//  Читає каталог одягу → подає сайту + приймає замовлення
+//  Адаптовано під формат Angells та інших fashion-постачальників
+// ============================================================
+
+// ── ПОСТАЧАЛЬНИКИ ──────────────────────────────────────────
+// Додай ID Google Sheet постачальника і стать за замовчуванням
 const SUPPLIERS = [
-  { id: "1WjRRBuZWCp6QnNzrJQMX5NUREhFEbXyRQ9Uk_Oi6LiI", gender: "Чоловік" },
-  { id: "14x32aRMF4G_45DweNKx3nMQlxsYIeZdwxJDrK8d1N5k", gender: "Жінка" }
+  { id: "1M-hjIl3FkwtuTZy_nT2DpGYd783m3REX7lCIyurUXQM", gender: "Жінка", margin: 400 },
+  // { id: "ДРУГИЙ_ПОСТАЧАЛЬНИК_ID", gender: "Жінка", margin: 350 },
 ];
 
+// ── МАРЖА ──────────────────────────────────────────────────
+const DEFAULT_MARGIN     = 400;   // +грн якщо не вказано в постачальнику
+const MARGIN_PERCENT     = false; // false = фіксована, true = відсоток
+const MIN_PRODUCTS_SAFETY = 5;
+
+// ── ЗАГОЛОВКИ НАШОЇ ТАБЛИЦІ ────────────────────────────────
 const HEADERS = [
-  "ID",
-  "Бренд",
-  "Назва",
-  "Ціна",
-  "Стара ціна",
-  "Фото",
-  "Розміри",
-  "Нове",
-  "Стать",
-  "Постачальник"
+  "ID", "Бренд", "Назва", "Ціна", "Стара ціна",
+  "Фото", "Розміри", "Нове", "Стать", "Постачальник", "Колір"
 ];
 
-const SKIP_KEYWORDS = [
-  "одяг",
-  "барсетк",
-  "рюкзак",
-  "шнурк",
-  "шкарпет",
-  "шапк",
-  "кепк",
-  "ремен",
-  "yarm",
-  "general_stores",
-  "babylon drop"
-];
+// ── СТАТУСИ НАЯВНОСТІ ──────────────────────────────────────
+// Angells використовує ці значення в колонці "Наявність"
+const STATUS_AVAILABLE = ["в наявності", "наявність", "є", "+", "sale", "залишки"];
+const STATUS_SKIP      = ["продано", "очікуємо", "немає", "відсутній", "0"];
 
+// ── FASHION БРЕНДИ ─────────────────────────────────────────
 const KNOWN_BRANDS = [
-  "Nike",
-  "Adidas",
-  "New Balance",
-  "Jordan",
-  "Air Jordan",
-  "Puma",
-  "Asics",
-  "Salomon",
-  "Balenciaga",
-  "Rick Owens",
-  "Golden Goose",
-  "New Rock",
-  "Lanvin",
-  "UGG",
-  "MMY",
-  "Dior",
-  "Prada",
-  "Versace",
-  "Gucci",
-  "Louis Vuitton",
-  "McQueen",
-  "Amiri",
-  "Off-White",
-  "DC Shoes",
-  "Vans",
-  "Reebok",
-  "Fila"
+  "Zara", "H&M", "Bershka", "Pull&Bear", "Stradivarius", "Mango",
+  "ASOS", "COS", "Arket", "Reserved", "Cropp", "House",
+  "Nike", "Adidas", "Puma", "New Balance", "Champion", "Under Armour",
+  "Tommy Hilfiger", "Calvin Klein", "Guess", "Lacoste", "Ralph Lauren",
+  "Liu Jo", "Versace", "Dolce", "Armani", "Balenciaga", "Gucci",
+  "Angells", "ANGELLS",
 ];
 
-// ── Minimum product count safety threshold ──────────────────
-// If parsed product count drops below this, assume a supplier
-// fetch failure and abort the catalog overwrite entirely.
-const MIN_PRODUCTS_SAFETY = 20;
+// ── УТИЛІТИ ────────────────────────────────────────────────
 
 function getTGConfig() {
   const props = PropertiesService.getScriptProperties();
-
   return {
-    token: props.getProperty("TG_BOT_TOKEN"),
-    chatId: props.getProperty("TG_CHAT_ID")
+    token:  props.getProperty("TG_BOT_TOKEN"),
+    chatId: props.getProperty("TG_CHAT_ID"),
   };
 }
 
 function normalize(v) {
   return String(v || "")
-    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[​-‍﻿]/g, "")
     .replace(/\s+/g, " ")
-    .replace(/[|｜]+/g, "|")
-    .replace(/["""]/g, '"')
-    .replace(/['']/g, "'")
     .trim();
 }
 
@@ -88,306 +58,204 @@ function normalizeLower(v) {
   return normalize(v).toLowerCase();
 }
 
-function shouldSkipSheet(name) {
-  const n = normalizeLower(name);
-  return SKIP_KEYWORDS.some(k => n.includes(k));
-}
-
-function extractBrand(sheetName, productName) {
-  const source = normalize(sheetName);
-  const name = normalize(productName);
-
-  for (const b of KNOWN_BRANDS) {
-    if (source.toLowerCase().includes(b.toLowerCase())) return b;
-    if (name.toLowerCase().startsWith(b.toLowerCase())) return b;
-  }
-
-  return source
-    .split("|")[0]
-    .replace(/[^\p{L}\p{N}\s.-]/gu, "")
-    .trim();
-}
-
-function extractImageUrl(formula) {
-  if (!formula) return "";
-
-  const f = String(formula);
-
-  const patterns = [
-    /IMAGE\s*\(\s*"([^"]+)"/i,
-    /HYPERLINK\s*\(\s*"([^"]+)"/i,
-    /https?:\/\/[^"')\s]+/i
-  ];
-
-  for (const p of patterns) {
-    const m = f.match(p);
-
-    if (m) {
-      return m[1] || m[0];
-    }
-  }
-
-  return "";
-}
-
 function parsePrice(v) {
-  if (v === null || v === undefined) return 0;
-
-  const n = String(v)
-    .replace(/[^\d.,]/g, "")
-    .replace(",", ".");
-
+  if (v === null || v === undefined || v === "") return 0;
+  const n = String(v).replace(/[^\d.,]/g, "").replace(",", ".");
   const num = parseFloat(n);
-
   return isNaN(num) ? 0 : Math.round(num);
 }
 
-function parseSize(v) {
-  if (!v) return null;
-
-  const m = String(v).match(/(\d{2}(?:[.,]\d)?)/);
-
-  if (!m) return null;
-
-  const size = parseFloat(m[1].replace(",", "."));
-
-  if (size < 30 || size > 55) return null;
-
-  return size;
+function calcPrice(supplierPrice, margin) {
+  if (!supplierPrice) return 0;
+  if (MARGIN_PERCENT) return Math.round(supplierPrice * (1 + margin / 100));
+  return supplierPrice + (margin || DEFAULT_MARGIN);
 }
 
-function isAvailable(v) {
-  if (v === null || v === undefined) return false;
-
-  if (typeof v === "number" && v > 0) return true;
-
-  const s = normalizeLower(v);
-
-  return (
-    s === "є" ||
-    s === "+" ||
-    s === "yes" ||
-    s.includes("✪") ||
-    s.includes("✔") ||
-    parseFloat(s) > 0
-  );
+function isAvailableStatus(v) {
+  if (v === null || v === undefined || v === "") return true; // якщо немає статусу — вважаємо є
+  const s = normalizeLower(String(v));
+  if (STATUS_SKIP.some(k => s.includes(k))) return false;
+  return true; // не знайшли SKIP → доступний
 }
 
-function fingerprint(product) {
-  // Include sizes in fingerprint to avoid collapsing restocks of same model
-  // Strip qty format "40(2)" → "40" for deduplication
-  return [
-    normalizeLower(product[1]),
-    normalizeLower(product[2]),
-    normalizeLower(product[8]),
-    String(product[6]).split(",").map(s => s.replace(/\(\w+\)/, "").trim()).sort().join(",")
-  ].join("|");
-}
+// ── РОЗМІРИ ОДЯГУ ──────────────────────────────────────────
+// Підтримує: XS S M L XL XXL XXXL 4XL
+//            числові 34 36 38 40 42 44 46 48 50 52 54 56
+//            ONE SIZE / Uni / OS
 
-function detectProductColumns(row) {
-  const cols = [];
+function parseClothingSize(v) {
+  if (!v && v !== 0) return null;
+  const s = normalize(String(v)).toUpperCase().replace(/[-–—\s]/g, "");
+  if (!s) return null;
 
-  row.forEach((cell, i) => {
-    const val = normalize(cell);
-
-    if (/^№/.test(val)) {
-      cols.push(i);
-    }
-  });
-
-  return cols;
-}
-
-function detectDropRow(rows, start, end) {
-  const keys = ["дроп", "drop", "price", "опт", "ціна"];
-
-  for (let i = start; i < end; i++) {
-    const row = rows[i];
-
-    for (let j = 0; j < row.length; j++) {
-      const v = normalizeLower(row[j]);
-
-      if (keys.some(k => v.includes(k))) {
-        return row;
-      }
-    }
+  // Стандартні текстові
+  const TEXT_SIZES = ["4XL", "3XL", "XXXL", "XXL", "XL", "XS", "S", "M", "L", "OS", "UNI", "ONESIZE", "OSFM"];
+  for (const ts of TEXT_SIZES) {
+    if (s.includes(ts)) return ts.replace("ONESIZE", "ONE SIZE").replace("UNI", "ONE SIZE").replace("OS", "ONE SIZE").replace("OSFM", "ONE SIZE");
   }
+
+  // Числові (EU) 30-60
+  const m = s.match(/\b(3[0-9]|4[0-9]|5[0-9]|6[0])\b/);
+  if (m) return m[1];
 
   return null;
 }
 
-// Returns 1 (General Stores) or 2 (Babylon) based on raw qty cell values
-function detectSupplier_(rows, start, end, qtyCol) {
-  for (let i = start; i < end; i++) {
-    if (!rows[i]) continue;
-    const qtyRaw = rows[i][qtyCol];
-    if (qtyRaw === null || qtyRaw === undefined || qtyRaw === "") continue;
-    const s = normalizeLower(String(qtyRaw));
-    if (s === "є" || s === "e" || s === "+" || s.includes("✪") || s.includes("✔")) return 2;
-    if (typeof qtyRaw === "number" && qtyRaw > 0) return 1;
+function extractSizesFromRow(row, startCol) {
+  const sizes = [];
+  for (let i = startCol; i < row.length; i++) {
+    const sz = parseClothingSize(row[i]);
+    if (sz && !sizes.includes(sz)) sizes.push(sz);
   }
-  return 0;
+  return sizes;
 }
 
-function collectSizes(rows, start, end, sizeCol, qtyCol) {
-  const sizeMap = new Map(); // size → total qty
-
-  for (let i = start; i < end; i++) {
-    const row = rows[i];
-    const size = parseSize(row[sizeCol]);
-    if (!size) continue;
-
-    const qtyRaw = row[qtyCol];
-    const qtyExists = qtyRaw !== "" && qtyRaw !== null && qtyRaw !== undefined;
-
-    let qty;
-    if (qtyExists) {
-      // Qty column has data → use it exclusively
-      // Babylon: є = 1, 0 = unavailable; General Stores: number = pair count
-      if (!isAvailable(qtyRaw)) continue;
-      qty = (typeof qtyRaw === "number" && qtyRaw > 1) ? Math.round(qtyRaw) : 1;
-    } else {
-      // No qty column — availability from size cell itself
-      if (!isAvailable(row[sizeCol])) continue;
-      qty = 1;
-    }
-
-    sizeMap.set(size, (sizeMap.get(size) || 0) + qty);
+function extractBrand(name) {
+  const n = normalize(name);
+  for (const b of KNOWN_BRANDS) {
+    if (n.toLowerCase().includes(b.toLowerCase())) return b;
   }
-
-  const sorted = [...sizeMap.entries()].sort((a, b) => a[0] - b[0]);
-
-  if (!sorted.length) return ["ONE SIZE"];
-
-  // Return "40(2),41(1)" format — frontend parser handles this
-  return sorted.map(([sz, q]) => `${sz}(${q})`);
+  return "";
 }
 
-function parseSupplierSheet(rows, formulas, sheetName, gender) {
+function extractImageUrl(formula) {
+  if (!formula) return "";
+  const f = String(formula);
+  const patterns = [
+    /IMAGE\s*\(\s*"([^"]+)"/i,
+    /HYPERLINK\s*\(\s*"([^"]+)"/i,
+    /https?:\/\/[^"')\s,]+/i,
+  ];
+  for (const p of patterns) {
+    const m = f.match(p);
+    if (m) return m[1] || m[0];
+  }
+  return "";
+}
+
+function fingerprint(p) {
+  return [
+    normalizeLower(p[2]),      // назва
+    String(p[3]),              // ціна
+    normalizeLower(p[8]),      // стать
+  ].join("|");
+}
+
+// ── ПАРСЕР ФОРМАТУ ANGELLS ─────────────────────────────────
+// Структура таблиці Angells:
+//   A: Фото (embedded)
+//   B: Наявність
+//   C: Артикул
+//   D: Найменування
+//   E: Ціна
+//   F+: Розміри (1-5 колонок)
+
+function parseAngellsSheet(rows, formulas, gender, margin) {
   const products = [];
+  let idCounter = 1;
 
   for (let r = 0; r < rows.length; r++) {
     const row = rows[r];
+    if (!row || row.length < 4) continue;
 
-    const productCols = detectProductColumns(row);
+    // Знаходимо рядок-заголовок (перший рядок з "Наявність" або "Найменування")
+    const rowStr = row.map(c => normalizeLower(String(c || ""))).join("|");
+    if (rowStr.includes("найменування") || rowStr.includes("наявність") || rowStr.includes("ціна")) continue;
 
-    if (!productCols.length) continue;
+    // Шукаємо де колонки (може зміщуватись)
+    let statusCol = -1, nameCol = -1, priceCol = -1, articleCol = -1;
 
-    const nextBlock = (() => {
-      for (let x = r + 1; x < rows.length; x++) {
-        if (detectProductColumns(rows[x]).length) {
-          return x;
-        }
-      }
-
-      return Math.min(r + 25, rows.length);
-    })();
-
-    const dropRow = detectDropRow(rows, r, nextBlock);
-
-    for (const c of productCols) {
-      const articleRaw = normalize(row[c]);
-
-      if (!articleRaw) continue;
-
-      const article = articleRaw
-        .replace(/^№\s*/i, "")
-        .trim();
-
-      const name = normalize(row[c + 1]);
-
-      if (!name) continue;
-
-      let image = "";
-
-      for (let k = r; k < Math.min(r + 5, formulas.length); k++) {
-        if (
-          formulas[k] &&
-          formulas[k][c]
-        ) {
-          image = extractImageUrl(formulas[k][c]);
-
-          if (image) break;
-        }
-      }
-
-      let price = 0;
-
-      if (
-        dropRow &&
-        dropRow[c + 2] !== undefined
-      ) {
-        price = parsePrice(dropRow[c + 2]);
-      }
-
-      if (!price) {
-        for (let pr = r; pr < nextBlock; pr++) {
-          const val = parsePrice(rows[pr][c + 2]);
-
-          if (val > 50) {
-            price = val;
-            break;
-          }
-        }
-      }
-
-      if (!price) continue;
-
-      const sizes = collectSizes(
-        rows,
-        r,
-        nextBlock,
-        c + 3,
-        c + 4
-      );
-
-      const supplierType = detectSupplier_(rows, r, nextBlock, c + 4);
-
-      products.push([
-        article,
-        extractBrand(sheetName, name),
-        name,
-        price + 450,
-        "",
-        image,
-        sizes.join(","),
-        "",
-        gender,
-        supplierType
-      ]);
+    for (let c = 0; c < row.length; c++) {
+      const v = normalizeLower(String(row[c] || ""));
+      if (!v) continue;
+      // Динамічне визначення позиції колонок по вмісту
+      if ((v.includes("наявн") || STATUS_AVAILABLE.some(s => v.startsWith(s)) || STATUS_SKIP.some(s => v.startsWith(s))) && statusCol < 0) statusCol = c;
     }
+
+    // Статична структура Angells: A=фото B=статус C=артикул D=назва E=ціна F+=розміри
+    // Рядки даних — не заголовки
+    let photoFormula = formulas[r] ? extractImageUrl(formulas[r][0] || "") : "";
+    const statusRaw  = normalize(String(row[1] || ""));
+    const article    = normalize(String(row[2] || ""));
+    const name       = normalize(String(row[3] || ""));
+    const priceRaw   = parsePrice(row[4]);
+
+    if (!name || name.length < 2) continue;
+    if (!isAvailableStatus(statusRaw)) continue;
+    if (!priceRaw || priceRaw < 50) continue;
+
+    const sizes  = extractSizesFromRow(row, 5);
+    const sizesStr = sizes.length ? sizes.join(",") : "ONE SIZE";
+    const finalPrice = calcPrice(priceRaw, margin);
+    const brand  = extractBrand(name);
+
+    products.push([
+      article || `wear_${idCounter++}`,  // ID
+      brand,                              // Бренд
+      name,                               // Назва
+      finalPrice,                         // Ціна
+      priceRaw,                           // Стара ціна (ціна дропу = "стара")
+      photoFormula,                       // Фото
+      sizesStr,                           // Розміри
+      "",                                 // Нове
+      gender || "Жінка",                  // Стать
+      0,                                  // Постачальник
+      "",                                 // Колір
+    ]);
   }
 
   return products;
 }
 
-function sendTelegramMessage(text) {
-  try {
-    const tg = getTGConfig();
+// ── ЗАГАЛЬНИЙ ПАРСЕР (fallback для інших постачальників) ───
 
-    if (!tg.token || !tg.chatId) return;
+function parseGenericFashionSheet(rows, formulas, gender, margin) {
+  const products = [];
+  let idCounter = 1;
 
-    UrlFetchApp.fetch(
-      "https://api.telegram.org/bot" +
-      tg.token +
-      "/sendMessage",
-      {
-        method: "post",
-        contentType: "application/json",
-        payload: JSON.stringify({
-          chat_id: tg.chatId,
-          text,
-          parse_mode: "HTML"
-        }),
-        muteHttpExceptions: true
+  for (let r = 1; r < rows.length; r++) { // skip header row
+    const row = rows[r];
+    if (!row || row.length < 3) continue;
+
+    // Шукаємо назву і ціну в будь-яких колонках
+    let name = "", price = 0, photo = "", sizes = [];
+
+    for (let c = 0; c < row.length; c++) {
+      const v = normalize(String(row[c] || ""));
+      if (!v) continue;
+      const vLow = v.toLowerCase();
+
+      if (!name && v.length > 5 && !/^\d+/.test(v) && !vLow.includes("наявн")) name = v;
+      if (!price && parsePrice(v) > 50 && parsePrice(v) < 10000) price = parsePrice(v);
+      const sz = parseClothingSize(v);
+      if (sz && sz !== "0") sizes.push(sz);
+
+      if (!photo && formulas[r] && formulas[r][c]) {
+        photo = extractImageUrl(formulas[r][c]);
       }
-    );
-  } catch (e) {}
+    }
+
+    if (!name || !price) continue;
+
+    products.push([
+      `wear_${idCounter++}`,
+      extractBrand(name),
+      name,
+      calcPrice(price, margin),
+      price,
+      photo,
+      sizes.length ? [...new Set(sizes)].join(",") : "ONE SIZE",
+      "",
+      gender || "Жінка",
+      0,
+      "",
+    ]);
+  }
+
+  return products;
 }
 
 // ── SOLD SIZE TRACKING ──────────────────────────────────────
-// Called from doPost(new_order): decrements sizes in Товари sheet
-// and logs each sold unit to Продано sheet for re-sync persistence.
 
 function autoRemoveOrderedSizes(ss, cart) {
   if (!cart || !cart.length) return;
@@ -396,8 +264,8 @@ function autoRemoveOrderedSizes(ss, cart) {
   const lastRow = sheet.getLastRow();
   if (lastRow <= 1) return;
 
-  const idCol     = HEADERS.indexOf("ID");
-  const sizesCol  = HEADERS.indexOf("Розміри");
+  const idCol    = HEADERS.indexOf("ID");
+  const sizesCol = HEADERS.indexOf("Розміри");
   if (idCol < 0 || sizesCol < 0) return;
 
   const data = sheet.getRange(1, 1, lastRow, HEADERS.length).getValues();
@@ -409,23 +277,18 @@ function autoRemoveOrderedSizes(ss, cart) {
 
     const orderedSize = String(item.size);
     const orderedQty  = item.qty || 1;
-    const sizesStr    = String(data[r][sizesCol]);
-    const parts       = sizesStr.split(",").map(s => s.trim()).filter(Boolean);
-    const newParts    = [];
+    const parts = String(data[r][sizesCol]).split(",").map(s => s.trim()).filter(Boolean);
+    const newParts = [];
 
     for (const part of parts) {
-      const m = part.match(/^(\d+(?:[.,]\d)?)\((\d+)\)$/);
+      const m = part.match(/^([^(]+)\((\d+)\)$/);
       if (!m) {
-        // Plain size without qty (legacy) — remove if matches
-        const plain = part.replace(/\(.*\)/, "").trim();
-        if (plain !== orderedSize && parseFloat(plain) !== parseFloat(orderedSize)) {
-          newParts.push(part);
-        }
+        if (part.trim() !== orderedSize) newParts.push(part);
         continue;
       }
-      const sz        = m[1];
-      const qty       = parseInt(m[2]);
-      const remaining = qty - (parseFloat(sz) === parseFloat(orderedSize) ? orderedQty : 0);
+      const sz = m[1].trim();
+      const qty = parseInt(m[2]);
+      const remaining = qty - (sz === orderedSize ? orderedQty : 0);
       if (remaining > 0) newParts.push(`${sz}(${remaining})`);
     }
 
@@ -446,12 +309,11 @@ function _logSoldSizes(ss, cart, orderRef) {
   }
 }
 
-// Returns { productId: { "40": totalSoldQty, ... } }
 function getSoldSizes(ss) {
   const sheet = ss.getSheetByName("Продано");
   if (!sheet || sheet.getLastRow() <= 1) return {};
-  const data  = sheet.getRange(2, 1, sheet.getLastRow() - 1, 5).getValues();
-  const sold  = {};
+  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 5).getValues();
+  const sold = {};
   for (const row of data) {
     const id   = String(row[1]);
     const size = String(row[2]);
@@ -463,42 +325,31 @@ function getSoldSizes(ss) {
   return sold;
 }
 
-// Removes sold sizes/quantities from freshly-parsed products
 function applySoldFilter(products, sold) {
   if (!Object.keys(sold).length) return products;
-  const result = [];
-  for (const p of products) {
-    const id        = String(p[0]);
+  return products.map(p => {
+    const id = String(p[0]);
     const soldSizes = sold[id];
-    if (!soldSizes) { result.push(p); continue; }
+    if (!soldSizes) return p;
 
-    const sizesStr = String(p[6]);
-    if (sizesStr === "ONE SIZE" || !sizesStr) { result.push(p); continue; }
-
-    const parts    = sizesStr.split(",").map(s => s.trim()).filter(Boolean);
+    const parts = String(p[6]).split(",").map(s => s.trim()).filter(Boolean);
     const newParts = [];
-
     for (const part of parts) {
-      const m = part.match(/^(\d+(?:[.,]\d)?)\((\d+)\)$/);
+      const m = part.match(/^([^(]+)\((\d+)\)$/);
       if (!m) { newParts.push(part); continue; }
-      const sz        = m[1];
-      const qty       = parseInt(m[2]);
-      const soldQty   = soldSizes[sz] || soldSizes[String(Math.round(parseFloat(sz)))] || 0;
-      const remaining = qty - soldQty;
-      if (remaining > 0) newParts.push(`${sz}(${remaining})`);
+      const sz  = m[1].trim();
+      const qty = parseInt(m[2]);
+      const soldQty = soldSizes[sz] || 0;
+      if (qty - soldQty > 0) newParts.push(`${sz}(${qty - soldQty})`);
     }
-
-    if (!newParts.length) continue; // All sizes sold out — drop product
+    if (!newParts.length) return null;
     const updated = [...p];
     updated[6] = newParts.join(",");
-    result.push(updated);
-  }
-  return result;
+    return updated;
+  }).filter(Boolean);
 }
 
-// ── SERVER-SIDE DAILY DEALS ─────────────────────────────────
-// Same mulberry32 PRNG + date seed as the client (deals.js).
-// Called from doGet() so every client receives identical deal IDs.
+// ── DAILY DEALS ────────────────────────────────────────────
 
 function _mulberry32GAS(seed) {
   return function() {
@@ -513,413 +364,234 @@ function _getDailyDealIds(products, count) {
   count = count || 3;
   var d    = new Date();
   var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-
   var eligible = products
-    .filter(function(p) {
-      var sizes = String(p['Розміри'] || '').trim();
-      return sizes && sizes !== 'ONE SIZE';
-    })
-    .sort(function(a, b) {
-      var ia = String(a['ID'] || '');
-      var ib = String(b['ID'] || '');
-      return ia < ib ? -1 : ia > ib ? 1 : 0;
-    });
-
+    .filter(p => p["Розміри"] && String(p["Розміри"]).trim())
+    .sort((a, b) => String(a["ID"]) < String(b["ID"]) ? -1 : 1);
   if (!eligible.length) return [];
-
   var rng = _mulberry32GAS(seed);
   var arr = eligible.slice();
   for (var i = arr.length - 1; i > 0; i--) {
-    var j   = Math.floor(rng() * (i + 1));
+    var j = Math.floor(rng() * (i + 1));
     var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
   }
-
-  return arr.slice(0, count).map(function(p) { return String(p['ID'] || ''); });
+  return arr.slice(0, count).map(p => String(p["ID"] || ""));
 }
 
-function doGet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+// ── TG NOTIFICATION ────────────────────────────────────────
 
+function sendTelegramMessage(text) {
+  try {
+    const tg = getTGConfig();
+    if (!tg.token || !tg.chatId) return;
+    UrlFetchApp.fetch("https://api.telegram.org/bot" + tg.token + "/sendMessage", {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({ chat_id: tg.chatId, text, parse_mode: "HTML" }),
+      muteHttpExceptions: true,
+    });
+  } catch (e) {}
+}
+
+// ── doGet — САЙТ ЧИТАЄ КАТАЛОГ ─────────────────────────────
+
+function doGet() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("Товари");
 
-  if (!sheet) {
+  if (!sheet || sheet.getLastRow() <= 1) {
     return ContentService
-      .createTextOutput(
-        JSON.stringify({ products: [], dailyDeals: [] })
-      )
-      .setMimeType(
-        ContentService.MimeType.JSON
-      );
+      .createTextOutput(JSON.stringify({ products: [], dailyDeals: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 
   const lastRow = sheet.getLastRow();
   const lastCol = sheet.getLastColumn();
-
-  if (lastRow <= 1) {
-    return ContentService
-      .createTextOutput(
-        JSON.stringify({ products: [], dailyDeals: [] })
-      )
-      .setMimeType(
-        ContentService.MimeType.JSON
-      );
-  }
-
-  const data = sheet
-    .getRange(1, 1, lastRow, lastCol)
-    .getValues();
-
+  const data    = sheet.getRange(1, 1, lastRow, lastCol).getValues();
   const headers = data.shift();
 
   const products = data
     .filter(r => r[0])
     .map(r => {
       const obj = {};
-
-      headers.forEach((h, i) => {
-        obj[h] = r[i];
-      });
-
+      headers.forEach((h, i) => { obj[h] = r[i]; });
       return obj;
     });
 
-  const dailyDeals = _getDailyDealIds(products, 3);
-
   return ContentService
-    .createTextOutput(
-      JSON.stringify({ products, dailyDeals })
-    )
-    .setMimeType(
-      ContentService.MimeType.JSON
-    );
+    .createTextOutput(JSON.stringify({ products, dailyDeals: _getDailyDealIds(products, 3) }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
+
+// ── doPost — ЗАМОВЛЕННЯ / ВІДГУКИ ──────────────────────────
 
 function doPost(e) {
   try {
-    // ── ДІАГНОСТИКА: видно у Apps Script → Executions ──────────────
-    console.log("Отримані дані:", e.postData.contents);
-
     const data = JSON.parse(e.postData.contents);
-
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss   = SpreadsheetApp.getActiveSpreadsheet();
 
     if (data.action === "new_order") {
       const sheet = ss.getSheetByName("Orders");
-
       const totalFormatted = typeof data.total === "number"
-        ? data.total + " ₴"
-        : String(data.total || "");
+        ? data.total + " ₴" : String(data.total || "");
 
-      // ── Явна перевірка поля items ───────────────────────────────
-      const hasItems = data.items && String(data.items).trim().length > 0;
-      const itemsFormatted = hasItems
-        ? String(data.items)
-            .split("\n")
-            .filter(Boolean)
-            .map(line => "  · " + line)
-            .join("\n")
-        : null;
-
-      const utm = data.utm || null;
       sheet.appendRow([
-        new Date(),
-        data.fio     || "",
-        "'" + (data.phone || ""),
-        data.city    || "",
-        data.delivery|| "",
-        hasItems ? data.items : "⚠️ items відсутні",
-        totalFormatted,
-        data.promo   || "",
-        "Нове",
-        utm ? (utm.source   || "") : "",
-        utm ? (utm.campaign || "") : "",
-        utm ? (utm.video    || "") : ""
+        new Date(), data.fio || "", "'" + (data.phone || ""),
+        data.city || "", data.delivery || "",
+        data.items || "", totalFormatted,
+        data.promo || "", "Нове",
+        (data.utm || {}).source   || "",
+        (data.utm || {}).campaign || "",
+        (data.utm || {}).video    || "",
       ]);
 
-      // Build per-supplier grouped TG message
-      const cartItems = (data.cart && Array.isArray(data.cart)) ? data.cart : [];
-      const groups = { 1: [], 2: [], 0: [] };
-      cartItems.forEach(item => {
-        const sup = parseInt(item.supplier) || 0;
-        groups[sup in groups ? sup : 0].push(item);
-      });
-      const supplierKeys = [1, 2, 0].filter(k => groups[k].length);
-      const multipleSuppliers = supplierKeys.length > 1;
+      const cartItems = Array.isArray(data.cart) ? data.cart : [];
+      let itemsBlock = cartItems.map(item =>
+        "  · " + [item.brand, item.name].filter(Boolean).join(" ") +
+        ", розмір " + item.size +
+        ((item.qty || 1) > 1 ? " × " + item.qty : "") +
+        (item.price ? " — " + item.price + "₴" : "")
+      ).join("\n") || (data.items || "");
 
-      let itemsBlock = "";
-      if (!cartItems.length) {
-        itemsBlock = itemsFormatted || "⚠️ <i>Помилка: назву товару не отримано</i>";
-      } else {
-        const labels = { 1: "📦 #1 General Stores", 2: "📦 #2 Babylon", 0: "❓ Невідомий постачальник" };
-        if (multipleSuppliers) itemsBlock += "⚠️ <b>ЗМІШАНЕ — " + supplierKeys.length + " відправки</b>\n\n";
-        supplierKeys.forEach(k => {
-          itemsBlock += "<b>" + labels[k] + ":</b>\n";
-          groups[k].forEach(item => {
-            const nameStr = (item.brand || "") + " " + (item.name || item.id);
-            const priceStr = item.price ? " — " + item.price + "₴" : "";
-            const qtyStr = (item.qty || 1) > 1 ? " × " + item.qty : "";
-            itemsBlock += "  · " + nameStr + ", розмір " + item.size + qtyStr + priceStr + "\n";
-          });
-          itemsBlock += "\n";
-        });
-      }
-
-      const utmFooter = utm && (utm.video || utm.source)
-        ? "\n📊 <b>Джерело:</b> video=" + (utm.video || "—") + ", src=" + (utm.source || "—") + ", campaign=" + (utm.campaign || "—")
+      const utmFooter = data.utm && (data.utm.video || data.utm.source)
+        ? "\n📊 video=" + (data.utm.video || "—") + ", src=" + (data.utm.source || "—")
         : "";
 
       sendTelegramMessage(
-        "🚀 <b>НОВЕ ЗАМОВЛЕННЯ</b>\n\n" +
-        "👟 <b>Товар:</b>\n" + itemsBlock +
-        "👤 <b>Ім'я:</b> "     + (data.fio      || "—") + "\n" +
-        "📞 <b>Тел:</b> "      + (data.phone    || "—") + "\n" +
-        "🏙 <b>Місто:</b> "    + (data.city     || "—") + "\n" +
-        "📦 <b>Доставка:</b> " + (data.delivery || "—") + "\n" +
-        "💰 <b>Сума:</b> "     + totalFormatted +
-        (data.promo ? "\n🎟 <b>Промокод:</b> " + data.promo : "") +
+        "🛍 <b>НОВЕ ЗАМОВЛЕННЯ [WOW.WEAR]</b>\n\n" +
+        "👗 <b>Товар:</b>\n" + itemsBlock + "\n\n" +
+        "👤 " + (data.fio || "—") + "\n" +
+        "📞 " + (data.phone || "—") + "\n" +
+        "🏙 " + (data.city || "—") + "\n" +
+        "📦 " + (data.delivery || "—") + "\n" +
+        "💰 " + totalFormatted +
+        (data.promo ? "\n🎟 " + data.promo : "") +
         utmFooter
       );
 
-      // Decrement sizes in master sheet + persist to Продано log
-      if (data.cart && Array.isArray(data.cart) && data.cart.length) {
-        autoRemoveOrderedSizes(ss, data.cart);
-        _logSoldSizes(ss, data.cart, data.phone || "");
+      if (cartItems.length) {
+        autoRemoveOrderedSizes(ss, cartItems);
+        _logSoldSizes(ss, cartItems, data.phone || "");
       }
     }
 
     if (data.action === "review") {
       let sheet = ss.getSheetByName("Відгуки");
-
       if (!sheet) {
         sheet = ss.insertSheet("Відгуки");
-
-        sheet.appendRow([
-          "Дата",
-          "Автор",
-          "Оцінка",
-          "Текст"
-        ]);
+        sheet.appendRow(["Дата", "Автор", "Оцінка", "Текст"]);
       }
-
-      sheet.appendRow([
-        new Date(),
-        data.author || "Анонім",
-        data.stars || 5,
-        data.text || ""
-      ]);
-
+      sheet.appendRow([new Date(), data.author || "Анонім", data.stars || 5, data.text || ""]);
       const stars = Math.min(5, Math.max(1, parseInt(data.stars) || 5));
       sendTelegramMessage(
-        "✍️ <b>НОВИЙ ВІДГУК</b>\n\n" +
-        "⭐".repeat(stars) + "\n\n" +
-        "👤 <b>Автор:</b> " + (data.author || "Анонім") + "\n" +
-        "💬 " + (data.text || "—")
+        "✍️ <b>ВІДГУК [WOW.WEAR]</b>\n" + "⭐".repeat(stars) + "\n" +
+        "👤 " + (data.author || "Анонім") + "\n" + (data.text || "—")
       );
     }
 
     if (data.action === "photo_request") {
       sendTelegramMessage(
-        "📸 ФОТО ЗАПИТ\n\n" +
-        (
-          data.product
-            ? data.product.brand +
-              " " +
-              data.product.name
-            : ""
-        ) +
-        "\n" +
-        (data.size || "")
+        "📸 ФОТО [WOW.WEAR]\n" +
+        (data.product ? (data.product.brand + " " + data.product.name) : "") +
+        "\nРозмір: " + (data.size || "—")
       );
     }
 
     return ContentService
-      .createTextOutput(
-        JSON.stringify({
-          status: "ok"
-        })
-      )
-      .setMimeType(
-        ContentService.MimeType.JSON
-      );
+      .createTextOutput(JSON.stringify({ status: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
 
   } catch (e) {
-    sendTelegramMessage(
-      "❌ " + e.message
-    );
-
+    sendTelegramMessage("❌ WOW.WEAR error: " + e.message);
     return ContentService
-      .createTextOutput(
-        JSON.stringify({
-          status: "error",
-          message: e.message
-        })
-      )
-      .setMimeType(
-        ContentService.MimeType.JSON
-      );
+      .createTextOutput(JSON.stringify({ status: "error", message: e.message }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
+// ── updateMasterDB — ОНОВЛЕННЯ КАТАЛОГУ ────────────────────
+
 function updateMasterDB() {
-  // P0-10: Use tryLock instead of waitLock to prevent concurrent double-writes
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(25000)) {
-    sendTelegramMessage("⚠️ updateMasterDB: lock не отримано, паралельний запуск — пропуск");
+    sendTelegramMessage("⚠️ WOW.WEAR: lock не отримано, пропуск");
     return 0;
   }
 
   try {
-    const masterSS =
-      SpreadsheetApp.getActiveSpreadsheet();
+    const masterSS    = SpreadsheetApp.getActiveSpreadsheet();
+    const masterSheet = masterSS.getSheetByName("Товари");
 
-    const masterSheet =
-      masterSS.getSheetByName("Товари");
-
-    masterSheet
-      .getRange(
-        1,
-        1,
-        1,
-        HEADERS.length
-      )
-      .setValues([HEADERS]);
+    masterSheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
 
     let products = [];
-    // P0-10: Track how many suppliers responded successfully
     let successfulSuppliers = 0;
 
     for (const supplier of SUPPLIERS) {
       try {
-        const ss =
-          SpreadsheetApp.openById(
-            supplier.id
-          );
-
+        const ss     = SpreadsheetApp.openById(supplier.id);
         const sheets = ss.getSheets();
         let supplierProducts = [];
 
         for (const sheet of sheets) {
-          const name = sheet.getName();
+          const name    = sheet.getName();
+          const lastRow = sheet.getLastRow();
+          const lastCol = sheet.getLastColumn();
+          if (!lastRow || !lastCol) continue;
 
-          if (shouldSkipSheet(name)) {
-            continue;
-          }
-
-          const lastRow =
-            sheet.getLastRow();
-
-          const lastCol =
-            sheet.getLastColumn();
-
-          if (!lastRow || !lastCol) {
-            continue;
-          }
-
-          const range = sheet.getRange(
-            1,
-            1,
-            lastRow,
-            lastCol
-          );
-
-          const rows = range.getValues();
-
+          const range    = sheet.getRange(1, 1, lastRow, lastCol);
+          const rows     = range.getValues();
           const formulas = range.getFormulas();
 
-          const parsed =
-            parseSupplierSheet(
-              rows,
-              formulas,
-              name,
-              supplier.gender
-            );
+          // Визначаємо формат таблиці по заголовку
+          const headerRow = rows[0].map(c => normalizeLower(String(c || "")));
+          const isAngells = headerRow.some(h => h.includes("найменування") || h.includes("наявн"));
 
-          if (parsed.length) {
-            supplierProducts =
-              supplierProducts.concat(parsed);
-          }
+          const parsed = isAngells
+            ? parseAngellsSheet(rows.slice(1), formulas.slice(1), supplier.gender, supplier.margin)
+            : parseGenericFashionSheet(rows, formulas, supplier.gender, supplier.margin);
+
+          if (parsed.length) supplierProducts = supplierProducts.concat(parsed);
         }
 
         if (supplierProducts.length > 0) {
           products = products.concat(supplierProducts);
           successfulSuppliers++;
         } else {
-          // Supplier returned 0 products — suspicious but not fatal
-          sendTelegramMessage(
-            "⚠️ Постачальник повернув 0 товарів: " + supplier.id
-          );
+          sendTelegramMessage("⚠️ WOW.WEAR: постачальник 0 товарів: " + supplier.id);
         }
 
-      } catch (e) {
-        sendTelegramMessage(
-          "❌ Supplier error\n" +
-          supplier.id +
-          "\n" +
-          e.message
-        );
+      } catch (err) {
+        sendTelegramMessage("❌ WOW.WEAR supplier error: " + supplier.id + "\n" + err.message);
       }
     }
 
+    // Дедуплікація
     const unique = new Map();
-
     for (const p of products) {
       const key = fingerprint(p);
-
-      if (!unique.has(key)) {
-        unique.set(key, p);
-      }
+      if (!unique.has(key)) unique.set(key, p);
     }
 
-    // Apply sold-size filter so manually decremented sizes survive the re-sync
-    const sold = getSoldSizes(masterSS);
+    // Виключити продані розміри
+    const sold         = getSoldSizes(masterSS);
     const finalProducts = applySoldFilter([...unique.values()], sold);
 
-    // P0-10: Safety gate — do NOT overwrite catalog if result looks wrong
     if (finalProducts.length < MIN_PRODUCTS_SAFETY) {
       sendTelegramMessage(
-        "⚠️ updateMasterDB: підозріло мало товарів (" +
-        finalProducts.length +
-        "), успішних постачальників: " +
-        successfulSuppliers +
-        ". Каталог НЕ перезаписано. Перевірте постачальників."
+        "⚠️ WOW.WEAR: підозріло мало товарів (" + finalProducts.length +
+        "), постачальників: " + successfulSuppliers + ". Каталог НЕ перезаписано."
       );
       return 0;
     }
 
-    // P0-10: Only clear AFTER we have a valid product set to write
-    const lastRow =
-      masterSheet.getLastRow();
-
-    if (lastRow > 1) {
-      masterSheet
-        .getRange(
-          2,
-          1,
-          lastRow - 1,
-          HEADERS.length
-        )
-        .clearContent();
-    }
+    const lastRow = masterSheet.getLastRow();
+    if (lastRow > 1) masterSheet.getRange(2, 1, lastRow - 1, HEADERS.length).clearContent();
 
     if (finalProducts.length) {
-      masterSheet
-        .getRange(
-          2,
-          1,
-          finalProducts.length,
-          HEADERS.length
-        )
-        .setValues(finalProducts);
+      masterSheet.getRange(2, 1, finalProducts.length, HEADERS.length).setValues(finalProducts);
     }
 
-    sendTelegramMessage(
-      "✅ Оновлено: " +
-      finalProducts.length +
-      " товарів (постачальників: " +
-      successfulSuppliers +
-      ")"
-    );
-
+    sendTelegramMessage("✅ WOW.WEAR оновлено: " + finalProducts.length + " товарів");
     return finalProducts.length;
 
   } finally {
@@ -927,68 +599,28 @@ function updateMasterDB() {
   }
 }
 
-function setupTrigger() {
-  ScriptApp
-    .getProjectTriggers()
-    .forEach(t => {
-      if (
-        t.getHandlerFunction() ===
-        "updateMasterDB"
-      ) {
-        ScriptApp.deleteTrigger(t);
-      }
-    });
+// ── ТРИГЕР — авто-оновлення кожні 3 години ─────────────────
 
-  ScriptApp
-    .newTrigger("updateMasterDB")
-    .timeBased()
-    .everyHours(2)
-    .create();
+function setupTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "updateMasterDB")
+    .forEach(t => ScriptApp.deleteTrigger(t));
+
+  ScriptApp.newTrigger("updateMasterDB").timeBased().everyHours(3).create();
 }
+
+// ── DEBUG ───────────────────────────────────────────────────
 
 function debugParser() {
   const supplier = SUPPLIERS[0];
+  const ss       = SpreadsheetApp.openById(supplier.id);
+  const sheet    = ss.getSheets()[0];
+  const lastRow  = sheet.getLastRow();
+  const lastCol  = sheet.getLastColumn();
+  const rows     = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+  const formulas = sheet.getRange(1, 1, lastRow, lastCol).getFormulas();
 
-  const ss =
-    SpreadsheetApp.openById(
-      supplier.id
-    );
-
-  const sheet = ss.getSheets()[0];
-
-  const lastRow =
-    sheet.getLastRow();
-
-  const lastCol =
-    sheet.getLastColumn();
-
-  const rows = sheet
-    .getRange(
-      1,
-      1,
-      lastRow,
-      lastCol
-    )
-    .getValues();
-
-  const formulas = sheet
-    .getRange(
-      1,
-      1,
-      lastRow,
-      lastCol
-    )
-    .getFormulas();
-
-  const parsed =
-    parseSupplierSheet(
-      rows,
-      formulas,
-      sheet.getName(),
-      supplier.gender
-    );
-
-  Logger.log(
-    JSON.stringify(parsed.slice(0, 20))
-  );
+  const parsed = parseAngellsSheet(rows.slice(1), formulas.slice(1), supplier.gender, supplier.margin);
+  Logger.log("Знайдено товарів: " + parsed.length);
+  Logger.log(JSON.stringify(parsed.slice(0, 10)));
 }

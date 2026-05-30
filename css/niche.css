@@ -1,0 +1,237 @@
+/* ============================================================
+   WOW.WEAR — NICHE THEME
+   Mood: Editorial Fashion — Clean, Minimal, Aesthetic
+   Ref:  Zara · COS · Arket · ASOS · Pinterest fashion
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0b0c0e;
+  --bg2:       #111317;
+  --bg3:       #16181d;
+  --bg4:       #1b1e24;
+  --bg5:       #20242b;
+  --bg-glass:  rgba(11,12,14,0.94);
+  --bg-card:   #101214;
+
+  --text:       #f0ede8;
+  --text-dim:   rgba(240,237,232,0.58);
+  --text-muted: rgba(240,237,232,0.30);
+
+  --accent:      #a8b89a;
+  --accent-inv:  #0b0c0e;
+  --red:         #a8b89a;
+  --red-dim:     rgba(168,184,154,0.10);
+  --red-glow:    rgba(168,184,154,0.20);
+  --orange:      #c4956a;
+  --green:       #a8b89a;
+  --gold:        #c4956a;
+
+  --border:        rgba(255,255,255,0.06);
+  --border-hover:  rgba(255,255,255,0.11);
+  --border-accent: rgba(168,184,154,0.22);
+
+  --shadow-sm:   0 1px 6px  rgba(0,0,0,0.52);
+  --shadow:      0 4px 24px rgba(0,0,0,0.62);
+  --shadow-lg:   0 8px 56px rgba(0,0,0,0.74);
+  --shadow-red:  0 6px 28px rgba(168,184,154,0.20);
+  --shadow-card: 0 2px 14px rgba(0,0,0,0.52);
+  --shadow-card-hover: 0 8px 40px rgba(0,0,0,0.68), 0 0 0 1px rgba(168,184,154,0.13);
+  --shadow-glow: 0 0 0 1px rgba(255,255,255,0.04);
+
+  --niche-font:      'Playfair Display', Georgia, serif;
+  --niche-font-body: 'DM Sans', -apple-system, sans-serif;
+  --grain-opacity: 0.030;
+}
+
+body {
+  background: var(--bg) !important;
+  font-family: var(--niche-font-body);
+}
+
+@media (min-width: 481px) {
+  body::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(168,184,154,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 55% at 15% 90%, rgba(196,149,106,0.04) 0%, transparent 52%),
+      #080909 !important;
+    background-color: #080909 !important;
+  }
+  #app-root {
+    background: var(--bg) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 120px rgba(0,0,0,0.75) !important;
+  }
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.home-hero {
+  background: linear-gradient(170deg,
+    rgba(168,184,154,0.06) 0%,
+    rgba(168,184,154,0.02) 50%,
+    transparent 100%) !important;
+  padding: 32px 16px 24px !important;
+}
+.home-hero::before {
+  background: radial-gradient(circle, rgba(168,184,154,0.10) 0%, transparent 65%) !important;
+}
+.home-hero::after {
+  background: radial-gradient(circle, rgba(196,149,106,0.04) 0%, transparent 60%) !important;
+}
+
+.home-greeting {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 3.5px !important;
+  text-transform: uppercase !important;
+  color: var(--accent) !important;
+  opacity: 1 !important;
+  margin-bottom: 10px !important;
+}
+
+.home-title {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  font-size: clamp(30px, 9vw, 46px) !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.10 !important;
+  color: var(--text) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
+
+.home-counter-chip {
+  background: rgba(168,184,154,0.07) !important;
+  border-color: rgba(168,184,154,0.18) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+}
+.live-dot { background: var(--accent) !important; }
+
+/* ── SECTION TITLES ───────────────────────────────────────── */
+.sec-title {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  font-size: 22px !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ── HEADER/NAV ───────────────────────────────────────────── */
+#header {
+  background: rgba(11,12,14,0.96) !important;
+  border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+.header-logo {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic !important;
+  letter-spacing: 0.01em !important;
+}
+
+#bottom-nav {
+  background: rgba(11,12,14,0.96) !important;
+  border-top-color: rgba(255,255,255,0.05) !important;
+}
+.nav-item.active { color: var(--accent) !important; }
+.nav-item.active .nav-icon::after { background: var(--accent) !important; }
+
+/* ── CARDS ────────────────────────────────────────────────── */
+.product-card {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+.product-card:hover {
+  box-shadow: var(--shadow-card-hover) !important;
+  border-color: rgba(168,184,154,0.13) !important;
+}
+.card-img-wrap { background: #0e0f11 !important; }
+
+/* ── CHIPS ────────────────────────────────────────────────── */
+.niche-fam-chip {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.3px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+.niche-fam-chip.active {
+  background: rgba(168,184,154,0.11) !important;
+  border-color: rgba(168,184,154,0.32) !important;
+  color: var(--accent) !important;
+}
+
+/* ── CHECKOUT / CART ──────────────────────────────────────── */
+.cart-checkout-btn {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+}
+#cart-sticky-bar { background: var(--accent) !important; color: var(--bg) !important; }
+
+.cod-banner {
+  background: rgba(168,184,154,0.07) !important;
+  border-color: rgba(168,184,154,0.20) !important;
+  color: var(--accent) !important;
+}
+
+/* ── SIZE/PRICE ───────────────────────────────────────────── */
+.size-chip.active  { background: var(--accent) !important; border-color: var(--accent) !important; color: var(--bg) !important; }
+.range-track-fill  { background: var(--accent) !important; }
+.price-range-thumb { background: var(--accent) !important; }
+
+/* ── BADGE ────────────────────────────────────────────────── */
+.badge-hot  { background: rgba(196,149,106,0.18) !important; color: #c4956a !important; }
+.badge-new  { background: rgba(168,184,154,0.15) !important; color: var(--accent) !important; }
+.badge-sale { background: rgba(196,149,106,0.15) !important; color: #c4956a !important; }
+
+/* ── SHEETS ───────────────────────────────────────────────── */
+.sheet { background: var(--bg2) !important; border-top-color: rgba(255,255,255,0.06) !important; }
+.sh-handle { background: rgba(255,255,255,0.10) !important; }
+
+/* ── BRAND CHIP ───────────────────────────────────────────── */
+.brand-chip { background: var(--bg3) !important; border-color: rgba(255,255,255,0.05) !important; }
+
+/* ── SPLASH ───────────────────────────────────────────────── */
+#splash { background: #0b0c0e !important; }
+
+/* ── INPUTS ───────────────────────────────────────────────── */
+.form-inp, .checkout-input {
+  background: var(--bg3) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: var(--text) !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+.form-inp:focus, .checkout-input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(168,184,154,0.12) !important;
+}
+
+.size-btn.active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--bg) !important;
+}
+
+.wow-marquee-item { color: rgba(255,255,255,0.18) !important; }
+
+/* ── FASHION DROP TAG ─────────────────────────────────────── */
+.home-hero .drop-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(168,184,154,0.08);
+  border: 1px solid rgba(168,184,154,0.22);
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-bottom: 12px;
+}

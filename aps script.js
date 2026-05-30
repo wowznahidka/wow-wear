@@ -517,11 +517,13 @@ function doPost(e) {
 
     if (data.action === "upsert_product") {
       const sheet    = ss.getSheetByName("Товари") || ss.insertSheet("Товари");
+      if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
       const lastRow  = sheet.getLastRow();
       const idCol    = HEADERS.indexOf("ID") + 1;
       const nameCol  = HEADERS.indexOf("Назва") + 1;
       const photoCol = HEADERS.indexOf("Фото") + 1;
       const sizesCol = HEADERS.indexOf("Розміри") + 1;
+      const tgCol    = HEADERS.indexOf("TG") + 1;
 
       const inArticle = normalize(String(data.article || '')).toLowerCase();
       const inName    = normalize(String(data.name    || '')).toLowerCase();
@@ -544,7 +546,7 @@ function doPost(e) {
       }
 
       if (found > 0) {
-        // Оновити фото, розміри, опис
+        // Оновити фото, розміри, опис, tg_link
         if (data.photo) sheet.getRange(found, photoCol).setValue(data.photo);
         if (data.sizes) {
           const curSizes = sheet.getRange(found, sizesCol).getValue();
@@ -555,6 +557,7 @@ function doPost(e) {
           const curDesc = sheet.getRange(found, descCol).getValue();
           if (!curDesc) sheet.getRange(found, descCol).setValue(data.description);
         }
+        if (data.tg_link) sheet.getRange(found, tgCol).setValue(data.tg_link);
       } else {
         // Новий товар — додати рядок
         const newRow = new Array(HEADERS.length).fill('');
@@ -685,35 +688,49 @@ function updateMasterDB() {
       return 0;
     }
 
-    // ── ЗБЕРІГАЄМО ФОТО перед перезаписом ──────────────────
-    // Щоб фото з Telegraph не зникали після кожної синхронізації
-    const photoCache = {}; // { id_or_name_key → photo_url }
-    const idColIdx   = HEADERS.indexOf("ID");
-    const nameColIdx = HEADERS.indexOf("Назва");
+    // ── ЗБЕРІГАЄМО ФОТО, TG-ПОСИЛАННЯ І ОПИСИ перед перезаписом ──
     const photoColIdx = HEADERS.indexOf("Фото");
+    const tgColIdx    = HEADERS.indexOf("TG");
+    const descColIdx  = HEADERS.indexOf("Опис");
+    const idColIdx    = HEADERS.indexOf("ID");
+    const nameColIdx  = HEADERS.indexOf("Назва");
+
+    const photoCache = {};
+    const tgCache    = {};
+    const descCache  = {};
 
     const existingLastRow = masterSheet.getLastRow();
     if (existingLastRow > 1) {
       const existingData = masterSheet.getRange(2, 1, existingLastRow - 1, HEADERS.length).getValues();
       for (const row of existingData) {
-        const photo = String(row[photoColIdx] || '').trim();
-        if (!photo) continue;
         const id   = String(row[idColIdx]   || '').toLowerCase().trim();
         const name = String(row[nameColIdx] || '').toLowerCase().trim().substring(0, 15);
-        if (id)   photoCache[id]   = photo;
-        if (name) photoCache[name] = photo;
+        const photo = String(row[photoColIdx] || '').trim();
+        const tg    = String(row[tgColIdx]    || '').trim();
+        const desc  = String(row[descColIdx]  || '').trim();
+        ['id', 'name'].forEach(k => {
+          const key = k === 'id' ? id : name;
+          if (!key) return;
+          if (photo) photoCache[key] = photo;
+          if (tg)    tgCache[key]    = tg;
+          if (desc)  descCache[key]  = desc;
+        });
       }
     }
 
     // Перезаписуємо каталог
     if (existingLastRow > 1) masterSheet.getRange(2, 1, existingLastRow - 1, HEADERS.length).clearContent();
 
-    // Відновлюємо фото в нових рядках
+    // Відновлюємо фото, tg_link і опис в нових рядках
     for (const p of finalProducts) {
       const id   = String(p[idColIdx]   || '').toLowerCase().trim();
       const name = String(p[nameColIdx] || '').toLowerCase().trim().substring(0, 15);
       const savedPhoto = photoCache[id] || photoCache[name] || '';
+      const savedTg    = tgCache[id]    || tgCache[name]    || '';
+      const savedDesc  = descCache[id]  || descCache[name]  || '';
       if (savedPhoto && !p[photoColIdx]) p[photoColIdx] = savedPhoto;
+      if (savedTg    && !p[tgColIdx])   p[tgColIdx]    = savedTg;
+      if (savedDesc  && !p[descColIdx]) p[descColIdx]  = savedDesc;
     }
 
     if (finalProducts.length) {

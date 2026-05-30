@@ -44,16 +44,24 @@ function prodCardHtml(p, opts = {}) {
   const pct     = discPct(p);
   const gridCls = grid ? ' grid-card' : '';
 
+  const isLingerie = p.id && /^DO/i.test(String(p.id));
+  const placeholder = isLingerie ? '🩱' : '👗';
   const imgPart = p.image && p.image.startsWith('http')
     ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
          loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')">`
-    : `<div class="card-img-placeholder" aria-hidden="true">👗</div>`;
+    : `<div class="card-img-placeholder" aria-hidden="true">${placeholder}</div>`;
 
+  const hasSale  = p.oldPrice && p.oldPrice > p.price && pct >= 10;
+  const isHot    = !p.isNew && !hasSale && !low && pct === 0 && p.price >= 890;
   const badgePart = p.isNew
-    ? `<div class="prod-badge badge-new">NEW</div>`
-    : low
-      ? `<div class="prod-badge badge-low">LAST</div>`
-      : '';
+    ? `<div class="prod-badge badge-new">✨ НОВЕ</div>`
+    : hasSale
+      ? `<div class="prod-badge badge-sale">🔥 -${pct}%</div>`
+      : low
+        ? `<div class="prod-badge badge-low">⚡ LAST</div>`
+        : isHot
+          ? `<div class="prod-badge badge-hot">🔥 ХІТ</div>`
+          : '';
 
   const pricePart = p.oldPrice && p.oldPrice > p.price
     ? `${p.price}₴<span class="prod-card-old">${p.oldPrice}₴</span>${pct > 0 ? `<span class="prod-card-disc">-${pct}%</span>` : ''}`

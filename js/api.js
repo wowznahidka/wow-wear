@@ -233,40 +233,40 @@ function _injectTTPixel() {
 // ── DEMO DATA (cold-start fallback) ──────────────── */
 function getDemoProducts(gender) {
   const gLabel = gender === 'female' ? 'Жінка' : 'Чоловік';
-  const brands = gender === 'female'
-    ? ['Nike','Adidas','New Balance','Puma','Vans']
-    : ['Nike','Adidas','New Balance','Asics','Jordan'];
-  const models = {
-    Nike:          ['Air Max 270','Air Force 1','React Infinity','Pegasus 40'],
-    Adidas:        ['Samba OG','Forum Low','Gazelle','Stan Smith'],
-    'New Balance': ['9060','574','530','2002R'],
-    Asics:         ['Gel-NYC','Gel-Kayano','Gel-1090','Nimbus 26'],
-    Jordan:        ['Air Jordan 1','Jordan 4','Jordan 11','Jordan 3'],
-    Puma:          ['Suede Classic','RS-X','Mayze','Cali'],
-    Vans:          ['Old Skool','Sk8-Hi','Era','Authentic'],
-  };
+  const items = gender === 'female' ? [
+    { brand:'Angells', name:'Базовий кроп топ' },
+    { brand:'Angells', name:'Плаття міді' },
+    { brand:'Angells', name:'Спортивний костюм' },
+    { brand:'Angells', name:'Худі oversize' },
+    { brand:'Angells', name:'Джинси mom fit' },
+    { brand:'Angells', name:'Сукня міді' },
+    { brand:'Angells', name:'Боді пуш апп' },
+    { brand:'Angells', name:'Костюм топ + легінси' },
+  ] : [
+    { brand:'', name:'Футболка базова' },
+    { brand:'', name:'Джогери спортивні' },
+    { brand:'', name:'Худі з принтом' },
+    { brand:'', name:'Спортивний костюм' },
+    { brand:'', name:'Шорти' },
+  ];
   const sizeBase = gender === 'female'
-    ? [36,37,38,39,40,41]
-    : [40,41,42,43,44,45];
-  const prods = [];
-  let idNum = 1;
-  brands.forEach(brand => {
-    (models[brand] || []).forEach(model => {
-      const avail = sizeBase.filter(() => Math.random() > .3).slice(0, Math.floor(Math.random()*5)+1);
-      if (!avail.length) avail.push(sizeBase[0]);
-      prods.push({
-        id:       `demo_${idNum++}`,
-        brand,    name: model,
-        price:    Math.round((Math.random()*2000+1500)/50)*50,
-        oldPrice: Math.random() > .5 ? Math.round((Math.random()*2500+2000)/50)*50 : 0,
-        image:    '',
-        sizes:    avail,
-        isNew:    Math.random() > .7,
-        gender:   gLabel,
-      });
-    });
+    ? ['XS','S','M','L','XL']
+    : ['S','M','L','XL','XXL'];
+  return items.map((item, i) => {
+    const avail = sizeBase.filter(() => Math.random() > .3);
+    if (!avail.length) avail.push(sizeBase[1]);
+    return {
+      id:       `demo_${i+1}`,
+      brand:    item.brand,
+      name:     item.name,
+      price:    Math.round((Math.random()*400+600)/50)*50,
+      oldPrice: 0,
+      image:    '',
+      sizes:    avail,
+      isNew:    i < 3,
+      gender:   gLabel,
+    };
   });
-  return prods;
 }
 
 // ── SHARE / DEEP LINK ─────────────────────────────── */

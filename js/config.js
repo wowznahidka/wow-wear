@@ -1,6 +1,6 @@
 ﻿const CFG = {
   GAS_URL:  'https://script.google.com/macros/s/AKfycbzif18Ohhvp2TANIKKMtBlyJ7OuHspVeuCctJ02Iyytp0A_cBOuYKIIJ88nwpfpQ/exec',
-  TG_URL:   'https://t.me/wowwear',
+  TG_URL:   'https://t.me/wowwea',
   IG_URL:   'https://instagram.com/wow.wear',
   TT_URL:   'https://www.tiktok.com/@wowwear',
   GA_ID:    '',

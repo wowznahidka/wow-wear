@@ -27,6 +27,9 @@ window.addEventListener('DOMContentLoaded', () => {
   _injectPixel();
   _injectTTPixel();
 
+  // ── REFERRAL ────────────────────────────────── */
+  try { REF.captureIncoming(); REF.initBlock(); } catch(_) {}
+
   // ── UTM ATTRIBUTION ──────────────────────────── */
   (function() {
     const p = new URLSearchParams(location.search);

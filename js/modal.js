@@ -107,6 +107,10 @@ function selectSize(sz) {
 function requestPhoto() {
   if (!S.spProduct) return;
   const p = S.spProduct;
+  if (p.tgLink) {
+    openTgLink(p.tgLink);
+    return;
+  }
   const szText = S.spSelectedSize ? `Розмір: ${S.spSelectedSize}` : 'Розмір: уточнимо';
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
   const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n${szText}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
@@ -149,6 +153,10 @@ function confirmSize() {
 function _pdPhotoTg() {
   const p = S.pdProduct;
   if (!p) return;
+  if (p.tgLink) {
+    openTgLink(p.tgLink);
+    return;
+  }
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
   const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
   postData({ action: 'photo_request', product: p, size: null });

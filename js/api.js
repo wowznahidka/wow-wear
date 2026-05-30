@@ -102,6 +102,7 @@ function normalizeProduct(p) {
     isNew:    Boolean(p['Нове']  || p['нове']   || p.is_new || p.isNew),
     gender:   String(p['Стать']  || p['стать']  || p.gender || p.Gender || ''),
     supplier: Number(p['Постачальник'] || p.supplier || detectSupplier(sizesRaw)),
+    tgLink:   String(p['TG'] || p['tg_link'] || ''),
   };
 }
 

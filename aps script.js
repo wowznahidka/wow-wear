@@ -652,7 +652,7 @@ function updateMasterDB() {
     }
 
     // Виключити продані розміри
-    const sold         = getSoldSizes(masterSS);
+    const sold          = getSoldSizes(masterSS);
     const finalProducts = applySoldFilter([...unique.values()], sold);
 
     if (finalProducts.length < MIN_PRODUCTS_SAFETY) {
@@ -663,14 +663,46 @@ function updateMasterDB() {
       return 0;
     }
 
-    const lastRow = masterSheet.getLastRow();
-    if (lastRow > 1) masterSheet.getRange(2, 1, lastRow - 1, HEADERS.length).clearContent();
+    // ── ЗБЕРІГАЄМО ФОТО перед перезаписом ──────────────────
+    // Щоб фото з Telegraph не зникали після кожної синхронізації
+    const photoCache = {}; // { id_or_name_key → photo_url }
+    const idColIdx   = HEADERS.indexOf("ID");
+    const nameColIdx = HEADERS.indexOf("Назва");
+    const photoColIdx = HEADERS.indexOf("Фото");
+
+    const existingLastRow = masterSheet.getLastRow();
+    if (existingLastRow > 1) {
+      const existingData = masterSheet.getRange(2, 1, existingLastRow - 1, HEADERS.length).getValues();
+      for (const row of existingData) {
+        const photo = String(row[photoColIdx] || '').trim();
+        if (!photo) continue;
+        const id   = String(row[idColIdx]   || '').toLowerCase().trim();
+        const name = String(row[nameColIdx] || '').toLowerCase().trim().substring(0, 15);
+        if (id)   photoCache[id]   = photo;
+        if (name) photoCache[name] = photo;
+      }
+    }
+
+    // Перезаписуємо каталог
+    if (existingLastRow > 1) masterSheet.getRange(2, 1, existingLastRow - 1, HEADERS.length).clearContent();
+
+    // Відновлюємо фото в нових рядках
+    for (const p of finalProducts) {
+      const id   = String(p[idColIdx]   || '').toLowerCase().trim();
+      const name = String(p[nameColIdx] || '').toLowerCase().trim().substring(0, 15);
+      const savedPhoto = photoCache[id] || photoCache[name] || '';
+      if (savedPhoto && !p[photoColIdx]) p[photoColIdx] = savedPhoto;
+    }
 
     if (finalProducts.length) {
       masterSheet.getRange(2, 1, finalProducts.length, HEADERS.length).setValues(finalProducts);
     }
 
-    sendTelegramMessage("✅ WOW.WEAR оновлено: " + finalProducts.length + " товарів");
+    const withPhotos = finalProducts.filter(p => p[photoColIdx]).length;
+    sendTelegramMessage(
+      "✅ WOW.WEAR оновлено: " + finalProducts.length + " товарів" +
+      (withPhotos ? " · 📸 " + withPhotos + " з фото" : " · фото ще немає (запусти парсер)")
+    );
     return finalProducts.length;
 
   } finally {

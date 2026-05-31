@@ -11,10 +11,11 @@
      • >0px when viewport  > 480px → element auto-centers at 480px (desktop)
    No transform needed, so no conflict with translateY animations on sheets.
 */
-:root { --half-max: 240px; --half-inset: 228px; } /* 480/2 and (480-24)/2 */
-@media (min-width: 640px) { :root { --half-max: 300px; --half-inset: 288px; } } /* 600/2 */
+:root { --half-max: 240px; --half-inset: 228px; }
+@media (min-width: 640px)  { :root { --half-max: 300px; --half-inset: 288px; } }
+@media (min-width: 1024px) { :root { --half-max: 640px; --half-inset: 616px; } }
 
-body { background: #f0f0f2; }
+body { background: #EDE8DF; }
 
 @media (min-width: 481px) {
   body {
@@ -23,9 +24,9 @@ body { background: #f0f0f2; }
   body::before {
     content: ''; position: fixed; inset: 0; z-index: -1;
     background:
-      radial-gradient(ellipse 55% 65% at 20% 40%, rgba(255,69,0,0.04) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 50% at 80% 70%, rgba(0,113,227,0.03) 0%, transparent 50%),
-      #f0f0f2;
+      radial-gradient(ellipse 55% 65% at 20% 40%, rgba(155,89,182,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 80% 70%, rgba(155,89,182,0.03) 0%, transparent 50%),
+      #EDE8DF;
   }
   #app-root {
     max-width: var(--max-w); width: 100%; min-height: 100vh;
@@ -87,46 +88,64 @@ body { background: #f0f0f2; }
 .nav-icon { font-size: 22px; line-height: 1; }
 .nav-item.active { color: var(--text); }
 .nav-item.active .nav-icon {
-  filter: drop-shadow(0 0 7px rgba(255,51,82,.55));
+  filter: drop-shadow(0 0 7px rgba(155,89,182,.55));
 }
 .nav-item.active::before {
   content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
   width: 28px; height: 2.5px; background: var(--red);
   border-radius: 0 0 3px 3px;
-  box-shadow: 0 0 8px rgba(255,51,82,.5);
+  box-shadow: 0 0 8px rgba(155,89,182,.5);
 }
 
-/* -- GENDER BAR -- fixed, below bottom nav -------- */
-#gender-toggle {
-  position: fixed;
-  bottom: var(--safe-bottom);
-  left: max(0px, calc(50% - var(--half-max)));
-  right: max(0px, calc(50% - var(--half-max)));
-  z-index: var(--z-gender);
-  height: var(--gender-h);
-  display: flex; align-items: center;
-  gap: 6px; padding: 0 10px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
+/* ── GENDER TOGGLE — Apple Segmented Control ───── */
+#gender-toggle { display: none; }
+.gender-pill {
+  position: relative; display: flex;
+  background: var(--bg3);
+  border-radius: var(--r-full); padding: 3px;
+  border: 1px solid var(--border); width: 320px;
+}
+.gender-slider {
+  position: absolute; top: 3px; bottom: 3px; left: 3px;
+  width: calc(33.333% - 2px);
+  background: linear-gradient(135deg, #1560d4, #4a9eff);
+  border-radius: var(--r-full);
+  box-shadow: 0 2px 12px rgba(74,158,255,0.35);
+  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+  pointer-events: none; z-index: 0;
+}
+#gender-toggle[data-active="male"] .gender-slider {
+  transform: translateX(0%);
+  background: linear-gradient(135deg, #1560d4, #4a9eff);
+  box-shadow: 0 2px 12px rgba(21,96,212,0.35);
+}
+#gender-toggle[data-active="female"] .gender-slider {
+  transform: translateX(100%);
+  background: linear-gradient(135deg, #c41a5a, #ff4080);
+  box-shadow: 0 2px 12px rgba(255,64,128,0.35);
+}
+#gender-toggle[data-active="mixed"] .gender-slider {
+  transform: translateX(200%);
+  background: linear-gradient(135deg, #1a6e1a, #2eb82e);
+  box-shadow: 0 2px 12px rgba(46,184,46,0.28);
 }
 .g-btn {
-  flex: 1; height: 32px;
-  border-radius: var(--r-full);
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  font-size: 12px; font-weight: 700; cursor: pointer;
-  background: transparent; border: 1.5px solid transparent;
-  color: var(--text-muted); transition: all .18s ease;
-  white-space: nowrap;
+  flex: 1; position: relative; z-index: 1;
+  padding: 7px 12px 6px; border-radius: var(--r-full);
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  transition: color var(--t-base);
 }
-.g-btn:active { transform: scale(.93); }
-.g-btn.active {
-  background: var(--text); color: var(--accent-inv);
-  border-color: var(--text);
+.g-lbl {
+  font-size: 12px; font-weight: 700; color: var(--text-muted);
+  white-space: nowrap; transition: color var(--t-base); line-height: 1.3;
 }
-.g-lbl { font-size: 12px; font-weight: 700; }
-.g-cnt { font-size: 10px; font-weight: 600; opacity: .7; }
-.g-cnt.vis { opacity: 1; }
+.g-cnt {
+  font-size: 9px; font-weight: 700; color: var(--text-muted);
+  opacity: 0; transition: opacity var(--t-base); letter-spacing: .2px;
+}
+.g-cnt.vis { opacity: .7; }
+.g-btn.active .g-lbl { color: #fff; font-weight: 800; }
+.g-btn.active .g-cnt { color: rgba(255,255,255,0.8); opacity: .8; }
 
 /* ── PAGES ─────────────────────────────────────── */
 #pages {
@@ -175,12 +194,12 @@ body { background: #f0f0f2; }
   position: relative; overflow: hidden;
   background: linear-gradient(180deg, var(--bg2) 0%, transparent 100%);
 }
-/* Ambient colour orbs — give the hero a living, breathing feel */
+/* Ambient lavender orbs — luxury parfum feel */
 .home-hero::before {
   content: '';
   position: absolute; top: -80px; left: -60px;
   width: 260px; height: 260px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,51,82,.07) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(155,89,182,.08) 0%, transparent 70%);
   animation: heroOrbA 10s ease-in-out infinite;
   pointer-events: none;
 }
@@ -188,15 +207,16 @@ body { background: #f0f0f2; }
   content: '';
   position: absolute; top: 0; right: -50px;
   width: 200px; height: 200px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,113,227,.055) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(155,89,182,.05) 0%, transparent 70%);
   animation: heroOrbB 14s ease-in-out infinite;
   pointer-events: none;
 }
 .home-greeting { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; position: relative; z-index: 1; }
 .home-title {
-  font-size: clamp(26px, 8vw, 36px); font-weight: 900; line-height: 1.12; letter-spacing: -.4px;
+  font-size: clamp(24px, 7vw, 32px); font-weight: 700; line-height: 1.18; letter-spacing: -.3px;
+  font-family: Georgia, 'Times New Roman', serif;
   position: relative; z-index: 1;
-  background: linear-gradient(135deg, #1d1d1f 0%, #1d1d1f 50%, #d42840 100%);
+  background: linear-gradient(135deg, #1d1d1f 0%, #4a1a6b 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -426,8 +446,8 @@ body { background: #f0f0f2; }
 
 .size-filter-wrap { padding: 0 16px 8px; }
 .size-filter-label {
-  font-size: 10px; font-weight: 800; color: var(--text-muted);
-  text-transform: uppercase; letter-spacing: .8px; margin-bottom: 7px;
+  font-size: 11px; font-weight: 700; color: var(--red);
+  letter-spacing: .5px; margin-bottom: 8px;
 }
 .size-chips-row {
   display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
@@ -444,8 +464,8 @@ body { background: #f0f0f2; }
 }
 .sz-chip:active { transform: scale(.92); }
 .sz-chip.on {
-  background: var(--text); border-color: var(--text); color: var(--accent-inv);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  background: var(--red); border-color: var(--red); color: #fff;
+  box-shadow: 0 3px 14px rgba(155,89,182,0.35);
 }
 .sz-clear {
   min-width: 36px; height: 36px; border-radius: var(--r-sm); flex-shrink: 0;

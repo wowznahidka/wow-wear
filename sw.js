@@ -18,22 +18,23 @@ self.addEventListener('activate', e => {
 function _networkFirst(e, timeout) {
   return new Promise(resolve => {
     let settled = false;
+    const _fallback = () =>
+      caches.match(e.request).then(r => resolve(r || Response.error()));
     const timer = setTimeout(() => {
-      if (!settled) { settled = true; caches.match(e.request).then(resolve); }
+      if (!settled) { settled = true; _fallback(); }
     }, timeout);
     fetch(e.request).then(res => {
       clearTimeout(timer);
       if (!settled) {
         settled = true;
         if (res && res.ok) {
-          const clone = res.clone();
-          caches.open(C).then(c => c.put(e.request, clone));
+          caches.open(C).then(c => c.put(e.request, res.clone()));
         }
-        resolve(res);
+        resolve(res || Response.error());
       }
     }).catch(() => {
       clearTimeout(timer);
-      if (!settled) { settled = true; caches.match(e.request).then(resolve); }
+      if (!settled) { settled = true; _fallback(); }
     });
   });
 }
@@ -45,7 +46,7 @@ function _staleWhileRevalidate(e) {
         if (res && res.ok) cache.put(e.request, res.clone());
         return res;
       }).catch(() => null);
-      return cached || fresh;
+      return cached || fresh || Promise.resolve(Response.error());
     })
   );
 }

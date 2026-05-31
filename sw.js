@@ -1,4 +1,4 @@
-const C = 'wow-wear-v2';
+const C = 'wow-wear-v3';
 const SHELL = ['/'];
 
 self.addEventListener('install', e => {
@@ -9,85 +9,60 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(ks =>
-      Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))
-    )
+      Promise.all(ks.map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
-
-function _networkFirst(e, timeout) {
-  return new Promise(resolve => {
-    let settled = false;
-    const _fallback = () =>
-      caches.match(e.request).then(r => resolve(r || Response.error()));
-    const timer = setTimeout(() => {
-      if (!settled) { settled = true; _fallback(); }
-    }, timeout);
-    fetch(e.request).then(res => {
-      clearTimeout(timer);
-      if (!settled) {
-        settled = true;
-        if (res && res.ok) {
-          caches.open(C).then(c => c.put(e.request, res.clone()));
-        }
-        resolve(res || Response.error());
-      }
-    }).catch(() => {
-      clearTimeout(timer);
-      if (!settled) { settled = true; _fallback(); }
-    });
-  });
-}
-
-function _staleWhileRevalidate(e) {
-  return caches.open(C).then(cache =>
-    cache.match(e.request).then(cached => {
-      const fresh = fetch(e.request).then(res => {
-        if (res && res.ok) cache.put(e.request, res.clone());
-        return res;
-      }).catch(() => null);
-      return cached || fresh || Promise.resolve(Response.error());
-    })
-  );
-}
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = e.request.url;
-  if (e.request.mode === 'navigate' || url.includes('script.google.com')) {
-    e.respondWith(_networkFirst(e, 2500));
-    return;
-  }
-  if (/\.(css|js|png|jpg|jpeg|webp|svg|ico|woff2?)(\?|$)/.test(url)) {
-    e.respondWith(_staleWhileRevalidate(e));
-    return;
-  }
-  e.respondWith(_networkFirst(e, 2500));
-});
 
-/* ── PUSH NOTIFICATIONS ─────────────────────────────────────── */
+  if (url.includes('connect.facebook.net') || url.includes('analytics.tiktok.com')) return;
+
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).catch(() =>
+        caches.match('/').then(r => r || Response.error())
+      )
+    );
+    return;
+  }
+
+  if (url.includes('script.google.com')) {
+    e.respondWith(
+      fetch(e.request).catch(() => Response.error())
+    );
+    return;
+  }
+
+  if (/\.(css|js|png|jpg|jpeg|webp|svg|ico|woff2?)(\?|$)/.test(url)) {
+    e.respondWith(
+      caches.open(C).then(cache =>
+        cache.match(e.request).then(cached => {
+          if (cached) {
+            fetch(e.request).then(res => { if (res && res.ok) cache.put(e.request, res.clone()); }).catch(() => {});
+            return cached;
+          }
+          return fetch(e.request).then(res => {
+            if (res && res.ok) cache.put(e.request, res.clone());
+            return res;
+          }).catch(() => Response.error());
+        })
+      )
+    );
+    return;
+  }
+});
 
 self.addEventListener('push', e => {
   let data = { title: 'WOW.WEAR', body: 'Нові товари вже в каталозі 👗', icon: '/icon-192.png', badge: '/icon-192.png', tag: 'wow-wear', url: '/' };
-  try {
-    if (e.data) {
-      const d = e.data.json();
-      data = { ...data, ...d };
-    }
-  } catch {}
-
+  try { if (e.data) data = { ...data, ...e.data.json() }; } catch {}
   e.waitUntil(
     self.registration.showNotification(data.title, {
-      body:    data.body,
-      icon:    data.icon  || '/icon-192.png',
-      badge:   data.badge || '/icon-192.png',
-      tag:     data.tag   || 'wow-parfum',
-      data:  { url: data.url || '/' },
-      vibrate: [100, 50, 100],
-      actions: [
-        { action: 'open',    title: '🌸 Переглянути' },
-        { action: 'dismiss', title: 'Закрити' },
-      ],
+      body: data.body, icon: data.icon, badge: data.badge,
+      tag: data.tag, data: { url: data.url }, vibrate: [100, 50, 100],
+      actions: [{ action: 'open', title: '👗 Переглянути' }, { action: 'dismiss', title: 'Закрити' }],
     })
   );
 });
@@ -99,10 +74,7 @@ self.addEventListener('notificationclick', e => {
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
       for (const c of list) {
-        if (c.url.includes(self.location.origin) && 'focus' in c) {
-          c.navigate(url);
-          return c.focus();
-        }
+        if (c.url.includes(self.location.origin) && 'focus' in c) { c.navigate(url); return c.focus(); }
       }
       if (clients.openWindow) return clients.openWindow(url);
     })

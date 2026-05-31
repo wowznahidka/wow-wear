@@ -44,10 +44,12 @@ function prodCardHtml(p, opts = {}) {
   const pct     = discPct(p);
   const gridCls = grid ? ' grid-card' : '';
 
-  const imgPart = p.image && p.image.startsWith('http')
-    ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
-         loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')">`
-    : `<div class="card-img-placeholder" aria-hidden="true">рџЊё</div>`;
+  const _img = p.image && String(p.image).startsWith('http') ? p.image : (p.photos && p.photos[0]) || '';
+  const imgPart = _img
+    ? `<img class="card-img" src="${esc(_img)}" alt="${esc(p.brand)} ${esc(p.name)}"
+         loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')"
+         onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')">`
+    : `<div class="card-img-placeholder">🌸</div>`;
 
   const NICHE_BRANDS = ['Orto Parisi','Initio','Kilian','BDK','Amouage','Clive Christian',
     'Roja','Xerjoff','Nishane','Memo','Mancera','Tiziana Terenzi','Boadicea','Parfums de Marly'];

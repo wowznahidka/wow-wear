@@ -352,7 +352,7 @@
         <button id="dtab-dept" class="dtab on" onclick="setDelivTab('dept')">Відділення</button>
         <button id="dtab-post" class="dtab"    onclick="setDelivTab('post')">Поштомат</button>
       </div>
-      <div class="f-field"><label id="depot-label" class="f-label" for="f-depot">Відділення НП</label><input type="text" id="f-depot" class="f-inp" placeholder="Номер відділення *" oninput="validateField(this,'depot')" maxlength="10" inputmode="numeric"><span class="f-ico" id="f-depot-ico"></span><div class="f-err" id="f-depot-err">Введіть номер відділення</div></div>
+      <div class="f-field"><label id="depot-label" class="f-label" for="f-depot">Відділення НП</label><input type="text" id="f-depot" class="f-inp" placeholder="Номер відділення *" oninput="validateField(this,'depot')" maxlength="10" inputmode="numeric"><span class="f-ico" id="f-depot-ico"></span><div class="f-err" id="f-depot-err">Введіть номер відділення</div><div style="margin-top:4px;font-size:11px;color:#888">Не знаєш? → <a href="https://novaposhta.ua/branches" target="_blank" rel="noopener" style="color:#E8638A;font-weight:600;text-decoration:none">Знайти відділення НП</a></div></div>
       <div class="f-promo-row"><input type="text" id="f-promo" class="f-inp f-promo-inp" placeholder="Промокод (якщо є)" maxlength="20" style="text-transform:uppercase"><button class="f-promo-btn" onclick="applyPromo()">OK</button></div>
     </div>
     <button class="cart-checkout-btn" id="checkout-submit-btn" onclick="submitOrder()">Замовити →</button>

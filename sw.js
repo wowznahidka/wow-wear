@@ -1,4 +1,4 @@
-const C = 'wow-parfum-v7';
+const C = 'wow-wear-v2';
 const SHELL = ['/'];
 
 self.addEventListener('install', e => {
@@ -67,7 +67,7 @@ self.addEventListener('fetch', e => {
 /* ── PUSH NOTIFICATIONS ─────────────────────────────────────── */
 
 self.addEventListener('push', e => {
-  let data = { title: 'WOW.PARFUM', body: 'Нові аромати вже в каталозі 🌸', icon: '/icon-192.png', badge: '/icon-192.png', tag: 'wow-parfum', url: '/' };
+  let data = { title: 'WOW.WEAR', body: 'Нові товари вже в каталозі 👗', icon: '/icon-192.png', badge: '/icon-192.png', tag: 'wow-wear', url: '/' };
   try {
     if (e.data) {
       const d = e.data.json();

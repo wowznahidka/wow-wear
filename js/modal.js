@@ -1,5 +1,5 @@
-/* ============================================================
-   WOW.ZNAHIDKA — MODALS: SIZE PICKER & PRODUCT DETAIL
+﻿/* ============================================================
+   WOW.ZNAHIDKA вЂ” MODALS: SIZE PICKER & PRODUCT DETAIL
    ============================================================ */
 
 function _copyText(text) {
@@ -13,7 +13,7 @@ function _copyText(text) {
   } catch(e) {}
 }
 
-// ── SIZE PICKER ───────────────────────────────────── */
+// в”Ђв”Ђ SIZE PICKER в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
 let _autoSelectTimer = null;
 
 function openSizePicker(product) {
@@ -31,7 +31,7 @@ function openSizePicker(product) {
     <div class="sp-info">
       <div class="sp-brand">${esc(product.brand)}</div>
       <div class="sp-name">${esc(product.name)}</div>
-      <div class="sp-price">${product.price}₴</div>
+      <div class="sp-price">${product.price}в‚ґ</div>
     </div>`;
 
   // Size grid
@@ -50,7 +50,7 @@ function openSizePicker(product) {
     const badge    = (hasQtyData && pairQty >= 2)
       ? `<span class="sz-qty">${pairQty}</span>`
       : '';
-    return `<button class="sz-btn${isLast ? ' sz-btn-last' : ''}" data-size="${sz}" onclick="selectSize(${szArg})" aria-label="Розмір ${sz}">
+    return `<button class="sz-btn${isLast ? ' sz-btn-last' : ''}" data-size="${sz}" onclick="selectSize(${szArg})" aria-label="Р РѕР·РјС–СЂ ${sz}">
       ${sz}${badge}
     </button>`;
   }).join('');
@@ -60,7 +60,7 @@ function openSizePicker(product) {
   if (mySzWrap) {
     mySzWrap.innerHTML = hasMySz
       ? `<div class="sp-my-size-bar" role="button" onclick="selectSize(${mySize});_haptic(12)">
-           ✅ ${L.mySizeLabel}: <strong>${mySize}</strong>
+           вњ… ${L.mySizeLabel}: <strong>${mySize}</strong>
            <span style="margin-left:auto">${L.mySizeTap}</span>
          </div>`
       : '';
@@ -72,13 +72,13 @@ function openSizePicker(product) {
     }
   }
 
-  // Urgency banner — один розмір залишився
+  // Urgency banner вЂ” РѕРґРёРЅ СЂРѕР·РјС–СЂ Р·Р°Р»РёС€РёРІСЃСЏ
   const urgencyEl  = document.getElementById('sp-urgency');
   const confirmBtn = document.querySelector('.sp-confirm-btn');
   const isLastSize = product.sizes.length === 1 && product.sizes[0] !== 'ONE SIZE';
   if (urgencyEl) {
     urgencyEl.innerHTML = isLastSize
-      ? `<div class="sp-urgency-banner" role="alert">⚡ Останній розмір — бронюй зараз</div>`
+      ? `<div class="sp-urgency-banner" role="alert">вљЎ РћСЃС‚Р°РЅРЅС–Р№ СЂРѕР·РјС–СЂ вЂ” Р±СЂРѕРЅСЋР№ Р·Р°СЂР°Р·</div>`
       : '';
   }
   if (confirmBtn) {
@@ -107,20 +107,17 @@ function selectSize(sz) {
 function requestPhoto() {
   if (!S.spProduct) return;
   const p = S.spProduct;
-  if (p.tgLink) {
-    openTgLink(p.tgLink);
-    return;
-  }
-  const szText = S.spSelectedSize ? `Розмір: ${S.spSelectedSize}` : 'Розмір: уточнимо';
+  if (p.tgLink) { openTgLink(p.tgLink); return; }
+  const szText = S.spSelectedSize ? `РћР±'С”Рј: ${S.spSelectedSize}` : '';
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
-  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n${szText}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
+  const msg = `РџСЂРёРІС–С‚! рџ‘‹ РҐРѕС‡Сѓ Р·Р°РјРѕРІРёС‚Рё РїР°СЂС„СѓРј рџЊё\n${p.brand} ${p.name}\n${szText}\nрџ’° ${p.price}в‚ґ\nрџ”— ${productUrl}`;
   postData({ action: 'photo_request', product: p, size: S.spSelectedSize });
-  openTgLink(`https://t.me/znahidkawow?text=${encodeURIComponent(msg)}`);
+  openTgLink(`${CFG.TG_URL}?text=${encodeURIComponent(msg)}`);
 }
 
 function confirmSize() {
   if (!S.spSelectedSize) {
-    toast('⚠️ Оберіть розмір!');
+    toast('вљ пёЏ РћР±РµСЂС–С‚СЊ СЂРѕР·РјС–СЂ!');
     document.getElementById('sp-size-grid')?.animate(
       [{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }],
       { duration: 240, iterations: 2 }
@@ -131,7 +128,7 @@ function confirmSize() {
   const sz       = S.spSelectedSize;
   const existing = S.cart.find(c => c.id === p.id && String(c.size) === String(sz));
   if (existing) {
-    toast(`⚠️ ${esc(p.name)} (${sz}) вже є в кошику! <a onclick="openSheet('sheet-cart')">Переглянути →</a>`);
+    toast(`вљ пёЏ ${esc(p.name)} (${sz}) РІР¶Рµ С” РІ РєРѕС€РёРєСѓ! <a onclick="openSheet('sheet-cart')">РџРµСЂРµРіР»СЏРЅСѓС‚Рё в†’</a>`);
     closeAllSheets();
     return;
   }
@@ -145,22 +142,19 @@ function confirmSize() {
   if (window.gtag) gtag('event', 'add_to_cart', { currency: 'UAH', value: p.price, items: [{ item_id: p.id, item_name: `${p.brand} ${p.name}`, price: p.price }] });
   if (window.fbq)  fbq('track', 'AddToCart', { currency: 'UAH', value: p.price, content_ids: [p.id], content_type: 'product' });
   if (window.ttq)  try { ttq.track('AddToCart', { currency: 'UAH', value: p.price, content_id: p.id, content_name: `${p.brand} ${p.name}`, content_type: 'product', quantity: 1 }); } catch(_) {}
-  toast(`✅ ${esc(p.name)} (${sz}) — в кошику! <a onclick="openSheet('sheet-cart')">Переглянути →</a>`);
+  toast(`вњ… ${esc(p.name)} (${sz}) вЂ” РІ РєРѕС€РёРєСѓ! <a onclick="openSheet('sheet-cart')">РџРµСЂРµРіР»СЏРЅСѓС‚Рё в†’</a>`);
 }
 
-// ── PRODUCT DETAIL ────────────────────────────────── */
+// в”Ђв”Ђ PRODUCT DETAIL в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
 
 function _pdPhotoTg() {
   const p = S.pdProduct;
   if (!p) return;
-  if (p.tgLink) {
-    openTgLink(p.tgLink);
-    return;
-  }
+  if (p.tgLink) { openTgLink(p.tgLink); return; }
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
-  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
+  const msg = `РџСЂРёРІС–С‚! рџ‘‹ РҐРѕС‡Сѓ Р·Р°РјРѕРІРёС‚Рё РїР°СЂС„СѓРј рџЊё\n${p.brand} ${p.name}\nрџ’° ${p.price}в‚ґ\nрџ”— ${productUrl}`;
   postData({ action: 'photo_request', product: p, size: null });
-  openTgLink(`https://t.me/znahidkawow?text=${encodeURIComponent(msg)}`);
+  openTgLink(`${CFG.TG_URL}?text=${encodeURIComponent(msg)}`);
 }
 
 function openProductDetail(product) {
@@ -182,17 +176,17 @@ function openProductDetail(product) {
     : product.sizes.length;
   const hasRealSizes = product.sizes.length > 0 && product.sizes[0] !== 'ONE SIZE';
   const scarcHtml = hasRealSizes && total === 1
-    ? `<div class="pd-scarc-hero sc-last">🔥 Остання пара!</div>`
+    ? `<div class="pd-scarc-hero sc-last">рџ”Ґ РћСЃС‚Р°РЅРЅСЏ РїР°СЂР°!</div>`
     : hasRealSizes && total === 2
-      ? `<div class="pd-scarc-hero sc-low">⚡ Залишилось 2 пари</div>`
+      ? `<div class="pd-scarc-hero sc-low">вљЎ Р—Р°Р»РёС€РёР»РѕСЃСЊ 2 РїР°СЂРё</div>`
       : '';
 
   // Price row
   const priceHtml = product.oldPrice && product.oldPrice > product.price
-    ? `<span class="pd-price">${product.price}₴</span>
-       <span class="pd-old">${product.oldPrice}₴</span>
-       ${pct > 0 ? `<span class="pd-disc-tag">−${pct}%</span>` : ''}`
-    : `<span class="pd-price">${product.price}₴</span>`;
+    ? `<span class="pd-price">${product.price}в‚ґ</span>
+       <span class="pd-old">${product.oldPrice}в‚ґ</span>
+       ${pct > 0 ? `<span class="pd-disc-tag">в€’${pct}%</span>` : ''}`
+    : `<span class="pd-price">${product.price}в‚ґ</span>`;
 
   // Size preview chips (non-interactive, max 7)
   const CHIP_MAX = 7;
@@ -213,11 +207,11 @@ function openProductDetail(product) {
     <div class="pd-hero">
       ${product.image && product.image.startsWith('http')
         ? `<img class="pd-img" src="${esc(product.image)}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
-        : `<div class="pd-img-ph" aria-hidden="true">👟</div>`}
+        : `<div class="pd-img-ph" aria-hidden="true">рџЊё</div>`}
       <div class="pd-hero-vignette" aria-hidden="true"></div>
       <button class="pd-fav-float ${faved ? 'on' : ''}" id="pd-fav-btn"
-        onclick="togglePdFav()" aria-label="${faved ? 'Видалити з улюблених' : 'Додати в улюблені'}">
-        ${faved ? '❤️' : '🤍'}
+        onclick="togglePdFav()" aria-label="${faved ? 'Р’РёРґР°Р»РёС‚Рё Р· СѓР»СЋР±Р»РµРЅРёС…' : 'Р”РѕРґР°С‚Рё РІ СѓР»СЋР±Р»РµРЅС–'}">
+        ${faved ? 'вќ¤пёЏ' : 'рџ¤Ќ'}
       </button>
       ${scarcHtml}
     </div>
@@ -227,25 +221,26 @@ function openProductDetail(product) {
       <h2 class="pd-name">${esc(product.name)}</h2>
       <div class="pd-price-row">${priceHtml}</div>
       ${sizeChips}
+      ${product.description ? `<p class="pd-desc">${esc(product.description)}</p>` : ''}
       <div class="pd-trust">
-        <span class="pd-trust-item">✅ Без передоплати</span>
-        <span class="pd-trust-sep">·</span>
+        <span class="pd-trust-item">вњ… Р‘РµР· РїРµСЂРµРґРѕРїР»Р°С‚Рё</span>
+        <span class="pd-trust-sep">В·</span>
         ${product.isFreeShipping
-          ? `<span class="pd-trust-item pd-trust-free">🚚 Безкоштовна доставка</span>`
-          : `<span class="pd-trust-item">📦 Нова Пошта</span><span class="pd-trust-sep">·</span><span class="pd-trust-item">↩️ Примірка</span>`}
+          ? `<span class="pd-trust-item pd-trust-free">рџљљ Р‘РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°</span>`
+          : `<span class="pd-trust-item">рџ“¦ РќРѕРІР° РџРѕС€С‚Р°</span><span class="pd-trust-sep">В·</span><span class="pd-trust-item">в†©пёЏ РџСЂРёРјС–СЂРєР°</span>`}
       </div>
     </div>
 
     <div class="pd-cta">
       <button class="pd-btn-size" onclick="openSizePicker(S.pdProduct)">
-        Обрати розмір
+        РћР±СЂР°С‚Рё СЂРѕР·РјС–СЂ
       </button>
       <button class="pd-btn-tg" onclick="_pdPhotoTg()">
         ${tgIco}
-        Запросити фото в Telegram
+        Р—Р°РїСЂРѕСЃРёС‚Рё С„РѕС‚Рѕ РІ Telegram
       </button>
       <button class="pd-btn-brand" onclick="closeAllSheets();changeTab('catalog');setTimeout(()=>openBrand('${esc(product.brand)}'),220)">
-        Ще від ${esc(product.brand)} <span class="i-arr" aria-hidden="true"></span>
+        Р©Рµ РІС–Рґ ${esc(product.brand)} <span class="i-arr" aria-hidden="true"></span>
       </button>
     </div>`;
 
@@ -263,8 +258,9 @@ function togglePdFav() {
   const faved = isFav(p.id);
   if (btn) {
     btn.className = 'pd-fav-float' + (faved ? ' on' : '');
-    btn.textContent = faved ? '❤️' : '🤍';
-    btn.setAttribute('aria-label', faved ? 'Видалити з улюблених' : 'Додати в улюблені');
+    btn.textContent = faved ? 'вќ¤пёЏ' : 'рџ¤Ќ';
+    btn.setAttribute('aria-label', faved ? 'Р’РёРґР°Р»РёС‚Рё Р· СѓР»СЋР±Р»РµРЅРёС…' : 'Р”РѕРґР°С‚Рё РІ СѓР»СЋР±Р»РµРЅС–');
   }
-  toast(faved ? '❤️ Додано до улюблених' : 'Видалено з улюблених');
+  toast(faved ? 'вќ¤пёЏ Р”РѕРґР°РЅРѕ РґРѕ СѓР»СЋР±Р»РµРЅРёС…' : 'Р’РёРґР°Р»РµРЅРѕ Р· СѓР»СЋР±Р»РµРЅРёС…');
 }
+

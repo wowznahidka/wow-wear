@@ -63,7 +63,7 @@ function normalizeProduct(p) {
   let oldPrice   = Number(p['Стара ціна'] || p['стара ціна'] || p.oldPrice || p.old_price || 0);
   if (oldPrice > 0 && oldPrice <= price) oldPrice = 0;
 
-  const rawCat = String(p.category || p.niche || p.type || '').toLowerCase();
+  const rawCat = String(p.category || p.niche || p.type || p['Категорія'] || '').toLowerCase();
   let category = 'wear';
   if (rawCat.includes('bilyzna') || rawCat.includes('білизна') || rawCat.includes('lingerie') || rawCat.includes('underwear')) {
     category = 'bilyzna';
@@ -195,3 +195,4 @@ function getDemoProducts(gender) {
   });
   return prods;
 }
+

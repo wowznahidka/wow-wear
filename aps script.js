@@ -67,6 +67,14 @@ function sendTelegramMessage(text) {
   } catch(e) {}
 }
 
+function _normArt(s) {
+  return String(s || '').toUpperCase().replace(/[\s\-_\/]/g, '');
+}
+function _normName(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[^а-яёa-z0-9\s]/gi, ' ').replace(/\s+/g, ' ').trim().substring(0, 20);
+}
+
 function _findHeaderRow(data) {
   for (let r = 0; r < Math.min(8, data.length); r++) {
     const row = data[r];
@@ -227,11 +235,148 @@ function _getDailyDealIds(products, count) {
   return arr.slice(0,count).map(function(p){return String(p['ID']||'');});
 }
 
+function normalizeLower(v) { return normalize(v).toLowerCase(); }
+
+function autoRemoveOrderedSizes(ss, cart) {
+  if (!cart || !cart.length) return;
+  const sheet = ss.getSheetByName('Товари');
+  if (!sheet || sheet.getLastRow() <= 1) return;
+  const idCol    = HEADERS.indexOf('ID');
+  const sizesCol = HEADERS.indexOf('Розміри');
+  if (idCol < 0 || sizesCol < 0) return;
+  const data = sheet.getRange(1, 1, sheet.getLastRow(), HEADERS.length).getValues();
+  for (let r = 1; r < data.length; r++) {
+    const item = cart.find(c => String(c.id) === String(data[r][idCol]));
+    if (!item) continue;
+    const ordSz  = String(item.size);
+    const ordQty = item.qty || 1;
+    const parts  = String(data[r][sizesCol]).split(',').map(s => s.trim()).filter(Boolean);
+    const newParts = [];
+    for (const part of parts) {
+      const m = part.match(/^(\d+(?:[.,]\d)?)\((\d+)\)$/);
+      if (!m) {
+        if (part.replace(/\(.*\)/,'').trim() !== ordSz) newParts.push(part);
+        continue;
+      }
+      const remaining = parseInt(m[2]) - (parseFloat(m[1]) === parseFloat(ordSz) ? ordQty : 0);
+      if (remaining > 0) newParts.push(`${m[1]}(${remaining})`);
+    }
+    sheet.getRange(r + 1, sizesCol + 1).setValue(newParts.join(','));
+  }
+}
+
+function _logSoldSizes(ss, cart, orderRef) {
+  if (!cart || !cart.length) return;
+  let sh = ss.getSheetByName('Продано');
+  if (!sh) { sh = ss.insertSheet('Продано'); sh.appendRow(['Дата','ID','Розмір','К-во','Замовлення']); }
+  const now = new Date();
+  for (const item of cart) sh.appendRow([now, String(item.id), String(item.size), item.qty||1, orderRef||'']);
+}
+
+function getSoldSizes(ss) {
+  const sh = ss.getSheetByName('Продано');
+  if (!sh || sh.getLastRow() <= 1) return {};
+  const data = sh.getRange(2, 1, sh.getLastRow() - 1, 5).getValues();
+  const sold = {};
+  for (const row of data) {
+    const id = String(row[1]); const size = String(row[2]); const qty = parseInt(row[3]) || 1;
+    if (!id || !size) continue;
+    if (!sold[id]) sold[id] = {};
+    sold[id][size] = (sold[id][size] || 0) + qty;
+  }
+  return sold;
+}
+
+function applySoldFilter(products, sold) {
+  if (!Object.keys(sold).length) return products;
+  const result = [];
+  for (const p of products) {
+    const soldSizes = sold[String(p[0])];
+    if (!soldSizes) { result.push(p); continue; }
+    const sizesStr = String(p[6]);
+    if (!sizesStr || sizesStr === 'ONE SIZE') { result.push(p); continue; }
+    const newParts = [];
+    for (const part of sizesStr.split(',').map(s => s.trim()).filter(Boolean)) {
+      const m = part.match(/^(\d+(?:[.,]\d)?)\((\d+)\)$/);
+      if (!m) { newParts.push(part); continue; }
+      const remaining = parseInt(m[2]) - (soldSizes[m[1]] || soldSizes[String(Math.round(parseFloat(m[1])))] || 0);
+      if (remaining > 0) newParts.push(`${m[1]}(${remaining})`);
+    }
+    if (!newParts.length) continue;
+    const updated = [...p]; updated[6] = newParts.join(','); result.push(updated);
+  }
+  return result;
+}
+
+function _logReferral(ss, ref, phone, total) {
+  let sh = ss.getSheetByName('Referrals');
+  if (!sh) { sh = ss.insertSheet('Referrals'); sh.appendRow(['Дата','Партнер (TG)','Код','Телефон покупця','Сума замовлення','Виплата партнеру','Статус']); }
+  const code = ref.replace(/.*\((.+)\).*/, '$1').trim();
+  const tg   = ref.replace(/\s*\(.+\)/, '').trim();
+  sh.appendRow([new Date(), tg, code, "'" + phone, total, 150, 'Нараховано']);
+}
+
+function _adminGetAnalytics() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Orders');
+  const empty = { revenue7d:[0,0,0,0,0,0,0], orders7d:[0,0,0,0,0,0,0], labels7d:['Пн','Вт','Ср','Чт','Пт','Сб','Нд'], bySite:[], totalOrders:0, totalRevenue:0 };
+  if (!sheet || sheet.getLastRow() < 1) return empty;
+  const data = sheet.getDataRange().getValues();
+  const orders = data.filter(r => r[ORD_COL.fio] || r[ORD_COL.phone]).map(row => {
+    const totalStr = String(row[ORD_COL.total]||'').replace(/[^\d.]/g,'');
+    const dateVal  = row[ORD_COL.date];
+    const dateStr  = dateVal instanceof Date ? dateVal.toISOString().slice(0,10) : String(dateVal||'').slice(0,10);
+    return { total: parseFloat(totalStr)||0, date: dateStr, status: String(row[ORD_COL.status]||'') };
+  }).filter(o => o.status !== 'Скасовано' && o.status !== 'cancelled');
+  const now = new Date();
+  const labels=[], revenue=[], cnt=[];
+  for (let i=6;i>=0;i--) {
+    const d=new Date(now); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const day=orders.filter(o=>o.date===ds);
+    labels.push(['Нд','Пн','Вт','Ср','Чт','Пт','Сб'][d.getDay()]);
+    revenue.push(day.reduce((s,o)=>s+o.total,0)); cnt.push(day.length);
+  }
+  const totalRevenue = orders.reduce((s,o)=>s+o.total,0);
+  return { revenue7d:revenue, orders7d:cnt, labels7d:labels, bySite:[{id:'wear',rev:totalRevenue,orders:orders.length,conv:0}], totalOrders:orders.length, totalRevenue, ts:Date.now() };
+}
+
+function _adminGetReferrals() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Referrals');
+  if (!sheet || sheet.getLastRow() <= 1) return { referrals:[], total:0 };
+  const data      = sheet.getDataRange().getValues();
+  const hasHeader = normalizeLower(String(data[0][0])).startsWith('дата');
+  const rows      = hasHeader ? data.slice(1) : data;
+  const referrals = rows.filter(r=>r[1]||r[2]).map((row,i) => ({
+    id: i+1, date: row[0] instanceof Date ? row[0].toISOString() : String(row[0]||''),
+    tg: String(row[1]||''), ref_code: String(row[2]||''),
+    phone: String(row[3]||'').replace(/^'/,''), total: String(row[4]||''),
+    commission: Number(row[5])||150, status: String(row[6]||'Нараховано'),
+  }));
+  return { referrals, total: referrals.length };
+}
+
+function _adminUpdateReferral(body) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Referrals');
+  if (!sheet) return { ok:false, error:'no_sheet' };
+  const data      = sheet.getDataRange().getValues();
+  const hasHeader = normalizeLower(String(data[0][0])).startsWith('дата');
+  const rowNum    = parseInt(body.id) + (hasHeader ? 1 : 0);
+  if (!rowNum || rowNum < 1 || rowNum > sheet.getLastRow()) return { ok:false, error:'invalid_row' };
+  if (body.status     !== undefined) sheet.getRange(rowNum, 7).setValue(body.status);
+  if (body.commission !== undefined) sheet.getRange(rowNum, 6).setValue(body.commission);
+  return { ok:true };
+}
+
 // ── doGet ─────────────────────────────────────────────────── //
 function doGet(e) {
   const action = (e && e.parameter && e.parameter.action) || '';
-  if (action === 'ping')   return jsonResp({ ok:true, ts:Date.now() });
-  if (action === 'orders') return jsonResp(_adminGetOrders(e.parameter));
+  if (action === 'ping')      return jsonResp({ ok:true, ts:Date.now() });
+  if (action === 'orders')    return jsonResp(_adminGetOrders(e.parameter));
+  if (action === 'analytics') return jsonResp(_adminGetAnalytics());
+  if (action === 'referrals') return jsonResp(_adminGetReferrals());
 
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('Товари');
@@ -273,6 +418,9 @@ function doPost(e) {
         `  · ${i.brand||''} ${i.name||i.id}, розмір ${i.size}${(i.qty||1)>1?' × '+i.qty:''}${i.price?' — '+i.price+'₴':''}`
       ).join('\n') || data.items || '—';
 
+      const refLine   = data.ref   ? `\n🤝 <b>Партнер:</b> ${data.ref} (+150₴)` : '';
+      const promoLine = data.promo ? `\n🎟 <b>Промо:</b> ${data.promo}` : '';
+
       sendTelegramMessage(
         `👗 <b>НОВЕ ЗАМОВЛЕННЯ WEAR</b>\n\n` +
         `<b>Товари:</b>\n${itemsBlock}\n\n` +
@@ -281,9 +429,15 @@ function doPost(e) {
         `🏙 <b>Місто:</b> ${data.city||'—'}\n` +
         `📦 <b>Доставка:</b> ${data.delivery||'—'}\n` +
         `💰 <b>Сума:</b> ${data.total||0} ₴` +
-        (data.promo ? `\n🎟 <b>Промо:</b> ${data.promo}` : '') +
-        (utm.video  ? `\n📊 video=${utm.video}, src=${utm.source||'—'}` : '')
+        promoLine + refLine +
+        (utm.video ? `\n📊 video=${utm.video}, src=${utm.source||'—'}` : '')
       );
+
+      if (cartItems.length) {
+        autoRemoveOrderedSizes(ss, cartItems);
+        _logSoldSizes(ss, cartItems, data.phone || '');
+      }
+      if (data.ref) _logReferral(ss, data.ref, data.phone||'', String(data.total||0)+' ₴');
     }
 
     if (data.action === 'review') {
@@ -306,11 +460,15 @@ function doPost(e) {
       if (lastRow > 1) {
         const ids   = sheet.getRange(2,idCol,lastRow-1,1).getValues();
         const names = sheet.getRange(2,nameCol,lastRow-1,1).getValues();
-        const inId  = String(data.article||'').toLowerCase();
-        const inNm  = String(data.name||'').toLowerCase().substring(0,20);
-        for (let i=0;i<ids.length;i++) {
-          if ((inId && String(ids[i][0]).toLowerCase().includes(inId)) ||
-              (inNm && String(names[i][0]).toLowerCase().substring(0,20)===inNm)) { found=i+2; break; }
+        const artIn = _normArt(String(data.article || ''));
+        const nmIn  = _normName(String(data.name   || ''));
+        for (let i = 0; i < ids.length; i++) {
+          if (artIn && _normArt(String(ids[i][0])) === artIn) { found = i+2; break; }
+        }
+        if (found < 0 && nmIn.length >= 6) {
+          for (let i = 0; i < names.length; i++) {
+            if (_normName(String(names[i][0])) === nmIn) { found = i+2; break; }
+          }
         }
       }
       if (found > 0) {
@@ -333,6 +491,10 @@ function doPost(e) {
         row[HEADERS.indexOf('Категорія')]  = data.niche==='wear_bilyzna'?'bilyzna':'wear';
         sheet.appendRow(row);
       }
+    }
+
+    if (data.action === 'updateReferral') {
+      return jsonResp(_adminUpdateReferral(data));
     }
 
     if (data.action === 'photo_request') {
@@ -377,7 +539,8 @@ function updateMasterDB() {
 
     const unique = new Map();
     for (const p of products) { const k=fingerprint(p); if(!unique.has(k)) unique.set(k,p); }
-    const final = [...unique.values()];
+    const sold  = getSoldSizes(ss);
+    const final = applySoldFilter([...unique.values()], sold);
 
     if (final.length < MIN_PRODUCTS_SAFETY) {
       sendTelegramMessage(`⚠️ WEAR: мало товарів (${final.length}), каталог НЕ перезаписано`);
@@ -385,7 +548,24 @@ function updateMasterDB() {
     }
 
     const lastRow = masterSheet.getLastRow();
+    const tgIdx   = HEADERS.indexOf('TG');
+    const idIdx   = HEADERS.indexOf('ID');
+    const tgMap   = {};
+    if (lastRow > 1 && tgIdx >= 0) {
+      const existing = masterSheet.getRange(2,1,lastRow-1,HEADERS.length).getValues();
+      for (const row of existing) {
+        const id = _normArt(String(row[idIdx] || ''));
+        const tg = String(row[tgIdx] || '');
+        if (id && tg) tgMap[id] = tg;
+      }
+    }
     if (lastRow > 1) masterSheet.getRange(2,1,lastRow-1,HEADERS.length).clearContent();
+    if (tgIdx >= 0) {
+      for (const p of final) {
+        const id = _normArt(String(p[idIdx] || ''));
+        if (tgMap[id]) p[tgIdx] = tgMap[id];
+      }
+    }
     if (final.length) masterSheet.getRange(2,1,final.length,HEADERS.length).setValues(final);
 
     sendTelegramMessage(`✅ WEAR каталог оновлено: ${final.length} товарів (${final.filter(p=>p[12]==='bilyzna').length} білизна + ${final.filter(p=>p[12]==='wear').length} одяг)`);

@@ -1,5 +1,5 @@
 ﻿const CFG = {
-  GAS_URL:  '',
+  GAS_URL:  'https://script.google.com/macros/s/AKfycbzif18Ohhvp2TANIKKMtBlyJ7OuHspVeuCctJ02Iyytp0A_kHQB_cBOuYKIIJ88nwpfpQ/exec',
   VAPID_PUBLIC_KEY: '',
   TG_URL:   'https://t.me/wowwear',
   IG_URL:   'https://instagram.com/wow.wear',

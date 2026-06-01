@@ -153,8 +153,10 @@ function renderBilyznaRow(data) {
     7
   ).slice(0,8);
   if (!items.length) {
-    el.closest('.home-section-title + *')?.previousElementSibling?.remove();
-    el.parentNode?.remove?.();
+    // Ховаємо ТІЛЬКИ свою секцію: заголовок "🩱 Білизна" (попередній елемент) + сам рядок.
+    // НЕ чіпаємо parentNode — це #page-home, його видалення зносить усю головну сторінку!
+    const title = el.previousElementSibling;
+    if (title && title.classList.contains('home-section-title')) title.remove();
     el.remove();
     return;
   }

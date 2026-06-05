@@ -1032,6 +1032,51 @@
 .scroll-nudge p     { font-size: 14px; font-weight: 700; color: var(--text-dim); }
 .scroll-nudge small { font-size: 11px; color: var(--text-muted); }
 
+/* ── CATEGORY TYPE CHIPS (AGER: Сукні / Блузки / Штани ...) ── */
+.cat-type-wrap {
+  margin: 8px 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cat-type-wrap::-webkit-scrollbar { display: none; }
+.cat-type-chips {
+  display: flex; gap: 8px;
+  padding: 4px 16px 10px;
+  white-space: nowrap;
+}
+.ct-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 14px;
+  background: var(--bg-card, rgba(255,255,255,0.06));
+  border: 1px solid var(--border, rgba(255,255,255,0.10));
+  border-radius: 99px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+.ct-chip:hover { background: rgba(255,255,255,0.10); }
+.ct-chip.on {
+  background: var(--text);
+  color: var(--accent-inv, #000);
+  border-color: var(--text);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.ct-cnt {
+  font-size: 11px; font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.08);
+  color: inherit;
+  opacity: 0.7;
+}
+.ct-chip.on .ct-cnt {
+  background: rgba(0,0,0,0.15);
+  opacity: 0.85;
+}
+
 /* ── PD MULTI-PHOTO GALLERY ───────────────────────── */
 .pd-gallery {
   position: relative; width: 100%; height: 100%;

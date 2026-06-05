@@ -73,6 +73,8 @@ function normalizeProduct(p) {
   const photoRaw = String(p['Фото'] || p['фото'] || p.image || p.img || p.photo || '');
   const photos   = photoRaw.split('|').map(s => s.trim()).filter(s => s.startsWith('http'));
   const image    = photos[0] || '';
+  // "Тип" — назва категорії з YML/AGER ("Жіночі сукні", "Чоловічі сорочки" тощо)
+  const typeRaw = String(p['Тип'] || p['тип'] || p.type || p.categoryType || '').trim();
   return {
     id:          String(p['ID'] || p['id'] || p['Артикул'] || Math.random().toString(36).slice(2)),
     name:        String(p['Назва']  || p['назва']  || p['Модель'] || p.name || p.model || ''),
@@ -86,9 +88,24 @@ function normalizeProduct(p) {
     sizeQty,
     isNew:       Boolean(p['Нове']  || p['нове']   || p.is_new || p.isNew),
     gender:      String(p['Стать']  || p['стать']  || p.gender || p.Gender || 'Жінка'),
-    category,
+    category,                                       // bilyzna / wear (старе)
+    categoryType: typeRaw,                          // "Жіночі сукні" (нове — категорія для UI)
     tgLink:      String(p['TG'] || p['tg_link'] || ''),
   };
+}
+
+// ── Витягуємо унікальні top-категорії з каталогу (для chip-bar) ── */
+function getTopCategories(prods, limit = 10) {
+  const counts = {};
+  (prods || []).forEach(p => {
+    const t = (p.categoryType || '').trim();
+    if (!t || t.length < 3) return;
+    counts[t] = (counts[t] || 0) + 1;
+  });
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([name, cnt]) => ({ name, count: cnt }));
 }
 
 async function fetchCatalog() {

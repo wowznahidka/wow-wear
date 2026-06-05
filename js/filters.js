@@ -38,6 +38,7 @@ async function renderCatalog() {
   const data = await fetchCatalog();
   updateTimestamp();
   renderCatTabs();
+  renderCatTypeChips();
   renderSizeChips();
   renderPriceSlider();
   if (S.searchQ) renderSearchResults(data);
@@ -60,8 +61,35 @@ function setCatTab(cat) {
   _applyFilters();
 }
 function filterByCat(products) {
-  if (!_catTab) return products;
-  return products.filter(p => p.category === _catTab);
+  let res = products;
+  if (_catTab) res = res.filter(p => p.category === _catTab);
+  if (_catType) res = res.filter(p => (p.categoryType || '') === _catType);
+  return res;
+}
+
+// ── CATEGORY TYPE (AGER): "Сукні / Блузки / Штани" тощо ── */
+let _catType = null;
+function renderCatTypeChips() {
+  const row = document.getElementById('cat-type-chips');
+  if (!row) return;
+  const data = getCatalog();
+  if (!data || typeof getTopCategories !== 'function') { row.innerHTML = ''; return; }
+  const tops = getTopCategories(data, 12);
+  if (!tops.length) { row.innerHTML = ''; return; }
+  const allChip = `<button class="ct-chip ${!_catType?'on':''}" onclick="setCatType(null)">Усі <span class="ct-cnt">${data.length}</span></button>`;
+  const chips = tops.map(t =>
+    `<button class="ct-chip ${_catType===t.name?'on':''}" onclick="setCatType('${esc(t.name).replace(/'/g,"\\'")}')">${esc(t.name)} <span class="ct-cnt">${t.count}</span></button>`
+  ).join('');
+  row.innerHTML = allChip + chips;
+}
+function setCatType(type) {
+  _catType = type || null;
+  _haptic(8);
+  renderCatTypeChips();
+  _applyFilters();
+  // прокрутити catalog-view вгору
+  const cv = document.getElementById('catalog-view');
+  if (cv) cv.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function renderSizeChips() {

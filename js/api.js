@@ -121,7 +121,7 @@ async function bgRefreshCatalog() {
   } catch(e) {
     console.warn('[WOW] fetch failed', e);
     if (!S.catalog.all || !S.catalog.all.length) {
-      S.catalog.all = [...getDemoProducts('female'), ...getDemoProducts('male')];
+      S.catalog.all = [];
     }
     S.lastFetchTime = new Date();
     updateTimestamp();

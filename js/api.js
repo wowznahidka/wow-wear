@@ -73,8 +73,17 @@ function normalizeProduct(p) {
   const photoRaw = String(p['Фото'] || p['фото'] || p.image || p.img || p.photo || '');
   const photos   = photoRaw.split('|').map(s => s.trim()).filter(s => s.startsWith('http'));
   const image    = photos[0] || '';
-  // "Тип" — назва категорії з YML/AGER ("Жіночі сукні", "Чоловічі сорочки" тощо)
-  const typeRaw = String(p['Тип'] || p['тип'] || p.type || p.categoryType || '').trim();
+  // "Тип" — назва категорії. Read priority:
+  //   1) explicit column "Тип" (якщо буде в майбутньому)
+  //   2) suffix у "Постачальник": "AGER [Жіночі сукні]" → "Жіночі сукні"
+  //   3) p.category_name (raw from YML)
+  let typeRaw = String(p['Тип'] || p['тип'] || p.type || p.categoryType || '').trim();
+  if (!typeRaw) {
+    const supplier = String(p['Постачальник'] || p['постачальник'] || p.supplier || '');
+    const m = supplier.match(/\[([^\]]+)\]/);
+    if (m) typeRaw = m[1].trim();
+  }
+  if (!typeRaw) typeRaw = String(p['category_name'] || p.category_name || '').trim();
   return {
     id:          String(p['ID'] || p['id'] || p['Артикул'] || Math.random().toString(36).slice(2)),
     name:        String(p['Назва']  || p['назва']  || p['Модель'] || p.name || p.model || ''),

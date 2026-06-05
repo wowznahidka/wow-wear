@@ -1,10 +1,10 @@
-﻿/* ============================================================
-   WOW.ZNAHIDKA вЂ” DAILY DEALS
+/* ============================================================
+   WOW.ZNAHIDKA — DAILY DEALS
    3 seeded-random products with free delivery, refreshed at midnight.
    All users see the same products on the same day (deterministic PRNG).
    ============================================================ */
 
-// в”Ђв”Ђ PRNG (mulberry32) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── PRNG (mulberry32) ────────────────────────────── */
 function _mulberry32(seed) {
   return function() {
     seed |= 0; seed = seed + 0x6D2B79F5 | 0;
@@ -19,7 +19,7 @@ function _getDateSeed() {
   return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
 }
 
-// в”Ђв”Ђ DEAL SELECTION в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── DEAL SELECTION ───────────────────────────────── */
 function getDailyDeals(catalog, count) {
   count = count || 3;
   const seed     = _getDateSeed();
@@ -32,7 +32,7 @@ function getDailyDeals(catalog, count) {
     });
   } catch(_) {}
 
-  // Server-side deals take priority вЂ” GAS computed them deterministically,
+  // Server-side deals take priority — GAS computed them deterministically,
   // so all clients see identical products regardless of local array order.
   if (S.catalog.dailyDeals && S.catalog.dailyDeals.length) {
     const deals = S.catalog.dailyDeals
@@ -70,7 +70,7 @@ function getDailyDeals(catalog, count) {
   return deals;
 }
 
-// в”Ђв”Ђ COUNTDOWN в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── COUNTDOWN ────────────────────────────────────── */
 function _timeUntilMidnight() {
   const now = new Date();
   const mid = new Date(now); mid.setHours(24, 0, 0, 0);
@@ -82,12 +82,12 @@ function _timeUntilMidnight() {
   };
 }
 
-// в”Ђв”Ђ CARD HTML в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── CARD HTML ────────────────────────────────────── */
 function _dealCardHtml(p) {
   const img = p.image && p.image.startsWith('http')
     ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
          loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
-    : `<div class="card-img-placeholder" aria-hidden="true">рџЊё</div>`;
+    : `<div class="card-img-placeholder" aria-hidden="true">👟</div>`;
 
   const szList = p.sizes[0] === 'ONE SIZE'
     ? '<span>ONE SIZE</span>'
@@ -97,21 +97,21 @@ function _dealCardHtml(p) {
   return `<article class="product-card dd-card"
     onclick="openDealDetail('${esc(p.id)}')"
     role="button" tabindex="0"
-    aria-label="${esc(p.brand)} ${esc(p.name)}, ${p.price}в‚ґ, Р±РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°">
+    aria-label="${esc(p.brand)} ${esc(p.name)}, ${p.price}₴, безкоштовна доставка">
     <div class="card-img-wrap">
       ${img}
-      <div class="dd-badge" aria-label="Р‘РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°">рџљљ</div>
+      <div class="dd-badge" aria-label="Безкоштовна доставка">🚚</div>
     </div>
     <div class="card-body">
       <div class="card-brand">${esc(p.brand)}</div>
       <div class="card-name">${esc(p.name)}</div>
-      <div class="card-price">${p.price}в‚ґ</div>
+      <div class="card-price">${p.price}₴</div>
       <div class="card-sizes-preview">${szList}</div>
     </div>
   </article>`;
 }
 
-// в”Ђв”Ђ OPEN DEAL IN PRODUCT DETAIL в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── OPEN DEAL IN PRODUCT DETAIL ──────────────────── */
 function openDealDetail(productId) {
   // Pull from today's cache so isFreeShipping is guaranteed present
   let dealProduct = null;
@@ -127,7 +127,7 @@ function openDealDetail(productId) {
   openProductDetail(dealProduct);
 }
 
-// в”Ђв”Ђ RENDER SECTION в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── RENDER SECTION ───────────────────────────────── */
 let _ddTimerID = null;
 
 function renderDailyDeals(catalog) {
@@ -153,7 +153,7 @@ function renderDailyDeals(catalog) {
         String(m).padStart(2, '0') + ':' +
         String(s).padStart(2, '0');
     }
-    // Midnight: fade out в†’ re-fetch в†’ re-render в†’ fade in
+    // Midnight: fade out → re-fetch → re-render → fade in
     if (h === 0 && m === 0 && s === 0) {
       clearInterval(_ddTimerID); _ddTimerID = null;
       sec.style.transition = 'opacity .5s ease';
@@ -171,4 +171,3 @@ function renderDailyDeals(catalog) {
   _tick();
   _ddTimerID = setInterval(_tick, 1000);
 }
-

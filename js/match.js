@@ -1,5 +1,5 @@
-﻿/* ============================================================
-   WOW.ZNAHIDKA вЂ” MATCH / SWIPE ENGINE
+/* ============================================================
+   WOW.ZNAHIDKA — MATCH / SWIPE ENGINE
    Tinder-style card stack with pointer + touch support.
    ============================================================ */
 
@@ -12,6 +12,7 @@ async function initMatch() {
   clearTimeout(_swipeRenderTimer);
   _swipeRenderTimer = null;
   _swipeLocked = false;
+  _attachMatchKeyboard();
 
   const data = await fetchCatalog();
   if (!data || !data.length) return;
@@ -51,15 +52,15 @@ function renderMatchCard() {
       ${p.image && p.image.startsWith('http')
         ? `<img class="m-card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
              loading="lazy" onload="this.classList.add('loaded')">`
-        : `<div class="m-card-img-ph" aria-hidden="true">рџЊё</div>`}
-      ${faved ? `<div class="m-card-fav-badge" aria-hidden="true">вќ¤пёЏ</div>` : ''}
+        : `<div class="m-card-img-ph" aria-hidden="true">👟</div>`}
+      ${faved ? `<div class="m-card-fav-badge" aria-hidden="true">❤️</div>` : ''}
       <div class="swipe-label like" id="sw-like">${L.matchLike}</div>
       <div class="swipe-label nope" id="sw-nope">${L.matchNope}</div>
     </div>
     <div class="m-card-body">
       <div class="m-card-brand">${esc(p.brand)}</div>
       <div class="m-card-name">${esc(p.name)}</div>
-      <div class="m-card-price">${p.price}в‚ґ</div>
+      <div class="m-card-price">${p.price}₴</div>
       <div class="m-card-sizes">${L.sizesIn}${p.sizes.map(String).join(', ') || '?'}</div>
     </div>
   `;
@@ -74,32 +75,52 @@ function _renderMatchDone(stage, counter) {
   const cartCount = S.cart.length;
   counter.textContent = `${S.matchPool.length} / ${S.matchPool.length}`;
   stage.innerHTML = `<div class="match-empty">
-    <div class="match-empty-ico" style="animation:bounceY .9s ease-in-out infinite alternate">рџЏ†</div>
-    <h3 style="font-size:22px;font-weight:900;margin-top:4px">РўРё РїРµСЂРµРіР»СЏРЅСѓРІ СѓСЃРµ!</h3>
+    <div class="match-empty-ico" style="animation:bounceY .9s ease-in-out infinite alternate">🏆</div>
+    <h3 style="font-size:22px;font-weight:900;margin-top:4px">Ти переглянув усе!</h3>
     <p style="font-size:14px;color:var(--text-dim);line-height:1.6;max-width:260px;text-align:center">
-      ${S.matchPool.length} РїР°СЂ РїРµСЂРµРіР»СЏРЅСѓС‚Рѕ.<br>
-      ${favCount > 0 ? `<strong style="color:var(--text)">${favCount} РїР°СЂРё</strong> С‡РµРєР°СЋС‚СЊ Сѓ РЈР»СЋР±Р»РµРЅРёС….` : 'Р›Р°Р№РєРЅРё РїР°СЂРё, СЏРєС– СЃРїРѕРґРѕР±Р°Р»РёСЃСЊ вЂ” РјРё РїС–РґР±РµСЂРµРјРѕ СЂРѕР·РјС–СЂ.'}
+      ${S.matchPool.length} пар переглянуто.<br>
+      ${favCount > 0 ? `<strong style="color:var(--text)">${favCount} пари</strong> чекають у Улюблених.` : 'Лайкни пари, які сподобались — ми підберемо розмір.'}
     </p>
     ${favCount > 0 ? `
     <button class="match-restart-btn"
       style="background:var(--red);box-shadow:var(--shadow-red);margin-top:4px"
       onclick="openSheet('sheet-fav')">
-      вќ¤пёЏ РЈР»СЋР±Р»РµРЅС– В· ${favCount} РїР°СЂРё
+      ❤️ Улюблені · ${favCount} пари
     </button>` : ''}
     ${cartCount > 0 ? `
     <button class="match-restart-btn"
       style="background:var(--text);color:var(--accent-inv);margin-top:${favCount ? '8px' : '4px'}"
       onclick="openSheet('sheet-cart')">
-      рџ›’ РљРѕС€РёРє В· ${cartCount} РїР°СЂРё
+      🛒 Кошик · ${cartCount} пари
     </button>` : ''}
     <button class="match-go-favs-btn" style="margin-top:${favCount || cartCount ? '8px' : '4px'}"
       onclick="initMatch()">
-      рџ”„ РџРѕС‡Р°С‚Рё Р·РЅРѕРІСѓ
+      🔄 Почати знову
     </button>
   </div>`;
 }
 
-// в”Ђв”Ђ SWIPE LISTENER в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── KEYBOARD SHORTCUTS (PC) ──────────────────────── */
+let _matchKbBound = false;
+function _attachMatchKeyboard() {
+  if (_matchKbBound) return;
+  _matchKbBound = true;
+  document.addEventListener('keydown', e => {
+    if (S.activeTab !== 'match') return;
+    if (_swipeLocked) return;
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
+      e.preventDefault(); swipeCard('right');
+    } else if (e.key === 'ArrowLeft' || e.key === 'h' || e.key === 'H') {
+      e.preventDefault(); swipeCard('left');
+    } else if (e.code === 'Space' || e.key === 'Enter') {
+      e.preventDefault(); swipeCard('right');
+    }
+  });
+}
+
+// ── SWIPE LISTENER ───────────────────────────────── */
 function attachSwipeListeners(card, product) {
   cleanupSwipe();
   let startX = 0, deltaX = 0, startTime = 0, dragging = false;
@@ -151,14 +172,14 @@ function attachSwipeListeners(card, product) {
     deltaX = 0;
   };
 
-  // Pointer Events API handles both mouse and touch вЂ” no duplicate touch handlers needed
+  // Pointer Events API handles both mouse and touch — no duplicate touch handlers needed
   card.addEventListener('pointerdown', onDown, { passive: true });
   document.addEventListener('pointermove', _moveHandler, { passive: true });
   document.addEventListener('pointerup', _upHandler);
   document.addEventListener('pointercancel', _upHandler);
 }
 
-// в”Ђв”Ђ SWIPE ACTION в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── SWIPE ACTION ─────────────────────────────────── */
 function swipeCard(dir) {
   if (_swipeLocked) return;
   _swipeLocked = true;
@@ -184,11 +205,11 @@ function swipeCard(dir) {
     _comboTimer = setTimeout(() => { _matchCombo = 0; _updateComboUI(); }, 3500);
     _spawnHearts(card);
     _updateComboUI();
-    if (_matchCombo === 3)       toast('рџ”Ґ РўСЂРё РїРѕСЃРїС–Р»СЊ! РЎРјР°Рє С”!');
-    else if (_matchCombo === 5)  toast('рџ”Ґрџ”Ґ РљРѕРјР±Рѕ Г—5! РњР°Р№СЃС‚РµСЂ!');
-    else if (_matchCombo === 10) toast('рџ’Ћ Г—10 вЂ” Р›Р•Р“Р•РќР”Рђ!');
-    else if (_matchCombo > 10 && _matchCombo % 5 === 0) toast(`рџ’Ћ Г—${_matchCombo} вЂ” UNSTOPPABLE!`);
-    else toast(`вќ¤пёЏ Р”РѕРґР°РЅРѕ! <a onclick="openSheet('sheet-fav')">РџРµСЂРµРіР»СЏРЅСѓС‚Рё в†’</a>`);
+    if (_matchCombo === 3)       toast('🔥 Три поспіль! Смак є!');
+    else if (_matchCombo === 5)  toast('🔥🔥 Комбо ×5! Майстер!');
+    else if (_matchCombo === 10) toast('💎 ×10 — ЛЕГЕНДА!');
+    else if (_matchCombo > 10 && _matchCombo % 5 === 0) toast(`💎 ×${_matchCombo} — UNSTOPPABLE!`);
+    else toast(`❤️ Додано! <a onclick="openSheet('sheet-fav')">Переглянути →</a>`);
   }
 
   S.matchIdx++;
@@ -200,12 +221,12 @@ function swipeCard(dir) {
   }, 310);
 }
 
-// в”Ђв”Ђ COMBO UI в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── COMBO UI ─────────────────────────────────────── */
 function _updateComboUI() {
   const el = document.getElementById('match-combo');
   if (!el) return;
   if (_matchCombo >= 2) {
-    el.textContent = `рџ”Ґ Г—${_matchCombo}`;
+    el.textContent = `🔥 ×${_matchCombo}`;
     el.style.display = 'flex';
     el.style.animation = 'none';
     void el.offsetWidth;
@@ -215,12 +236,12 @@ function _updateComboUI() {
   }
 }
 
-// в”Ђв”Ђ HEART PARTICLES в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── HEART PARTICLES ──────────────────────────────── */
 function _spawnHearts(card) {
   const rect = card.getBoundingClientRect();
   const cx   = rect.left + rect.width  * 0.5;
   const cy   = rect.top  + rect.height * 0.35;
-  const pool = ['вќ¤пёЏ','рџ”Ґ','вњЁ','рџ’Ћ','рџ©·','в­ђ'];
+  const pool = ['❤️','🔥','✨','💎','🩷','⭐'];
   for (let i = 0; i < 9; i++) {
     const el = document.createElement('div');
     el.textContent = pool[i % pool.length];
@@ -237,4 +258,3 @@ function _spawnHearts(card) {
     setTimeout(() => el.remove(), 1200);
   }
 }
-

@@ -327,3 +327,131 @@ function initKeyboardHandler() {
     }, 100);
   });
 }
+
+// ── TAP-TO-ZOOM ─────────────────────────────────── */
+function openImageZoom(src, alt) {
+  if (!src) return;
+  closeImageZoom();
+  const ov = document.createElement('div');
+  ov.className = 'img-zoom-overlay';
+  ov.id = 'img-zoom-overlay';
+  ov.innerHTML = `<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}" draggable="false">
+    <button class="img-zoom-close" aria-label="Закрити">✕</button>`;
+  document.body.appendChild(ov);
+  document.body.style.overflow = 'hidden';
+  ov.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'IMG') closeImageZoom();
+  });
+  document.addEventListener('keydown', _zoomKeyHandler);
+}
+function closeImageZoom() {
+  const ov = document.getElementById('img-zoom-overlay');
+  if (ov) ov.remove();
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', _zoomKeyHandler);
+}
+function _zoomKeyHandler(e) {
+  if (e.key === 'Escape') closeImageZoom();
+}
+(function _bindZoomDelegation() {
+  let pressTimer = null;
+  let pressedImg = null;
+  function startPress(e) {
+    const img = e.target.closest('img.card-img, img.m-card-img, img.pd-hero-img, img.pd-photo, img.pd-thumb-img, img.pd-img');
+    if (!img || !img.src || !img.src.startsWith('http')) return;
+    pressedImg = img;
+    pressTimer = setTimeout(() => {
+      if (pressedImg && pressedImg.src) {
+        openImageZoom(pressedImg.src, pressedImg.alt);
+        const block = ev => { ev.stopPropagation(); ev.preventDefault(); document.removeEventListener('click', block, true); };
+        document.addEventListener('click', block, true);
+      }
+      pressTimer = null;
+    }, 400);
+  }
+  function cancelPress() {
+    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    pressedImg = null;
+  }
+  document.addEventListener('pointerdown', startPress, { passive: true });
+  document.addEventListener('pointerup', cancelPress, { passive: true });
+  document.addEventListener('pointercancel', cancelPress, { passive: true });
+  document.addEventListener('pointermove', () => { if (pressTimer) cancelPress(); }, { passive: true });
+})();
+
+// ── ANTI-EXIT (3 mechanisms) ───────────────────────── */
+let _exitModalShown = false;
+let _backTrapInstalled = false;
+let _userChoseLeave = false;
+function _shouldGuard() {
+  return (S?.cart?.length || 0) > 0 || (S?.favs?.length || 0) > 0;
+}
+function _stayOnSiteModal(reason) {
+  if (_exitModalShown) return;
+  if (document.getElementById('exit-modal')) return;
+  _exitModalShown = true;
+  const cartLen = S?.cart?.length || 0;
+  const favsLen = S?.favs?.length || 0;
+  const lead =
+    cartLen ? `У тебе в кошику <b>${cartLen}</b> річ${cartLen===1?'':'і'} 🔥` :
+    favsLen ? `У Улюблених — <b>${favsLen}</b> річ${favsLen===1?'':'і'} ❤️` :
+    `Знайди свій лук — <b>1000+ позицій</b> ✨`;
+  const html = `
+    <div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true">
+      <div class="exit-card">
+        <button class="exit-close" aria-label="Закрити" onclick="closeExitModal()">✕</button>
+        <div class="exit-eyebrow">🎁 ЗАЧЕКАЙ-НО</div>
+        <h3 class="exit-title">Не йди з порожніми руками</h3>
+        <p class="exit-lead">${lead}</p>
+        <p class="exit-bonus">Промокод <b>WOW100</b> — <b>−100₴</b> на твоє перше замовлення. Дійсний 24 години.</p>
+        <div class="exit-actions">
+          <button class="exit-cta" onclick="(${cartLen?`openSheet('sheet-cart');`:`openSheet('sheet-fav');`})closeExitModal();">
+            ${cartLen ? '🛒 Оформити кошик' : favsLen ? '❤️ Переглянути улюблені' : '👗 До каталогу'}
+          </button>
+          <a class="exit-tg" href="https://t.me/wowwear?text=${encodeURIComponent('Привіт! Хочу знижку WOW100')}" target="_blank" rel="noopener" onclick="closeExitModal()">
+            ✉️ Написати в Telegram
+          </a>
+        </div>
+        <button class="exit-leave" onclick="closeExitModal();_userChoseLeave=true;">Все одно піду</button>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.style.overflow = 'hidden';
+}
+function closeExitModal() {
+  const m = document.getElementById('exit-modal');
+  if (m) m.remove();
+  document.body.style.overflow = '';
+}
+function _installAntiExit() {
+  window.addEventListener('beforeunload', (e) => {
+    if (_userChoseLeave) return;
+    if (!_shouldGuard()) return;
+    e.preventDefault();
+    e.returnValue = 'У кошику ще є товари. Точно йдеш?';
+    return e.returnValue;
+  });
+  if (!_backTrapInstalled) {
+    _backTrapInstalled = true;
+    try {
+      history.pushState({_antiExit: true}, '', location.href);
+      window.addEventListener('popstate', () => {
+        if (!_userChoseLeave && _shouldGuard()) {
+          history.pushState({_antiExit: true}, '', location.href);
+          _stayOnSiteModal('back_button');
+        }
+      });
+    } catch(_) {}
+  }
+  if (matchMedia('(pointer:fine)').matches) {
+    document.addEventListener('mouseleave', (e) => {
+      if (e.clientY > 5) return;
+      if (_userChoseLeave) return;
+      if (!_shouldGuard()) return;
+      if (sessionStorage.getItem('wow_exit_shown')) return;
+      sessionStorage.setItem('wow_exit_shown', '1');
+      _stayOnSiteModal('mouse_exit');
+    });
+  }
+}
+window.addEventListener('DOMContentLoaded', _installAntiExit);

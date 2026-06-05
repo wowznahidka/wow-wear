@@ -1,9 +1,9 @@
-﻿/* ============================================================
-   WOW.ZNAHIDKA вЂ” PRODUCT RENDERING
+/* ============================================================
+   WOW.ZNAHIDKA — PRODUCT RENDERING
    Card HTML generation and home-page sections.
    ============================================================ */
 
-// в”Ђв”Ђ UTILS в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── UTILS ────────────────────────────────────────── */
 function esc(str) {
   if (!str) return '';
   return String(str)
@@ -25,18 +25,18 @@ function discPct(p) {
 function _scarcityText(p) {
   if (!p.sizes || !p.sizes.length || p.sizes[0] === 'ONE SIZE') return '';
   const n = p.sizes.length;
-  if (n === 1) return `<div class="scarcity-chip">${L.scarcity1 || 'вљЎпёЏ РћСЃС‚Р°РЅРЅС–Р№ СЂРѕР·РјС–СЂ!'}</div>`;
-  if (n <= 3)  return `<div class="scarcity-chip">${L.scarcityLow || 'рџ”Ґ Р›РёС€Рµ'} ${n}${L.scarcityLowSuffix || ' СЂРѕР·РјС–СЂРё'}</div>`;
+  if (n === 1) return `<div class="scarcity-chip">${L.scarcity1 || '⚡️ Останній розмір!'}</div>`;
+  if (n <= 3)  return `<div class="scarcity-chip">${L.scarcityLow || '🔥 Лише'} ${n}${L.scarcityLowSuffix || ' розміри'}</div>`;
   return '';
 }
 
 function isTrendingSize(sz, gender) {
-  const hot = (gender === 'female' || gender === 'Р–С–РЅРєР°')
+  const hot = (gender === 'female' || gender === 'Жінка')
     ? CFG.HOT_SIZES_FEMALE : CFG.HOT_SIZES_MALE;
   return hot.includes(Number(sz));
 }
 
-// в”Ђв”Ђ CARD HTML в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── CARD HTML ────────────────────────────────────── */
 /* opts: { grid?: bool, eager?: bool } */
 function prodCardHtml(p, opts = {}) {
   const { grid = false, eager = false } = opts;
@@ -44,31 +44,20 @@ function prodCardHtml(p, opts = {}) {
   const pct     = discPct(p);
   const gridCls = grid ? ' grid-card' : '';
 
-  const _img = p.image && String(p.image).startsWith('http') ? p.image : (p.photos && p.photos[0]) || '';
-  const imgPart = _img
-    ? `<img class="card-img" src="${esc(_img)}" alt="${esc(p.brand)} ${esc(p.name)}"
-         loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')"
-         onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')">`
-    : `<div class="card-img-placeholder">🌸</div>`;
+  const imgPart = p.image && p.image.startsWith('http')
+    ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.brand)} ${esc(p.name)}"
+         loading="${eager ? 'eager' : 'lazy'}" decoding="async" onload="this.classList.add('loaded')">`
+    : `<div class="card-img-placeholder" aria-hidden="true">👗</div>`;
 
-  const NICHE_BRANDS = ['Orto Parisi','Initio','Kilian','BDK','Amouage','Clive Christian',
-    'Roja','Xerjoff','Nishane','Memo','Mancera','Tiziana Terenzi','Boadicea','Parfums de Marly'];
-  const isNiche  = NICHE_BRANDS.some(b => (p.brand || '').toLowerCase().startsWith(b.toLowerCase())
-                                       || (p.name  || '').toLowerCase().includes(b.toLowerCase()));
-  const hasSale  = p.oldPrice && p.oldPrice > p.price && pct >= 10;
   const badgePart = p.isNew
-    ? `<div class="prod-badge badge-new">вњЁ РќРћР’Р•</div>`
-    : hasSale
-      ? `<div class="prod-badge badge-sale">рџ”Ґ -${pct}%</div>`
-      : isNiche
-        ? `<div class="prod-badge badge-hot">рџ’Ћ РќР†РЁР•Р’Рђ</div>`
-        : low
-          ? `<div class="prod-badge badge-low">вљЎ LAST</div>`
-          : '';
+    ? `<div class="prod-badge badge-new">NEW</div>`
+    : low
+      ? `<div class="prod-badge badge-low">LAST</div>`
+      : '';
 
   const pricePart = p.oldPrice && p.oldPrice > p.price
-    ? `${p.price}в‚ґ<span class="prod-card-old">${p.oldPrice}в‚ґ</span>${pct > 0 ? `<span class="prod-card-disc">-${pct}%</span>` : ''}`
-    : `${p.price}в‚ґ`;
+    ? `${p.price}₴<span class="prod-card-old">${p.oldPrice}₴</span>${pct > 0 ? `<span class="prod-card-disc">-${pct}%</span>` : ''}`
+    : `${p.price}₴`;
 
   const maxSz  = 5;
   const szList = p.sizes[0] === 'ONE SIZE'
@@ -78,11 +67,10 @@ function prodCardHtml(p, opts = {}) {
 
   return `<article class="product-card${gridCls}"
     onclick="openProductDetail(findProd('${p.id}'))"
-    role="button" tabindex="0" aria-label="${esc(p.brand)} ${esc(p.name)}, ${p.price}в‚ґ">
+    role="button" tabindex="0" aria-label="${esc(p.brand)} ${esc(p.name)}, ${p.price}₴">
     <div class="card-img-wrap">
       ${imgPart}
       ${badgePart}
-      <button class="prod-share" onclick="shareProduct(findProd('${p.id}'),event)" aria-label="РџРѕРґС–Р»РёС‚РёСЃСЊ" title="Share">рџ”—</button>
     </div>
     <div class="card-body">
       <div class="card-brand">${esc(p.brand)}</div>
@@ -94,7 +82,7 @@ function prodCardHtml(p, opts = {}) {
   </article>`;
 }
 
-// в”Ђв”Ђ SESSION-SEEDED SHUFFLE в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── SESSION-SEEDED SHUFFLE ────────────────────────── */
 let _sessionSeed = 0;
 (function () {
   let s = parseInt(sessionStorage.getItem('wow_seed') || '0');
@@ -110,7 +98,7 @@ function _lcg(s) {
   return (((s >>> 0) * 1664525 + 1013904223) & 0x7fffffff) >>> 0;
 }
 
-/* shuffleSeeded(arr, salt) вЂ” reproducible within a session, fresh each new visit */
+/* shuffleSeeded(arr, salt) — reproducible within a session, fresh each new visit */
 function shuffleSeeded(arr, salt) {
   let s = _lcg((_sessionSeed ^ ((((salt || 0) * 2654435761) | 0) & 0x7fffffff)) >>> 0);
   const a = [...arr];
@@ -122,7 +110,7 @@ function shuffleSeeded(arr, salt) {
   return a;
 }
 
-// в”Ђв”Ђ SKELETON HELPERS в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── SKELETON HELPERS ─────────────────────────────── */
 function skelCards(n) {
   return Array.from({ length: n }).map(() => `
     <div class="skel-card" aria-hidden="true">
@@ -143,25 +131,7 @@ function skelGridCards(n) {
     </div>`).join('');
 }
 
-// в”Ђв”Ђ HOME SECTIONS в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
-
-function renderBilyznaRow(data) {
-  const el = document.getElementById('bilyzna-row');
-  if (!el) return;
-  const items = shuffleSeeded(
-    data.filter(p => p.category === 'bilyzna' && p.image && p.image.startsWith('http')).slice(0,20),
-    7
-  ).slice(0,8);
-  if (!items.length) {
-    // Ховаємо ТІЛЬКИ свою секцію: заголовок "🩱 Білизна" (попередній елемент) + сам рядок.
-    // НЕ чіпаємо parentNode — це #page-home, його видалення зносить усю головну сторінку!
-    const title = el.previousElementSibling;
-    if (title && title.classList.contains('home-section-title')) title.remove();
-    el.remove();
-    return;
-  }
-  el.innerHTML = items.map((p,i) => prodCardHtml(p,{eager:i<3})).join('');
-}
+// ── HOME SECTIONS ────────────────────────────────── */
 function renderHome() {
   setHomeGreeting();
   // Instant skeleton
@@ -178,7 +148,6 @@ function renderHome() {
     renderHomeBrands(data);
     renderRecentlyViewed(data);
     renderReviews();
-    renderBilyznaRow(data);
     renderHomeAllGrid(data);
     animateCounter(data.length);
     _setupScrollNudge(data.length);
@@ -196,20 +165,27 @@ function setHomeGreeting() {
 function animateCounter(total) {
   const el = document.getElementById('models-counter');
   if (!el) return;
+  if (document.hidden) { el.textContent = total; return; }
   let cur = 0;
-  const step = total / 60;
+  const step = Math.max(1, total / 60);
   const tick = () => {
     cur = Math.min(cur + step, total);
     el.textContent = Math.round(cur);
-    if (cur < total) requestAnimationFrame(tick);
+    if (cur < total) setTimeout(tick, 16);
   };
-  requestAnimationFrame(tick);
+  tick();
 }
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  const el = document.getElementById('models-counter');
+  const total = (typeof S !== 'undefined' && S.catalog && S.catalog.all && S.catalog.all.length) || 0;
+  if (el && total && (el.textContent === '0' || el.textContent === '')) animateCounter(total);
+});
 
-// Summer months (MayвЂ“Aug): push fur/winter products to the back
+// Summer months (May–Aug): push fur/winter products to the back
 function _isWinter(p) {
   const t = `${p.name} ${p.brand}`.toLowerCase();
-  return ['fur', 'С…СѓС‚СЂ', 'Р·РёРјРѕРІ', 'winter', 'С€РµСЂРї', 'С‚РµСЂРјРѕ', 'fleece'].some(kw => t.includes(kw));
+  return ['fur', 'хутр', 'зимов', 'winter', 'шерп', 'термо', 'fleece'].some(kw => t.includes(kw));
 }
 function _isSummer() { const m = new Date().getMonth(); return m >= 4 && m <= 8; }
 
@@ -256,13 +232,13 @@ function renderHomeBrands(data) {
   el.innerHTML = entries.map(([brand, cnt]) => `
     <button class="hb-card" onclick="changeTab('catalog');setTimeout(()=>openBrand('${esc(brand)}'),200)"
       style="background:${grad(brand)};--hb-glow:${glow(brand)}"
-      aria-label="${esc(brand)}, ${cnt} РјРѕРґРµР»РµР№">
+      aria-label="${esc(brand)}, ${cnt} моделей">
       ${imgs[brand]
         ? `<div class="hb-bg-img" style="background-image:url('${esc(imgs[brand])}')" aria-hidden="true"></div>`
         : ''}
       <div class="hb-text">
         <div class="hb-name">${esc(brand)}</div>
-        <div class="hb-cnt">${cnt} РјРѕРґ.</div>
+        <div class="hb-cnt">${cnt} мод.</div>
       </div>
     </button>`).join('');
 }
@@ -283,18 +259,18 @@ function renderReviews() {
   row.innerHTML = S.reviews.map((r, i) => `
     <article class="rev-bubble${i % 2 === 1 ? ' rev-alt' : ''}" role="article">
       <div class="rev-bub-head">
-        <span class="rev-bub-emoji">${r.emoji || 'рџЉ'}</span>
+        <span class="rev-bub-emoji">${r.emoji || '😊'}</span>
         <div>
           <div class="rev-bub-name">${esc(r.author)}</div>
-          ${r.location ? `<div class="rev-bub-loc">рџ“Ќ ${esc(r.location)}</div>` : ''}
+          ${r.location ? `<div class="rev-bub-loc">📍 ${esc(r.location)}</div>` : ''}
         </div>
       </div>
-      <div class="rev-bub-stars" aria-label="${r.stars || 5} Р·С–СЂРѕРє">${'в…'.repeat(r.stars || 5)}</div>
+      <div class="rev-bub-stars" aria-label="${r.stars || 5} зірок">${'★'.repeat(r.stars || 5)}</div>
       <p class="rev-bub-text">${esc(r.text)}</p>
     </article>`).join('');
 }
 
-// в”Ђв”Ђ VIRTUAL GRID (infinite scroll) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── VIRTUAL GRID (infinite scroll) ───────────────── */
 let _gridData     = [];
 let _gridRendered = 0;
 let _gridObserver = null;
@@ -303,7 +279,7 @@ function renderHomeAllGrid(data) {
   const el = document.getElementById('home-all-grid');
   if (!el) return;
   if (_gridObserver) { _gridObserver.disconnect(); _gridObserver = null; }
-  // Discounted items first (better conversion), then the rest вЂ” both groups shuffled
+  // Discounted items first (better conversion), then the rest — both groups shuffled
   const discounted = data.filter(p => p.oldPrice && p.oldPrice > p.price);
   const regular    = data.filter(p => !p.oldPrice || p.oldPrice <= p.price);
   _gridData     = [...shuffleSeeded(discounted, 3), ...shuffleSeeded(regular, 4)];
@@ -338,7 +314,7 @@ function _renderGridBatch(el) {
   }
 }
 
-// в”Ђв”Ђ SCROLL NUDGE в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── SCROLL NUDGE ─────────────────────────────────── */
 let _scrollNudgeObserver = null;
 let _scrollNudgeFired    = false;
 
@@ -357,28 +333,26 @@ function _setupScrollNudge(total) {
     const nudge = document.createElement('div');
     nudge.className = 'scroll-nudge';
     nudge.onclick = () => { nudge.remove(); changeTab('match'); };
-    nudge.innerHTML = `<p>рџЊё РўРё РїРµСЂРµРіР»СЏРЅСѓРІ ${total} Р°СЂРѕРјР°С‚С–РІ</p><small>РЎРІР°Р№РїР°Р№ Сѓ Match вЂ” Р·РЅР°Р№РґРё СЃРІС–Р№ Р°СЂРѕРјР°С‚ рџЊё</small>`;
+    nudge.innerHTML = `<p>👗 Ти переглянув ${total} моделей</p><small>Свайпай у Match — знайди свій стиль 🔥</small>`;
     sentinel.parentNode?.insertBefore(nudge, sentinel);
   }, { rootMargin: '0px', threshold: 0.5 });
   _scrollNudgeObserver.observe(sentinel);
 }
 
-// в”Ђв”Ђ GENDER COUNTS в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── GENDER COUNTS ────────────────────────────────── */
 function _updateGenderCounts(data) {
-  const mc = data.filter(p => p.gender === 'male'   || p.gender === 'Р§РѕР»РѕРІС–Рє').length;
-  const fc = data.filter(p => p.gender === 'female' || p.gender === 'Р–С–РЅРєР°').length;
+  const mc = data.filter(p => p.gender === 'male'   || p.gender === 'Чоловік').length;
+  const fc = data.filter(p => p.gender === 'female' || p.gender === 'Жінка').length;
   const mEl = document.getElementById('g-cnt-male');
   const fEl = document.getElementById('g-cnt-female');
-  if (mEl && mc) { mEl.textContent = mc + ' РјРѕРґ.'; mEl.classList.add('vis'); }
-  if (fEl && fc) { fEl.textContent = fc + ' РјРѕРґ.'; fEl.classList.add('vis'); }
+  if (mEl && mc) { mEl.textContent = mc + ' мод.'; mEl.classList.add('vis'); }
+  if (fEl && fc) { fEl.textContent = fc + ' мод.'; fEl.classList.add('vis'); }
 }
 
-// в”Ђв”Ђ RECENTLY VIEWED TRACKER в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── RECENTLY VIEWED TRACKER ───────────────────────── */
 function trackView(product) {
   S.recent = S.recent.filter(id => id !== product.id);
   S.recent.unshift(product.id);
   if (S.recent.length > 6) S.recent = S.recent.slice(0, 6);
   saveRecent();
 }
-
-

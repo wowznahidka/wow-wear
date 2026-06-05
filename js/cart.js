@@ -1,9 +1,9 @@
-﻿/* ============================================================
-   WOW.ZNAHIDKA вЂ” FAVORITES, CART & CHECKOUT
+/* ============================================================
+   WOW.ZNAHIDKA — FAVORITES, CART & CHECKOUT
    Preserves all GAS/Telegram integration logic.
    ============================================================ */
 
-// в”Ђв”Ђ FAVORITES в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── FAVORITES ────────────────────────────────────── */
 function addToFavs(p) {
   if (!isFav(p.id)) {
     S.favs.push(p);
@@ -25,7 +25,7 @@ function renderFavSheet() {
   if (!el) return;
   if (!S.favs.length) {
     el.innerHTML = `<div class="sh-empty">
-      <div class="sh-empty-ico">рџ¤Ќ</div>
+      <div class="sh-empty-ico">🤍</div>
       <p>${L.favsEmpty}</p>
     </div>`;
     return;
@@ -35,7 +35,7 @@ function renderFavSheet() {
     const inCartSizes = S.cart.filter(c => c.id === p.id).map(c => Number(c.size));
     let sizeChips;
     if (p.sizes[0] === 'ONE SIZE') {
-      sizeChips = `<button class="fav-sz-quick one-size" onclick="quickAddToCart('${p.id}','ONE SIZE',this)">ONE SIZE вЂ” Р’ РєРѕС€РёРє</button>`;
+      sizeChips = `<button class="fav-sz-quick one-size" onclick="quickAddToCart('${p.id}','ONE SIZE',this)">ONE SIZE — В кошик</button>`;
     } else {
       const visible = p.sizes.slice(0, 7);
       const more    = p.sizes.length > 7 ? p.sizes.length - 7 : 0;
@@ -47,15 +47,15 @@ function renderFavSheet() {
     return `<div class="fav-item">
       ${p.image && p.image.startsWith('http')
         ? `<img class="fav-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onload="this.classList.add('loaded')">`
-        : `<div class="fav-img-ph" aria-hidden="true">рџЊё</div>`}
+        : `<div class="fav-img-ph" aria-hidden="true">👗</div>`}
       <div class="fav-body">
         <div class="fav-brand">${esc(p.brand)}</div>
         <div class="fav-name">${esc(p.name)}</div>
-        <div class="fav-price">${p.price}в‚ґ</div>
+        <div class="fav-price">${p.price}₴</div>
         <div class="fav-sizes">${sizeChips}</div>
       </div>
       <div class="fav-acts">
-        <button class="fav-rm" onclick="removeFromFavs('${esc(p.id)}',event)" aria-label="Р’РёРґР°Р»РёС‚Рё"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
+        <button class="fav-rm" onclick="removeFromFavs('${esc(p.id)}',event)" aria-label="Видалити"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
       </div>
     </div>`;
   }).join('');
@@ -64,7 +64,7 @@ function renderFavSheet() {
   const remaining = S.matchPool.length > 0 ? S.matchPool.length - S.matchIdx : 0;
   if (remaining > 0) {
     el.innerHTML += `<div class="fav-resume-match" onclick="closeAllSheets();changeTab('match')">
-      <div><span>рџ”Ґ Р©Рµ ${remaining} Р°СЂРѕРјР°С‚С–РІ С‡РµРєР°СЋС‚СЊ</span><br><small>РЎРІР°Р№РїР°Р№ РґР°Р»С– вЂ” Р·РЅР°Р№РґРё СЃРІС–Р№ Р°СЂРѕРјР°С‚</small></div>
+      <div><span>🔥 Ще ${remaining} моделей чекають</span><br><small>Свайпай далі — знайди свій стиль</small></div>
       <span class="i-arr" style="width:8px;height:8px;border-width:2px" aria-hidden="true"></span>
     </div>`;
   }
@@ -92,13 +92,13 @@ function quickAddToCart(productId, size, btnEl) {
   const acts = btnEl.closest('.fav-item')?.querySelector('.fav-acts');
   if (acts) {
     acts.innerHTML = `
-      <button class="fav-to-cart" onclick="closeAllSheets();openSheet('sheet-cart')" style="background:var(--green)">РљРѕС€РёРє</button>
-      <button class="fav-rm" onclick="removeFromFavs('${esc(p.id)}',event)" aria-label="Р’РёРґР°Р»РёС‚Рё"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>`;
+      <button class="fav-to-cart" onclick="closeAllSheets();openSheet('sheet-cart')" style="background:var(--green)">Кошик</button>
+      <button class="fav-rm" onclick="removeFromFavs('${esc(p.id)}',event)" aria-label="Видалити"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>`;
   }
-  toast(`вњ… Р РѕР·РјС–СЂ ${sz} вЂ” РІ РєРѕС€РёРєСѓ! <a onclick="closeAllSheets();openSheet('sheet-cart')">РџРµСЂРµРіР»СЏРЅСѓС‚Рё в†’</a>`);
+  toast(`✅ Розмір ${sz} — в кошику! <a onclick="closeAllSheets();openSheet('sheet-cart')">Переглянути →</a>`);
 }
 
-// в”Ђв”Ђ CART в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── CART ─────────────────────────────────────────── */
 function renderCartSheet() {
   const el       = document.getElementById('cart-list');
   const sumBlock = document.getElementById('cart-summary-block');
@@ -121,17 +121,17 @@ function renderCartSheet() {
       <div class="cart-body">
         <div class="cart-brand">${esc(p.brand)}</div>
         <div class="cart-name">${esc(p.name)}</div>
-        ${p.isFreeShipping ? '<div class="cart-deal-tag">рџљљ Р‘РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°</div>' : ''}
-        <div class="cart-size-tag">${L.sizeLabel || 'Р РѕР·РјС–СЂ'} ${p.size}</div>
-        <div class="cart-price">${(Number(p.price) || 0) * (p.qty || 1)}в‚ґ</div>
+        ${p.isFreeShipping ? '<div class="cart-deal-tag">🚚 Безкоштовна доставка</div>' : ''}
+        <div class="cart-size-tag">${L.sizeLabel || 'Розмір'} ${p.size}</div>
+        <div class="cart-price">${(Number(p.price) || 0) * (p.qty || 1)}₴</div>
       </div>
       <div class="cart-item-controls">
         <div class="cart-qty-row">
-          <button class="cart-qty-btn" onclick="decrementCartQty('${sid}','${ssz}')" aria-label="Р—РјРµРЅС€РёС‚Рё">в€’</button>
+          <button class="cart-qty-btn" onclick="decrementCartQty('${sid}','${ssz}')" aria-label="Зменшити">−</button>
           <span class="cart-qty-num">${p.qty || 1}</span>
-          <button class="cart-qty-btn" onclick="incrementCartQty('${sid}','${ssz}')" aria-label="Р—Р±С–Р»СЊС€РёС‚Рё">+</button>
+          <button class="cart-qty-btn" onclick="incrementCartQty('${sid}','${ssz}')" aria-label="Збільшити">+</button>
         </div>
-        <button class="cart-rm" onclick="removeFromCart('${sid}','${ssz}')" aria-label="Р’РёРґР°Р»РёС‚Рё">${_trashSvg}</button>
+        <button class="cart-rm" onclick="removeFromCart('${sid}','${ssz}')" aria-label="Видалити">${_trashSvg}</button>
       </div>
     </div>`;
   }).join('');
@@ -139,9 +139,9 @@ function renderCartSheet() {
   if (sumBlock) {
     sumBlock.innerHTML = `
       <div class="cart-summary">
-        <div class="cart-sum-row"><span>${L.cartRowItems||'РўРѕРІР°СЂРё'}</span><span>${totalQty} ${L.cartItems}</span></div>
-        <div class="cart-sum-row"><span>${L.cartRowDelivery||'Р”РѕСЃС‚Р°РІРєР°'}</span><span>${L.cartDelivery}</span></div>
-        <div class="cart-sum-total"><span>${L.cartToPay}</span><span>${total} в‚ґ</span></div>
+        <div class="cart-sum-row"><span>${L.cartRowItems||'Товари'}</span><span>${totalQty} ${L.cartItems}</span></div>
+        <div class="cart-sum-row"><span>${L.cartRowDelivery||'Доставка'}</span><span>${L.cartDelivery}</span></div>
+        <div class="cart-sum-total"><span>${L.cartToPay}</span><span>${total} ₴</span></div>
       </div>
       <button class="cart-checkout-btn" onclick="openCheckout()">${L.cartCheckout}</button>`;
     sumBlock.classList.remove('hidden');
@@ -197,10 +197,10 @@ function _renderCheckoutSummary() {
     <div class="co-item">
       ${c.image && c.image.startsWith('http')
         ? `<img class="co-img" src="${esc(c.image)}" alt="${esc(c.name)}" loading="lazy" onload="this.classList.add('loaded')">`
-        : `<div class="co-img-ph">рџЊё</div>`}
+        : `<div class="co-img-ph">👟</div>`}
       <div class="co-body">
         <div class="co-name">${esc(c.brand)} ${esc(c.name)}</div>
-        <div class="co-meta">Р РѕР·РјС–СЂ ${c.size}${(c.qty||1) > 1 ? ` В· ${c.qty} РїР°СЂРё` : ''} В· ${(Number(c.price)||0) * (c.qty||1)}в‚ґ${c.isFreeShipping ? ' В· <span style="color:var(--green);font-weight:700">рџљљ Р‘РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°</span>' : ''}</div>
+        <div class="co-meta">Розмір ${c.size}${(c.qty||1) > 1 ? ` · ${c.qty} пари` : ''} · ${(Number(c.price)||0) * (c.qty||1)}₴${c.isFreeShipping ? ' · <span style="color:var(--green);font-weight:700">🚚 Безкоштовна доставка</span>' : ''}</div>
       </div>
     </div>`).join('');
 }
@@ -223,7 +223,7 @@ function openCheckout() {
   }, 100);
 }
 
-// в”Ђв”Ђ CHECKOUT FORM в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── CHECKOUT FORM ────────────────────────────────── */
 let _submitLock = false;
 
 function setDelivTab(t) {
@@ -256,7 +256,7 @@ function validateField(inp, type) {
   const v     = inp.value.trim();
   let valid;
   if (type === 'depot') valid = v.length >= 1;
-  else if (type === 'name') valid = v.length >= 3 && /[Р°-СЏС‘С–С—С”a-z]/i.test(v);
+  else if (type === 'name') valid = v.length >= 3 && /[а-яёіїєa-z]/i.test(v);
   else valid = v.length >= 2;
   _setFieldState(inp, type, valid, v.length > 0);
 }
@@ -265,7 +265,7 @@ function _setFieldState(inp, type, valid, touched) {
   inp.classList.toggle('valid', valid);
   inp.classList.toggle('err',   !valid && touched);
   const ico = document.getElementById(`f-${type}-ico`);
-  if (ico) ico.textContent = valid ? 'вњ…' : (touched ? 'вќЊ' : '');
+  if (ico) ico.textContent = valid ? '✅' : (touched ? '❌' : '');
   const err = document.getElementById(`f-${type}-err`);
   if (err) err.classList.toggle('vis', !valid && touched);
 }
@@ -276,9 +276,9 @@ function applyPromo() {
   const discount = S.promoCodes[code];
   if (discount) {
     S.promoDiscount = discount;
-    toast(`рџЋ‰ РџСЂРѕРјРѕРєРѕРґ Р°РєС‚РёРІРѕРІР°РЅРѕ! -${discount}%`);
+    toast(`🎉 Промокод активовано! -${discount}%`);
   } else {
-    toast('вќЊ РџСЂРѕРјРѕРєРѕРґ РЅРµ Р·РЅР°Р№РґРµРЅРѕ');
+    toast('❌ Промокод не знайдено');
   }
 }
 
@@ -297,19 +297,19 @@ async function submitOrder() {
   validateField(document.getElementById('f-city'),  'city');
   validateField(document.getElementById('f-depot'), 'depot');
 
-  const nameValid  = name.length >= 3 && /[Р°-СЏС‘С–С—С”a-z]/i.test(name);
+  const nameValid  = name.length >= 3 && /[а-яёіїєa-z]/i.test(name);
   const phoneValid = phone.replace(/\D/g,'').length >= 9;
   const cityValid  = city.length >= 2;
   const depotValid = depot.length >= 1;
 
   if (!nameValid) {
-    toast('вљ пёЏ Р’РІРµРґС–С‚СЊ РєРѕСЂРµРєС‚РЅРµ С–Рј\'СЏ (РјС–РЅС–РјСѓРј 3 СЃРёРјРІРѕР»Рё)');
+    toast('⚠️ Введіть коректне ім\'я (мінімум 3 символи)');
     document.getElementById('f-name')?.focus();
     _submitLock = false;
     return;
   }
   if (!phoneValid || !cityValid || !depotValid) {
-    toast('вљ пёЏ Р—Р°РїРѕРІРЅС–С‚СЊ РІСЃС– РїРѕР»СЏ РєРѕСЂРµРєС‚РЅРѕ');
+    toast('⚠️ Заповніть всі поля коректно');
     _submitLock = false;
     return;
   }
@@ -318,11 +318,11 @@ async function submitOrder() {
   if (btn) { btn.disabled = true; btn.textContent = L.submitting; }
 
   const itemsStr = S.cart.map(c => {
-    const dealMark = c.isFreeShipping ? ' рџљљ (Р‘РµР·РєРѕС€С‚РѕРІРЅР° РґРѕСЃС‚Р°РІРєР°)' : '';
-    return `${c.brand} ${c.name}${dealMark}, СЂРѕР·РјС–СЂ ${c.size}${(c.qty||1)>1?` Г— ${c.qty}`:''} вЂ” ${(Number(c.price)||0)*(c.qty||1)}в‚ґ`;
+    const dealMark = c.isFreeShipping ? ' 🚚 (Безкоштовна доставка)' : '';
+    return `${c.brand} ${c.name}${dealMark}, розмір ${c.size}${(c.qty||1)>1?` × ${c.qty}`:''} — ${(Number(c.price)||0)*(c.qty||1)}₴`;
   }).join('\n');
   const total = S.cart.reduce((s, p) => s + (Number(p.price) || 0) * (p.qty || 1), 0);
-  const delivLabel = `${S.delivType === 'dept' ? 'Р’С–РґРґС–Р»РµРЅРЅСЏ' : 'РџРѕС€С‚РѕРјР°С‚'} в„–${depot}`;
+  const delivLabel = `${S.delivType === 'dept' ? 'Відділення' : 'Поштомат'} №${depot}`;
 
   const payload = {
     action:   'new_order',
@@ -335,22 +335,22 @@ async function submitOrder() {
     promo:    document.getElementById('f-promo')?.value.trim() || '',
     cart:     S.cart.map(c => ({ id: c.id, brand: c.brand || '', name: c.name || '', price: Number(c.price) || 0, size: String(c.size), qty: c.qty || 1, supplier: c.supplier || 0 })),
     utm:      S.utm || null,
-    ref:      (typeof REF !== 'undefined' ? REF.getReferrerLabel() : null),
+    ref:      REF.getReferrerLabel(),
   };
 
-  // Р—Р±РµСЂС–РіР°С”РјРѕ Р·Р°РјРѕРІР»РµРЅРЅСЏ Р»РѕРєР°Р»СЊРЅРѕ Р”Рћ РІС–РґРїСЂР°РІРєРё вЂ” СЃС‚СЂР°С…РѕРІРєР°
+  // Зберігаємо замовлення локально ДО відправки — страховка
   try { localStorage.setItem('wow_pending_order', JSON.stringify({ ...payload, ts: Date.now() })); } catch(_) {}
 
   const ok = await postData(payload);
 
   if (ok === false) {
-    toast('вљ пёЏ РќРµРјР°С” Р·\'С”РґРЅР°РЅРЅСЏ. РџРµСЂРµРІС–СЂС‚Рµ РјРµСЂРµР¶Сѓ Р°Р±Рѕ РЅР°РїРёС€С–С‚СЊ РЅР°Рј Сѓ Telegram.');
+    toast('⚠️ Немає з\'єднання. Перевірте мережу або напишіть нам у Telegram.');
     if (btn) { btn.disabled = false; btn.textContent = L.submitOrder; }
     _submitLock = false;
     return;
   }
 
-  // ok === true (РїС–РґС‚РІРµСЂРґР¶РµРЅРѕ GAS) Р°Р±Рѕ null (РІС–РґРїСЂР°РІР»РµРЅРѕ, РІС–РґРїРѕРІС–РґСЊ РЅРµРїСЂРѕР·РѕСЂР°)
+  // ok === true (підтверджено GAS) або null (відправлено, відповідь непрозора)
   _saveCustomerData(name, phone, city);
   try { localStorage.removeItem('wow_pending_order'); } catch(_) {}
 
@@ -382,12 +382,12 @@ async function submitOrder() {
   if (info) {
     const tgFallback = ok === null
       ? `<div style="margin-top:10px;font-size:12px;color:var(--text-muted);line-height:1.6">
-           РЇРєС‰Рѕ РЅРµ Р·РІ'СЏР¶РµРјРѕСЃСЊ РїСЂРѕС‚СЏРіРѕРј РіРѕРґРёРЅРё вЂ”
-           <a href="${CFG.TG_URL}" target="_blank" style="color:var(--blue);font-weight:700">РЅР°РїРёС€С–С‚СЊ РЅР°Рј Сѓ Telegram</a>
+           Якщо не зв'яжемось протягом години —
+           <a href="${CFG.TG_URL}" target="_blank" style="color:var(--blue);font-weight:700">напишіть нам у Telegram</a>
          </div>`
       : '';
-    info.innerHTML = `<b>${esc(name)}</b> В· ${esc(phone)}<br>
-      ${esc(city)}, ${S.delivType === 'dept' ? 'РІС–РґРґ.' : 'РїРѕС€С‚РѕРјР°С‚'} ${esc(depot)}<br>
+    info.innerHTML = `<b>${esc(name)}</b> · ${esc(phone)}<br>
+      ${esc(city)}, ${S.delivType === 'dept' ? 'відд.' : 'поштомат'} ${esc(depot)}<br>
       ${S.cart.map(c => `${esc(c.brand)} ${esc(c.name)} (${c.size})`).join(', ')}${tgFallback}`;
   }
   closeAllSheets();
@@ -398,7 +398,7 @@ async function submitOrder() {
   updateBadges();
   if (btn) { btn.disabled = false; btn.textContent = L.submitOrder; }
   _submitLock = false;
-  // РџСЂРёРјСѓСЃРѕРІРѕ РѕРЅРѕРІР»СЋС”РјРѕ РєР°С‚Р°Р»РѕРі вЂ” С‰РѕР± РЅР°СЃС‚СѓРїРЅРёР№ РїРѕРєСѓРїРµС†СЊ Р±Р°С‡РёРІ Р°РєС‚СѓР°Р»СЊРЅС– Р·Р°Р»РёС€РєРё
+  // Примусово оновлюємо каталог — щоб наступний покупець бачив актуальні залишки
   S.catalog.loadedFromServer = false;
   bgRefreshCatalog();
 }
@@ -408,7 +408,7 @@ function goHome() {
   changeTab('home');
 }
 
-// в”Ђв”Ђ SIZE MEMORY (localStorage) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── SIZE MEMORY (localStorage) ────────────────────── */
 function getRememberedSize() {
   try {
     return localStorage.getItem('wow_my_size') || null;
@@ -422,7 +422,7 @@ function rememberSize(sz) {
   } catch(e) {}
 }
 
-// в”Ђв”Ђ REVIEW SUBMIT в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
+// ── REVIEW SUBMIT ─────────────────────────────────── */
 function setStarRating(n) {
   S.starRating = n;
   document.querySelectorAll('.star-pick').forEach((btn, i) => btn.classList.toggle('on', i < n));
@@ -440,16 +440,16 @@ async function submitReview() {
   const author = document.getElementById('rev-author-inp')?.value.trim() || '';
   const text   = document.getElementById('rev-text-inp')?.value.trim()   || '';
   const stars  = S.starRating || 5;
-  if (!text) { toast('вљ пёЏ РќР°РїРёС€С–С‚СЊ С‚РµРєСЃС‚ РІС–РґРіСѓРєСѓ'); return; }
+  if (!text) { toast('⚠️ Напишіть текст відгуку'); return; }
   const btn = document.querySelector('.rev-submit-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'РќР°РґСЃРёР»Р°С”РјРѕвЂ¦'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Надсилаємо…'; }
   try {
-    await postData({ action: 'review', author: author || 'РђРЅРѕРЅС–Рј', stars, text });
+    await postData({ action: 'review', author: author || 'Анонім', stars, text });
   } catch(e) {}
-  S.reviews.unshift({ emoji: 'рџЉ', author: author || 'РђРЅРѕРЅС–Рј', stars, text, location: '' });
+  S.reviews.unshift({ emoji: '😊', author: author || 'Анонім', stars, text, location: '' });
   renderReviews();
   closeAllSheets();
   resetReviewForm();
   if (btn) { btn.disabled = false; btn.textContent = L.sendReview; }
-  toast(`в­ђ Р”СЏРєСѓС”РјРѕ Р·Р° РІС–РґРіСѓРє! <a href="${CFG.TG_URL}" target="_blank" rel="noopener">РќР°РїРёСЃР°С‚Рё Сѓ Telegram в†’</a>`);
+  toast(`⭐ Дякуємо за відгук! <a href="${CFG.TG_URL}" target="_blank" rel="noopener">Написати у Telegram →</a>`);
 }

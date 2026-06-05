@@ -201,11 +201,29 @@ function openProductDetail(product) {
     <path d="M21.944 2.56a1.5 1.5 0 0 0-1.53-.22L2.53 9.6c-.96.37-1.02 1.7-.1 2.16l4.06 2.02 1.56 5.14c.2.65.99.87 1.49.41l2.3-2.12 4.48 3.29c.59.43 1.42.1 1.57-.61L22.44 4.04a1.5 1.5 0 0 0-.5-1.48zM9.4 14.83l-.83 2.72-.94-3.1 8.33-5.9-6.56 6.28z" fill="#fff"/>
   </svg>`;
 
+  // Photos array — підтримка множинних фото. Якщо немає масиву — fallback на image.
+  const _photoList = (Array.isArray(product.photos) && product.photos.length
+                      ? product.photos
+                      : (product.image ? [product.image] : []))
+                      .filter(u => typeof u === 'string' && u.startsWith('http'));
+
+  const _galleryHtml = _photoList.length === 0
+    ? `<div class="pd-img-ph" aria-hidden="true">👗</div>`
+    : _photoList.length === 1
+      ? `<img class="pd-img" src="${esc(_photoList[0])}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
+      : `<div class="pd-gallery" id="pd-gallery" data-index="0" data-count="${_photoList.length}">
+          <div class="pd-gallery-track" id="pd-gallery-track">
+            ${_photoList.map((u, i) => `<div class="pd-gallery-slide"><img class="pd-img pd-thumb-img" src="${esc(u)}" alt="${esc(product.brand)} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async" draggable="false"></div>`).join('')}
+          </div>
+          <button class="pd-gal-nav pd-gal-prev" onclick="pdGalleryNav(-1)" aria-label="Попереднє фото">‹</button>
+          <button class="pd-gal-nav pd-gal-next" onclick="pdGalleryNav(1)" aria-label="Наступне фото">›</button>
+          <div class="pd-gal-dots" id="pd-gal-dots">${_photoList.map((_, i) => `<span class="pd-gal-dot${i===0?' active':''}" onclick="pdGalleryGo(${i})"></span>`).join('')}</div>
+          <div class="pd-gal-counter"><span id="pd-gal-cur">1</span>/${_photoList.length}</div>
+        </div>`;
+
   document.getElementById('product-detail-content').innerHTML = `
     <div class="pd-hero">
-      ${product.image && product.image.startsWith('http')
-        ? `<img class="pd-img" src="${esc(product.image)}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
-        : `<div class="pd-img-ph" aria-hidden="true">👟</div>`}
+      ${_galleryHtml}
       <div class="pd-hero-vignette" aria-hidden="true"></div>
       <button class="pd-fav-float ${faved ? 'on' : ''}" id="pd-fav-btn"
         onclick="togglePdFav()" aria-label="${faved ? 'Видалити з улюблених' : 'Додати в улюблені'}">
@@ -260,3 +278,49 @@ function togglePdFav() {
   }
   toast(faved ? '❤️ Додано до улюблених' : 'Видалено з улюблених');
 }
+
+// ── MULTI-PHOTO GALLERY ───────────────────────────── */
+function pdGalleryNav(dir) {
+  const g = document.getElementById('pd-gallery');
+  if (!g) return;
+  const count = parseInt(g.dataset.count) || 1;
+  let idx = parseInt(g.dataset.index) || 0;
+  idx = (idx + dir + count) % count;
+  pdGalleryGo(idx);
+}
+function pdGalleryGo(idx) {
+  const g = document.getElementById('pd-gallery');
+  const track = document.getElementById('pd-gallery-track');
+  if (!g || !track) return;
+  g.dataset.index = idx;
+  track.style.transform = `translateX(-${idx * 100}%)`;
+  // dots
+  const dots = g.querySelectorAll('.pd-gal-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  // counter
+  const cur = document.getElementById('pd-gal-cur');
+  if (cur) cur.textContent = idx + 1;
+}
+// Touch swipe binding (attached on first call after gallery render)
+(function _bindPdGallerySwipe() {
+  let startX = 0, startY = 0, deltaX = 0, dragging = false;
+  document.addEventListener('pointerdown', e => {
+    const slide = e.target.closest && e.target.closest('.pd-gallery-slide');
+    if (!slide) return;
+    dragging = true; startX = e.clientX; startY = e.clientY; deltaX = 0;
+  }, { passive: true });
+  document.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    deltaX = e.clientX - startX;
+    const dy = Math.abs(e.clientY - startY);
+    // Якщо вертикально-домінантний рух — це скрол, не свайп
+    if (dy > Math.abs(deltaX) * 1.2) dragging = false;
+  }, { passive: true });
+  document.addEventListener('pointerup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (Math.abs(deltaX) < 40) return;
+    pdGalleryNav(deltaX < 0 ? 1 : -1);
+  });
+  document.addEventListener('pointercancel', () => { dragging = false; });
+})();

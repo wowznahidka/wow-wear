@@ -69,13 +69,18 @@ function normalizeProduct(p) {
     category = 'bilyzna';
   }
 
+  // photoRaw може бути pipe-separated (multi-photo) або single URL
+  const photoRaw = String(p['Фото'] || p['фото'] || p.image || p.img || p.photo || '');
+  const photos   = photoRaw.split('|').map(s => s.trim()).filter(s => s.startsWith('http'));
+  const image    = photos[0] || '';
   return {
     id:          String(p['ID'] || p['id'] || p['Артикул'] || Math.random().toString(36).slice(2)),
     name:        String(p['Назва']  || p['назва']  || p['Модель'] || p.name || p.model || ''),
     brand:       String(p['Бренд']  || p['бренд']  || p.brand  || p.Brand  || '') || 'WOW',
     price,
     oldPrice,
-    image:       String(p['Фото']   || p['фото']   || p.image  || p.img   || p.photo || ''),
+    image,
+    photos,                                         // ← масив URL для галереї
     description: String(p['Опис']   || p['опис']   || p.description || ''),
     sizes,
     sizeQty,

@@ -145,6 +145,7 @@ function renderHome() {
     renderDailyDeals(getCatalog());
     renderPopularRow(data);
     renderNewRow(data);
+    renderBilyznaRow(data);
     renderHomeBrands(data);
     renderRecentlyViewed(data);
     renderReviews();
@@ -205,6 +206,20 @@ function renderPopularRow(data) {
     .slice(0, 30);
   const items = shuffleSeeded(pool.length >= 4 ? pool : data.slice(0, 30), 1).slice(0, 10);
   el.innerHTML = items.map((p, i) => prodCardHtml(p, { eager: i < 4 })).join('');
+}
+
+function renderBilyznaRow(data) {
+  const el = document.getElementById('bilyzna-row');
+  if (!el) return;
+  const pool = data.filter(p => p.category === 'bilyzna' && p.image && p.image.startsWith('http'));
+  if (!pool.length) {
+    const prev = el.previousElementSibling;
+    if (prev && prev.classList.contains('home-section-title')) prev.style.display = 'none';
+    el.style.display = 'none';
+    return;
+  }
+  const items = shuffleSeeded(pool, 3).slice(0, 10);
+  el.innerHTML = items.map((p, i) => prodCardHtml(p, { eager: i < 3 })).join('');
 }
 
 function renderNewRow(data) {

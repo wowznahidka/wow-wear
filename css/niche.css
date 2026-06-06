@@ -622,6 +622,29 @@ h1,h2,h3,.header-logo,.contacts-banner-title,.match-empty h3,
    PREMIUM POLISH — Sheets · Nav · Forms · Cards · Pages
    ═══════════════════════════════════════════════════════ */
 
+/* ── DESKTOP NAV: hide on mobile, show on 1024px+ ── */
+#desktop-nav { display: none !important; }
+@media (min-width: 1024px) {
+  #desktop-nav { display: flex !important; gap: 4px; }
+}
+
+/* ── PRODUCTS ROW: horizontal scroll ── */
+.products-row {
+  display: flex; gap: 10px;
+  overflow-x: auto; padding: 0 16px 14px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.products-row::-webkit-scrollbar { display: none; }
+
+/* ── HOME ALL GRID: 2-col ── */
+.home-all-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px; padding: 0 16px;
+}
+@media (min-width: 480px) { .home-all-grid { grid-template-columns: repeat(3, 1fr); } }
+
 /* ── NAV SVG ICONS ── */
 .nav-icon { font-size: 0; line-height: 0; display: flex; align-items: center; justify-content: center; }
 .nav-icon svg { stroke: rgba(245,245,245,0.30); transition: stroke .2s ease, filter .2s ease; }

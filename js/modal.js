@@ -242,7 +242,7 @@ function openProductDetail(product) {
       ? `<img class="pd-img" src="${esc(_photoList[0])}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
       : `<div class="pd-gallery" id="pd-gallery" data-index="0" data-count="${_photoList.length}">
           <div class="pd-gallery-track" id="pd-gallery-track">
-            ${_photoList.map((u, i) => `<div class="pd-gallery-slide"><img class="pd-img pd-thumb-img" src="${esc(u)}" alt="${esc(product.brand)} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async" draggable="false"></div>`).join('')}
+            ${_photoList.map((u, i) => `<div class="pd-gallery-slide"><img class="pd-img pd-thumb-img loaded" src="${esc(u)}" alt="${esc(product.brand)} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async" draggable="false" onload="this.classList.add('loaded')"></div>`).join('')}
           </div>
           <button class="pd-gal-nav pd-gal-prev" onclick="pdGalleryNav(-1)" aria-label="Попереднє фото">‹</button>
           <button class="pd-gal-nav pd-gal-next" onclick="pdGalleryNav(1)" aria-label="Наступне фото">›</button>

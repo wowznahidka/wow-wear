@@ -49,11 +49,14 @@ let _catTab = '';
 function renderCatTabs() {
   const row = document.getElementById('cat-tabs-row');
   if (!row) return;
+  const data = getCatalog() || [];
+  const saleCount = data.filter(p => p.oldPrice && p.oldPrice > p.price).length;
   row.innerHTML = [
-    {k:'',v:'🏷 Все'},
-    {k:'wear',v:'👗 Одяг'},
-    {k:'bilyzna',v:'🩱 Білизна'},
-  ].map(({k,v}) => `<button class="cat-tab-btn ${_catTab===k?'active':''}" onclick="setCatTab('${k}')">${v}</button>`).join('');
+    {k:'',     v:'Все'},
+    {k:'wear', v:'👗 Одяг'},
+    {k:'bilyzna', v:'🩱 Білизна'},
+    ...(saleCount > 0 ? [{k:'sale', v:`🏷 SALE ${saleCount}`}] : []),
+  ].map(({k,v}) => `<button class="cat-tab-btn ${_catTab===k?'active':''}" data-cat="${k}" onclick="setCatTab('${k}')">${v}</button>`).join('');
 }
 function setCatTab(cat) {
   _catTab = cat;
@@ -62,6 +65,7 @@ function setCatTab(cat) {
 }
 function filterByCat(products) {
   let res = products;
+  if (_catTab === 'sale') return res.filter(p => p.oldPrice && p.oldPrice > p.price);
   if (_catTab) res = res.filter(p => p.category === _catTab);
   if (_catType) res = res.filter(p => (p.categoryType || '') === _catType);
   return res;

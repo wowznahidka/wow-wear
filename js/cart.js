@@ -31,7 +31,13 @@ function renderFavSheet() {
     return;
   }
 
-  el.innerHTML = S.favs.map(p => {
+  const shareHtml = `<div class="fav-share-wrap">
+    <button class="fav-share-btn" onclick="shareFavs()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Поділитись вішлістом
+    </button>
+  </div>`;
+  el.innerHTML = shareHtml + S.favs.map(p => {
     const inCartSizes = S.cart.filter(c => c.id === p.id).map(c => Number(c.size));
     let sizeChips;
     if (p.sizes[0] === 'ONE SIZE') {
@@ -420,6 +426,21 @@ function rememberSize(sz) {
     const s = String(sz).trim();
     if (s && s !== 'undefined' && s !== 'null') localStorage.setItem('wow_my_size', s);
   } catch(e) {}
+}
+
+// ── SHARE WISHLIST ────────────────────────────────── */
+function shareFavs() {
+  if (!S.favs.length) { toast('⚠️ Додай товари в улюблені спочатку'); return; }
+  const ids = S.favs.map(p => p.id).slice(0, 20).join(',');
+  const url  = `${location.origin}${location.pathname}?favs=${ids}`;
+  if (navigator.share) {
+    navigator.share({ title: 'WOW.WEAR — Мій вішліст 👗', text: 'Дивись що я знайшла!', url }).catch(() => {});
+  } else {
+    try {
+      navigator.clipboard.writeText(url);
+      toast('🔗 Посилання скопійовано!');
+    } catch(_) { toast(`🔗 ${url}`); }
+  }
 }
 
 // ── REVIEW SUBMIT ─────────────────────────────────── */

@@ -277,7 +277,7 @@ function openProductDetail(product) {
 
     <div class="pd-cta">
       <button class="pd-btn-size" onclick="openSizePicker(S.pdProduct)">
-        Обрати розмір
+        Обрати розмір → в кошик
       </button>
       <button class="pd-btn-tg" onclick="_pdPhotoTg()">
         ${tgIco}
@@ -286,7 +286,9 @@ function openProductDetail(product) {
       <button class="pd-btn-brand" onclick="closeAllSheets();changeTab('catalog');setTimeout(()=>openBrand('${esc(product.brand)}'),220)">
         Ще від ${esc(product.brand)} <span class="i-arr" aria-hidden="true"></span>
       </button>
-    </div>`;
+    </div>
+
+    ${_pdCrossSell(product)}`;
 
   openSheet('sheet-product');
 }
@@ -306,6 +308,34 @@ function togglePdFav() {
     btn.setAttribute('aria-label', faved ? 'Видалити з улюблених' : 'Додати в улюблені');
   }
   toast(faved ? '❤️ Додано до улюблених' : 'Видалено з улюблених');
+}
+
+// ── CROSS-SELL ────────────────────────────────────── */
+function _pdCrossSell(product) {
+  const all = getCatalog() || [];
+  const pool = all.filter(p =>
+    p.id !== product.id &&
+    p.image && p.image.startsWith('http') &&
+    p.gender === product.gender &&
+    p.category !== product.category
+  );
+  if (!pool.length) return '';
+  const items = shuffleSeeded(pool, hashStr(product.id)).slice(0, 6);
+  return `<div class="pd-cross-sell">
+    <div class="pd-cross-title">З цим носять</div>
+    <div class="pd-cross-row">
+      ${items.map(p => `
+        <div class="pd-cross-card" onclick="openProductDetail(findProd('${esc(p.id)}'))">
+          <div class="pd-cross-img-wrap">
+            <img class="pd-cross-img loaded" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">
+          </div>
+          <div class="pd-cross-info">
+            <div class="pd-cross-name">${esc(p.name).slice(0,28)}${p.name.length>28?'…':''}</div>
+            <div class="pd-cross-price">${p.price}₴</div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
 }
 
 // ── MULTI-PHOTO GALLERY ───────────────────────────── */

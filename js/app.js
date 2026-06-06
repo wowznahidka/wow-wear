@@ -58,10 +58,24 @@ window.addEventListener('DOMContentLoaded', () => {
   fetchCatalog().then(() => {
     renderHome();
     checkDeepLink();
+    _checkFavsDeepLink();
     updateCartBar();
   });
   initPWA();
   initKeyboardHandler();
+
+  // ── ?favs= DEEP LINK ─────────────────────────── */
+  function _checkFavsDeepLink() {
+    const ids = new URLSearchParams(location.search).get('favs');
+    if (!ids) return;
+    let added = 0;
+    ids.split(',').filter(Boolean).forEach(id => {
+      const p = (S.catalog.all || []).find(x => x.id === id);
+      if (p && !isFav(p.id)) { S.favs.push(p); added++; }
+    });
+    if (added) { saveFavs(); updateBadges(); }
+    setTimeout(() => { openSheet('sheet-fav'); renderFavSheet(); }, 400);
+  }
 
   // ── SCROLL REVEAL ────────────────────────────── */
   if ('IntersectionObserver' in window) {

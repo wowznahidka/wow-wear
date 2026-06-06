@@ -617,3 +617,185 @@ h1,h2,h3,.header-logo,.contacts-banner-title,.match-empty h3,
 @media (min-width: 1024px) {
   .product-card:not(.grid-card) { min-width: 210px !important; width: 210px !important; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   PREMIUM POLISH — Sheets · Nav · Forms · Cards · Pages
+   ═══════════════════════════════════════════════════════ */
+
+/* ── NAV SVG ICONS ── */
+.nav-icon { font-size: 0; line-height: 0; display: flex; align-items: center; justify-content: center; }
+.nav-icon svg { stroke: rgba(245,245,245,0.30); transition: stroke .2s ease, filter .2s ease; }
+.nav-item.active .nav-icon svg {
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 7px rgba(255,106,0,.60));
+}
+.nav-label { font-size: 10px; font-weight: 700; letter-spacing: .1px; margin-top: 2px; }
+.nav-item { color: rgba(245,245,245,0.30); }
+.nav-item.active { color: var(--accent); }
+
+/* ── SHEETS: dark glass ── */
+.sheet {
+  background: #0c0c0c !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-bottom: none !important;
+  border-radius: 28px 28px 0 0 !important;
+}
+.sheet-handle {
+  width: 40px !important; height: 4px !important;
+  background: rgba(255,255,255,0.14) !important;
+  border-radius: 2px !important;
+  margin: 10px auto 0 !important;
+}
+.sheet-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sheet-title {
+  font-family: var(--niche-font); font-size: 18px; font-weight: 800; color: var(--text);
+}
+.sheet-close {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: none;
+  color: var(--text-dim); font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.sheet-close:active { background: rgba(255,255,255,0.14); }
+
+/* ── FORM INPUTS: dark premium ── */
+.f-inp {
+  width: 100%; box-sizing: border-box;
+  background: var(--bg2) !important;
+  border: 1.5px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  font-family: var(--niche-font-body) !important;
+  font-size: 15px !important;
+  padding: 13px 14px !important;
+  transition: border-color .15s, box-shadow .15s !important;
+  outline: none !important;
+}
+.f-inp:focus {
+  border-color: rgba(255,106,0,0.38) !important;
+  box-shadow: 0 0 0 3px rgba(255,106,0,0.08) !important;
+}
+.f-inp::placeholder { color: rgba(245,245,245,0.25) !important; }
+.f-label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; }
+.f-field { margin-bottom: 10px; }
+.dtab {
+  background: var(--bg3) !important; border: 1px solid var(--border) !important;
+  color: var(--text-dim) !important; border-radius: 10px !important; font-weight: 600 !important;
+  padding: 9px 16px !important; cursor: pointer; transition: all .15s;
+}
+.dtab.on {
+  background: var(--accent) !important; border-color: var(--accent) !important;
+  color: #fff !important; box-shadow: 0 3px 14px rgba(255,106,0,0.30) !important;
+}
+
+/* ── GENDER SLIDER: orange ── */
+.gender-slider,
+#gender-toggle[data-active="male"]   .gender-slider,
+#gender-toggle[data-active="female"] .gender-slider,
+#gender-toggle[data-active="mixed"]  .gender-slider {
+  background: linear-gradient(135deg, var(--accent), #ffaa30) !important;
+  box-shadow: 0 2px 14px rgba(255,106,0,0.38) !important;
+}
+
+/* ── SIZE PICKER BUTTONS ── */
+.sz-btn {
+  background: var(--bg2) !important;
+  border: 1.5px solid rgba(255,255,255,0.07) !important;
+  color: var(--text-dim) !important;
+  border-radius: 10px !important; font-weight: 700 !important;
+  transition: all .15s !important; min-height: 44px;
+}
+.sz-btn.sel {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,106,0,0.35) !important;
+  transform: scale(1.04) !important;
+}
+.sz-btn.hot { border-color: rgba(255,106,0,0.40) !important; color: var(--accent) !important; }
+.sz-btn:disabled, .sz-btn.out { opacity: .32 !important; cursor: not-allowed !important; text-decoration: line-through !important; }
+
+/* ── CART ITEMS ── */
+.cart-item {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 14px !important; margin-bottom: 8px;
+}
+.cart-item-price { color: var(--accent) !important; font-weight: 900; }
+.cart-qty-btn {
+  background: var(--bg3) !important; border: 1px solid var(--border) !important;
+  color: var(--text) !important; border-radius: 8px !important;
+  width: 32px; height: 32px; font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.cart-qty-btn:active { background: var(--bg4) !important; }
+.cart-rm { color: var(--text-muted) !important; transition: color .15s; }
+.cart-rm:active { color: var(--accent) !important; }
+
+/* ── CONTACTS PAGE ── */
+.contacts-banner { padding: 44px 20px 28px !important; text-align: center; }
+.contact-item {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 14px !important; margin: 0 16px 8px !important; padding: 14px 16px !important;
+  display: flex; align-items: flex-start; gap: 12px;
+  transition: border-color .15s;
+}
+.contact-item:hover { border-color: rgba(255,106,0,0.20) !important; }
+.ci-title { font-weight: 700; font-size: 14px; color: var(--text); }
+.ci-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; line-height: 1.45; }
+
+/* ── WOW STORES ── */
+.wow-stores-block {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 18px !important; margin: 0 16px 16px !important;
+}
+.wow-store-card {
+  background: var(--bg3) !important; border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 14px !important; transition: all .15s;
+}
+.wow-store-card:active { background: var(--bg4) !important; border-color: rgba(255,106,0,0.25) !important; }
+
+/* ── REVIEW BUBBLES ── */
+.rev-bubble, .rev-bubble.rev-alt {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 16px !important; box-shadow: 0 2px 12px rgba(0,0,0,0.30) !important;
+  margin-left: 0 !important;
+}
+
+/* ── FAQ ── */
+.faq-item {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 12px !important; margin-bottom: 6px !important; overflow: hidden;
+}
+.faq-q { font-weight: 700 !important; font-size: 14px !important; color: var(--text) !important; padding: 14px 16px !important; }
+.faq-a { font-size: 13px !important; color: var(--text-dim) !important; line-height: 1.55 !important; padding: 0 16px 14px !important; }
+.faq-toggle { color: var(--accent) !important; font-weight: 800 !important; }
+
+/* ── PRODUCT DETAIL POLISH ── */
+.pd-info { padding: 18px 18px 4px !important; }
+.pd-trust { padding: 0 18px 12px !important; }
+.pd-cta { gap: 8px !important; }
+.pd-btn-brand {
+  background: var(--bg2) !important; border: 1px solid rgba(255,255,255,0.08) !important;
+  color: var(--text-dim) !important; border-radius: 14px !important;
+}
+.pd-btn-brand:active { background: var(--bg3) !important; }
+
+/* ── PRICE FILTER ── */
+.price-range-inp::-webkit-slider-track { background: var(--bg4) !important; height: 4px; border-radius: 2px; }
+.price-range-inp::-webkit-slider-thumb { box-shadow: 0 2px 10px rgba(255,106,0,0.40) !important; }
+
+/* ── SUCCESS PAGE ── */
+.success-home-btn {
+  background: var(--bg3) !important; border: 1px solid var(--border) !important;
+  color: var(--text) !important; border-radius: 14px !important;
+  font-weight: 700 !important; padding: 13px 20px !important;
+  font-family: var(--niche-font) !important;
+  transition: background .15s;
+}
+.success-home-btn:active { background: var(--bg4) !important; }

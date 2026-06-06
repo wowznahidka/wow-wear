@@ -21,7 +21,12 @@
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   #gender-toggle { padding-bottom: env(safe-area-inset-bottom); }
   #pages { padding-bottom: calc(var(--nav-h) + var(--gender-h) + env(safe-area-inset-bottom) + 8px); }
-  #bottom-nav { bottom: calc(var(--gender-h) + env(safe-area-inset-bottom)); }
+  #bottom-nav {
+    bottom: calc(var(--gender-h) + env(safe-area-inset-bottom) + 10px);
+    left: max(12px, calc(50% - var(--half-max) + 12px));
+    right: max(12px, calc(50% - var(--half-max) + 12px));
+    border-radius: 24px;
+  }
   #cart-sticky-bar { bottom: calc(var(--gender-h) + var(--nav-h) + env(safe-area-inset-bottom) + 8px); }
   #pwa-android, #pwa-ios { bottom: calc(var(--gender-h) + var(--nav-h) + env(safe-area-inset-bottom) + 10px); }
 }

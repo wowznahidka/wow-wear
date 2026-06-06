@@ -23,12 +23,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/base.css?v=11">
-<link rel="stylesheet" href="css/layout.css?v=11">
-<link rel="stylesheet" href="css/cards.css?v=11">
-<link rel="stylesheet" href="css/animations.css?v=11">
-<link rel="stylesheet" href="css/mobile.css?v=11">
-<link rel="stylesheet" href="css/niche.css?v=11">
+<link rel="stylesheet" href="css/base.css?v=12">
+<link rel="stylesheet" href="css/layout.css?v=12">
+<link rel="stylesheet" href="css/cards.css?v=12">
+<link rel="stylesheet" href="css/animations.css?v=12">
+<link rel="stylesheet" href="css/mobile.css?v=12">
+<link rel="stylesheet" href="css/niche.css?v=12">
 </head>
 <body>
 <div id="app-root">
@@ -84,8 +84,10 @@
   <!-- HOME -->
   <section id="page-home" class="page active" aria-label="Головна">
     <div class="home-hero">
+      <span class="hero-kicker">500+ образів · Без передоплати</span>
       <div class="home-hero-title" id="home-greeting">Привіт! 👋</div>
-      <p class="home-hero-sub">Модний одяг та білизна без передоплати.<br>Примірка на Новій Пошті — не підійшло, просто відмовся.</p>
+      <button class="hero-cta-btn" onclick="changeTab('catalog')">Переглянути колекцію <span class="hero-cta-arr" aria-hidden="true">→</span></button>
+      <p class="home-hero-sub">Модний одяг та білизна.<br>Примірка безкоштовно — не підійшло, відмовся.</p>
       <div class="home-trust-row">
         <span class="trust-chip">✅ Без передоплати</span>
         <span class="trust-chip">📦 НП 1–3 дні</span>
@@ -406,19 +408,19 @@
   </div>
 </div>
 
-<script src="js/config.js?v=11"   defer></script>
-<script src="js/state.js?v=11"    defer></script>
-<script src="js/lang.js?v=11"     defer></script>
-<script src="js/api.js?v=11"      defer></script>
-<script src="js/products.js?v=11" defer></script>
-<script src="js/ui.js?v=11"       defer></script>
-<script src="js/match.js?v=11"    defer></script>
-<script src="js/filters.js?v=11"  defer></script>
-<script src="js/cart.js?v=11"     defer></script>
-<script src="js/modal.js?v=11"    defer></script>
-<script src="js/deals.js?v=11"    defer></script>
-<script src="js/referral.js?v=11" defer></script>
-<script src="js/push.js?v=11"     defer></script>
-<script src="js/app.js?v=11"      defer></script>
+<script src="js/config.js?v=12"   defer></script>
+<script src="js/state.js?v=12"    defer></script>
+<script src="js/lang.js?v=12"     defer></script>
+<script src="js/api.js?v=12"      defer></script>
+<script src="js/products.js?v=12" defer></script>
+<script src="js/ui.js?v=12"       defer></script>
+<script src="js/match.js?v=12"    defer></script>
+<script src="js/filters.js?v=12"  defer></script>
+<script src="js/cart.js?v=12"     defer></script>
+<script src="js/modal.js?v=12"    defer></script>
+<script src="js/deals.js?v=12"    defer></script>
+<script src="js/referral.js?v=12" defer></script>
+<script src="js/push.js?v=12"     defer></script>
+<script src="js/app.js?v=12"      defer></script>
 </body>
 </html>

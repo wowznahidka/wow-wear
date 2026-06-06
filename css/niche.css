@@ -634,6 +634,69 @@ h1,h2,h3,.header-logo,.contacts-banner-title,.match-empty h3,
 }
 
 /* ═══════════════════════════════════════════════════════
+   FINAL FIX — Push banner · Brands grid · XML adaptive
+   ═══════════════════════════════════════════════════════ */
+
+/* ── PUSH BANNER: above floating nav (hard fix) ── */
+.push-banner {
+  bottom: 90px !important;
+  left: max(14px, calc(50% - var(--half-max) + 14px)) !important;
+  right: max(14px, calc(50% - var(--half-max) + 14px)) !important;
+  transform: translateY(160%) !important;
+  max-width: unset !important;
+  border-radius: 18px !important;
+}
+.push-banner.visible { transform: translateY(0) !important; }
+
+/* ── HOME BRANDS GRID: 2-col, uniform dark cards ── */
+#home-brands-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+  padding: 0 16px 16px !important;
+}
+#home-brands-grid .hb-card {
+  width: 100% !important;
+  height: 82px !important;
+  border-radius: 16px !important;
+  flex-shrink: unset !important;
+  background: #111 !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  scroll-snap-align: unset !important;
+}
+#home-brands-grid .hb-card:hover,
+#home-brands-grid .hb-card:active {
+  border-color: rgba(255,106,0,0.25) !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.50) !important;
+}
+.hb-bg-img { opacity: 0.65 !important; }
+.hb-name { font-family: var(--niche-font) !important; font-size: 15px !important; font-weight: 900 !important; letter-spacing: -.02em !important; }
+.hb-cnt  { font-size: 11px !important; color: rgba(255,255,255,0.42) !important; font-weight: 600 !important; }
+
+/* ── HOME SECTION: знижки label ── */
+.home-section-disc { color: var(--lime) !important; }
+.home-section-new  { color: var(--accent) !important; }
+
+/* ── REVIEWS ROW: horizontal scroll like products ── */
+.reviews-row {
+  display: flex !important; gap: 10px !important;
+  overflow-x: auto !important; padding: 0 16px 12px !important;
+  scrollbar-width: none !important;
+}
+.reviews-row::-webkit-scrollbar { display: none !important; }
+.rev-bubble, .rev-bubble.rev-alt {
+  min-width: 240px !important; max-width: 260px !important; flex-shrink: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* ── PUSH BANNER SAFE-AREA FIX ── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .push-banner {
+    bottom: calc(90px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
    PREMIUM POLISH — Sheets · Nav · Forms · Cards · Pages
    ═══════════════════════════════════════════════════════ */
 

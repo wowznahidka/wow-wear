@@ -23,12 +23,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/base.css?v=16">
-<link rel="stylesheet" href="css/layout.css?v=16">
-<link rel="stylesheet" href="css/cards.css?v=16">
-<link rel="stylesheet" href="css/animations.css?v=16">
-<link rel="stylesheet" href="css/mobile.css?v=16">
-<link rel="stylesheet" href="css/niche.css?v=16">
+<link rel="stylesheet" href="css/base.css?v=17">
+<link rel="stylesheet" href="css/layout.css?v=17">
+<link rel="stylesheet" href="css/cards.css?v=17">
+<link rel="stylesheet" href="css/animations.css?v=17">
+<link rel="stylesheet" href="css/mobile.css?v=17">
+<link rel="stylesheet" href="css/niche.css?v=17">
 </head>
 <body>
 <div id="app-root">
@@ -108,16 +108,22 @@
       <span class="ts-cnt"><span id="models-counter">0</span> <span class="ts-lbl" id="ts-lbl-models">образів</span></span>
     </div>
 
-    <div class="home-section-title">🔥 Популярне зараз</div>
+    <div class="home-section-title">Популярне зараз</div>
     <div class="products-row" id="popular-row" role="list" aria-label="Популярне"></div>
 
-    <div class="home-section-title">🩱 Білизна — підбірка</div>
-    <div class="products-row" id="bilyzna-row" role="list" aria-label="Білизна"></div>
-
-    <div class="home-section-title">✨ Новинки</div>
+    <div class="home-section-title home-section-new" id="new-section-title" style="display:none">Новинки</div>
     <div class="products-row" id="new-row" role="list" aria-label="Новинки"></div>
 
-    <div class="home-section-title">👗 Бренди</div>
+    <div class="home-section-title home-section-disc" id="sale-section-title" style="display:none">Зі знижкою</div>
+    <div class="products-row" id="sale-row" role="list" aria-label="Знижки"></div>
+
+    <div class="home-section-title" id="top-cat-title" style="display:none"></div>
+    <div class="products-row" id="top-cat-row" role="list" aria-label="Категорія"></div>
+
+    <div class="home-section-title" id="bilyzna-title" style="display:none">Білизна</div>
+    <div class="products-row" id="bilyzna-row" role="list" aria-label="Білизна"></div>
+
+    <div class="home-section-title">Бренди</div>
     <div class="home-brands-grid" id="home-brands-grid" role="list" aria-label="Бренди"></div>
 
     <div id="recently-viewed-section" class="hidden">
@@ -411,19 +417,19 @@
   </div>
 </div>
 
-<script src="js/config.js?v=16"   defer></script>
-<script src="js/state.js?v=16"    defer></script>
-<script src="js/lang.js?v=16"     defer></script>
-<script src="js/api.js?v=16"      defer></script>
-<script src="js/products.js?v=16" defer></script>
-<script src="js/ui.js?v=16"       defer></script>
-<script src="js/match.js?v=16"    defer></script>
-<script src="js/filters.js?v=16"  defer></script>
-<script src="js/cart.js?v=16"     defer></script>
-<script src="js/modal.js?v=16"    defer></script>
-<script src="js/deals.js?v=16"    defer></script>
-<script src="js/referral.js?v=16" defer></script>
-<script src="js/push.js?v=16"     defer></script>
-<script src="js/app.js?v=16"      defer></script>
+<script src="js/config.js?v=17"   defer></script>
+<script src="js/state.js?v=17"    defer></script>
+<script src="js/lang.js?v=17"     defer></script>
+<script src="js/api.js?v=17"      defer></script>
+<script src="js/products.js?v=17" defer></script>
+<script src="js/ui.js?v=17"       defer></script>
+<script src="js/match.js?v=17"    defer></script>
+<script src="js/filters.js?v=17"  defer></script>
+<script src="js/cart.js?v=17"     defer></script>
+<script src="js/modal.js?v=17"    defer></script>
+<script src="js/deals.js?v=17"    defer></script>
+<script src="js/referral.js?v=17" defer></script>
+<script src="js/push.js?v=17"     defer></script>
+<script src="js/app.js?v=17"      defer></script>
 </body>
 </html>

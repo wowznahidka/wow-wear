@@ -496,3 +496,124 @@ h1,h2,h3,.header-logo,.contacts-banner-title,.match-empty h3,
   .hero-cta-btn { font-size: 16px; padding: 15px 28px; }
   .home-section-title { font-size: 22px !important; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   ULTRA MODE — animations + portrait overlay cards + fixes
+   ═══════════════════════════════════════════════════════ */
+
+/* ── TIMESTAMP FIX ── */
+#home-ts-label { display: none !important; }
+#update-ts {
+  width: auto !important; height: auto !important;
+  border-radius: 0 !important; background: none !important;
+  animation: none !important; flex-shrink: 0;
+  font-size: 11px !important; font-weight: 600 !important;
+  color: var(--text-muted) !important;
+}
+.ts-cnt { color: var(--accent) !important; font-weight: 800 !important; font-size: 13px !important; }
+.home-ts-row { padding: 0 16px 14px !important; gap: 10px !important; align-items: center !important; }
+
+/* ── HERO ANIMATIONS ── */
+@keyframes hero-orb-breathe {
+  0%, 100% { opacity: 0.9; }
+  50%       { opacity: 0.50; }
+}
+@keyframes hero-cta-glow {
+  0%, 100% { box-shadow: 0 4px 28px rgba(255,106,0,0.42), inset 0 1px 0 rgba(255,255,255,0.12); }
+  50%       { box-shadow: 0 8px 48px rgba(255,106,0,0.72), inset 0 1px 0 rgba(255,255,255,0.22); }
+}
+@keyframes kicker-fade {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 0.85; transform: translateY(0); }
+}
+@keyframes title-rise {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.home-hero::before { animation: hero-orb-breathe 8s ease-in-out infinite; }
+.hero-kicker { animation: kicker-fade .6s ease forwards; }
+.home-hero-title { animation: title-rise .7s .1s ease both; }
+.hero-cta-btn { animation: hero-cta-glow 3s ease-in-out infinite; }
+.hero-cta-btn:active { animation: none !important; transform: scale(.96); }
+
+/* hero bottom fade into page */
+.home-hero::after {
+  display: block !important;
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
+  background: linear-gradient(to bottom, transparent 0%, #070707 100%);
+  pointer-events: none; z-index: 2;
+}
+
+/* ── H-SCROLL CARDS: portrait 3:4 + overlay body ── */
+.product-card:not(.grid-card) {
+  min-width: 175px !important;
+  width: 175px !important;
+}
+.product-card:not(.grid-card) .card-img-wrap {
+  aspect-ratio: 3 / 4 !important;
+}
+.product-card:not(.grid-card) .card-img {
+  object-fit: cover !important;
+  padding: 0 !important;
+  transition: transform .4s ease !important;
+}
+.product-card:not(.grid-card):hover .card-img { transform: scale(1.06) !important; }
+.product-card:not(.grid-card) .card-body {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top,
+    rgba(5,5,5,.96) 0%,
+    rgba(5,5,5,.65) 52%,
+    transparent 100%);
+  padding: 44px 10px 10px;
+  z-index: 2;
+}
+.product-card:not(.grid-card) .card-brand {
+  color: var(--accent) !important;
+  opacity: .80; font-size: 9px !important;
+}
+.product-card:not(.grid-card) .card-name {
+  color: rgba(255,255,255,.93) !important;
+  font-size: 12px !important; font-weight: 700 !important;
+}
+.product-card:not(.grid-card) .card-price {
+  font-size: 15px !important; font-weight: 900 !important;
+  color: #fff !important; margin-top: 3px !important;
+}
+.product-card:not(.grid-card) .card-sizes-preview,
+.product-card:not(.grid-card) .scarcity-chip { display: none !important; }
+
+/* ── GRID CARDS UPGRADE ── */
+.product-card.grid-card .card-img { object-fit: cover !important; padding: 0 !important; }
+.card-brand { color: var(--accent) !important; }
+
+/* ── SECTION TITLE UPGRADE ── */
+.home-section-title {
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* ── BOTTOM NAV ACTIVE DOT ── */
+.nav-item.active::before {
+  top: 5px; height: 4px !important; width: 28px !important;
+  border-radius: 0 0 4px 4px !important;
+  background: var(--accent) !important;
+  box-shadow: 0 0 18px rgba(255,106,0,.85) !important;
+}
+
+/* ── BRANDS HOVER ── */
+.hb-card {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.hb-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,106,0,0.22);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.50);
+}
+
+/* ── DESKTOP ULTRA ── */
+@media (min-width: 1024px) {
+  .product-card:not(.grid-card) { min-width: 210px !important; width: 210px !important; }
+}

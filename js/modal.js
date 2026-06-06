@@ -86,6 +86,27 @@ function openSizePicker(product) {
     confirmBtn.style.boxShadow  = isLastSize ? 'var(--shadow-red)' : '';
   }
 
+  // Size guide (clothing: letter sizes only)
+  const guideWrap = document.getElementById('sp-guide-wrap');
+  if (guideWrap) {
+    const hasLetterSizes = product.sizes.some(s => /^(XS|S|M|L|XL|XXL|XXXL)$/i.test(String(s)));
+    guideWrap.innerHTML = hasLetterSizes ? `
+      <button class="sp-guide-toggle" onclick="toggleSizeGuide(this)" aria-expanded="false">
+        📏 Таблиця розмірів <span class="sp-guide-arr">▾</span>
+      </button>
+      <table class="sp-guide-table" role="table" aria-label="Таблиця розмірів">
+        <thead><tr><th>Розмір</th><th>Груди</th><th>Талія</th><th>Стегна</th></tr></thead>
+        <tbody>
+          <tr><td>XS (40)</td><td>80–84</td><td>62–66</td><td>86–90</td></tr>
+          <tr><td>S (42)</td><td>84–88</td><td>66–70</td><td>90–94</td></tr>
+          <tr><td>M (44)</td><td>88–92</td><td>70–74</td><td>94–98</td></tr>
+          <tr><td>L (46)</td><td>92–96</td><td>74–78</td><td>98–102</td></tr>
+          <tr><td>XL (48)</td><td>96–100</td><td>78–82</td><td>102–106</td></tr>
+          <tr><td>XXL (50)</td><td>100–104</td><td>82–86</td><td>106–110</td></tr>
+        </tbody>
+      </table>` : '';
+  }
+
   // Open sheet
   closeAllSheets();
   document.getElementById('sheet-size')?.classList.add('on');
@@ -93,6 +114,14 @@ function openSizePicker(product) {
   _openSheetId = 'sheet-size';
 }
 
+
+function toggleSizeGuide(btn) {
+  const table = btn.nextElementSibling;
+  if (!table) return;
+  const open = table.classList.toggle('vis');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
 
 function selectSize(sz) {
   S.spSelectedSize = sz;

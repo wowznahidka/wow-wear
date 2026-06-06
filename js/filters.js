@@ -68,6 +68,30 @@ function filterByCat(products) {
 }
 
 // ── CATEGORY TYPE (AGER): "Сукні / Блузки / Штани" тощо ── */
+const _CAT_EMOJI = {
+  'сукн':    '👗', 'плаття':  '👗',
+  'блузк':   '👚', 'сорочк':  '👚',
+  'штан':    '👖', 'джинс':   '👖', 'брюки':   '👖',
+  'шорт':    '🩳',
+  'спідниц': '🩱', 'юбк':     '🩱',
+  'топ':     '🎽', 'майк':    '🎽',
+  'піджак':  '🧥', 'жакет':   '🧥',
+  'куртк':   '🧥', 'пальт':   '🧥', 'плащ':    '🧥',
+  'кардиган':'🧶', 'светр':   '🧶', 'джемпер': '🧶',
+  'лосин':   '🩱', 'легінс':  '🩱',
+  'білизн':  '🩲', 'труси':   '🩲', 'бюстгальт':'🩲',
+  'купальн': '👙', 'біткіні': '👙',
+  'комбінез':'👗', 'боді':    '🎽',
+  'костюм':  '🩱',
+};
+function _catEmoji(name) {
+  const nl = (name || '').toLowerCase();
+  for (const [k, e] of Object.entries(_CAT_EMOJI)) {
+    if (nl.includes(k)) return e + ' ';
+  }
+  return '';
+}
+
 let _catType = null;
 function renderCatTypeChips() {
   const row = document.getElementById('cat-type-chips');
@@ -76,9 +100,9 @@ function renderCatTypeChips() {
   if (!data || typeof getTopCategories !== 'function') { row.innerHTML = ''; return; }
   const tops = getTopCategories(data, 12);
   if (!tops.length) { row.innerHTML = ''; return; }
-  const allChip = `<button class="ct-chip ${!_catType?'on':''}" onclick="setCatType(null)">Усі <span class="ct-cnt">${data.length}</span></button>`;
+  const allChip = `<button class="ct-chip ${!_catType?'on':''}" onclick="setCatType(null)">🏷 Усі <span class="ct-cnt">${data.length}</span></button>`;
   const chips = tops.map(t =>
-    `<button class="ct-chip ${_catType===t.name?'on':''}" onclick="setCatType('${esc(t.name).replace(/'/g,"\\'")}')">${esc(t.name)} <span class="ct-cnt">${t.count}</span></button>`
+    `<button class="ct-chip ${_catType===t.name?'on':''}" onclick="setCatType('${esc(t.name).replace(/'/g,"\\'")}')">${_catEmoji(t.name)}${esc(t.name)} <span class="ct-cnt">${t.count}</span></button>`
   ).join('');
   row.innerHTML = allChip + chips;
 }

@@ -35,15 +35,15 @@
 }
 .product-card.grid-card { min-width: unset; width: 100%; flex-shrink: unset; }
 
-/* Image wrapper — 3:2 for h-scroll cards, 1:1 overridden for grid */
+/* Image wrapper — 3:2 for h-scroll cards, 3:4 portrait for grid (clothing) */
 .card-img-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 2;
-  background: #F8F4EE;
+  background: var(--bg3);
   overflow: hidden;
 }
-.product-card.grid-card .card-img-wrap { aspect-ratio: 1 / 1; }
+.product-card.grid-card .card-img-wrap { aspect-ratio: 3 / 4; }
 .card-img {
   width: 100%; height: 100%;
   object-fit: contain;
@@ -72,7 +72,7 @@
 .card-name {
   font-size: 12px;
   font-weight: var(--fw-bold);
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--niche-font-body, 'Inter', sans-serif);
   color: var(--text);
   margin-top: 2px; line-height: 1.25;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -488,7 +488,7 @@
               transform .18s cubic-bezier(.34,1.56,.64,1);
 }
 .sz-btn:active { transform: scale(.9); }
-.sz-btn.sel { background: var(--text); border-color: var(--text); color: var(--accent-inv); transform: scale(1.06); }
+.sz-btn.sel { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.06); box-shadow: 0 4px 14px rgba(255,106,0,0.35); }
 .sz-btn.na  { opacity: .2; cursor: default; }
 .sz-btn-last { border-color: rgba(255,51,82,0.4); color: var(--red); background: var(--red-dim); }
 .sz-qty {
@@ -549,6 +549,48 @@
   text-align: center; letter-spacing: .02em;
   animation: glowRed 2.2s ease-in-out infinite;
 }
+
+/* ── SIZE GUIDE ─────────────────────────────────── */
+#sp-guide-wrap { padding: 0 20px 4px; }
+.sp-guide-toggle {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px; border-radius: var(--r-sm);
+  background: var(--bg3); border: 1px solid var(--border);
+  font-size: 12px; font-weight: 700; color: var(--text-dim);
+  cursor: pointer; transition: background var(--t-fast);
+  margin-bottom: 0;
+}
+.sp-guide-toggle:active { background: var(--bg4); }
+.sp-guide-arr {
+  font-size: 10px; transition: transform var(--t-base);
+  display: inline-block;
+}
+.sp-guide-toggle.open .sp-guide-arr { transform: rotate(180deg); }
+.sp-guide-table {
+  display: none; width: 100%;
+  border-collapse: collapse; margin-top: 8px;
+  border-radius: var(--r-sm); overflow: hidden;
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+.sp-guide-table.vis { display: table; }
+.sp-guide-table th {
+  padding: 8px 10px; background: var(--bg4);
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-muted);
+  text-align: center; border-bottom: 1px solid var(--border);
+}
+.sp-guide-table th:first-child { text-align: left; }
+.sp-guide-table td {
+  padding: 9px 10px; border-bottom: 1px solid var(--border);
+  text-align: center; color: var(--text-dim); font-weight: 600;
+}
+.sp-guide-table td:first-child {
+  font-weight: 800; color: var(--text); text-align: left;
+  background: var(--bg3);
+}
+.sp-guide-table tr:last-child td { border-bottom: none; }
+.sp-guide-table .sg-hl td:first-child { color: var(--accent); }
 
 /* ── CHECKOUT ORDER SUMMARY ─────────────────────── */
 #checkout-items-summary {
@@ -696,7 +738,7 @@
 /* Hero — image block */
 .pd-hero {
   position: relative; width: 100%;
-  background: #F8F4EE;
+  background: var(--bg3);
   overflow: hidden;
 }
 .pd-img {
@@ -730,7 +772,7 @@
   transition: transform var(--t-fast), background var(--t-fast);
 }
 .pd-fav-float:active { transform: scale(.88); }
-.pd-fav-float.on { background: rgba(255,51,82,.45); border-color: rgba(255,51,82,.5); }
+.pd-fav-float.on { background: rgba(255,106,0,.45); border-color: rgba(255,106,0,.55); }
 
 /* Scarcity badge on image */
 .pd-scarc-hero {
@@ -750,13 +792,14 @@
 /* Info section */
 .pd-info { padding: 20px 20px 6px; }
 .pd-brand {
-  font-size: 10px; font-weight: 900; color: var(--text-muted);
+  font-size: 10px; font-weight: 900; color: var(--accent);
   text-transform: uppercase; letter-spacing: 2px;
+  opacity: 0.8;
 }
 .pd-name {
-  font-size: 22px; font-weight: 700; margin-top: 5px;
-  font-family: Georgia, 'Times New Roman', serif;
-  line-height: 1.2; letter-spacing: -.2px;
+  font-size: 22px; font-weight: 800; margin-top: 5px;
+  font-family: var(--niche-font, 'Sora', sans-serif);
+  line-height: 1.15; letter-spacing: -.3px;
 }
 .pd-price-row {
   display: flex; align-items: baseline; gap: 9px;
@@ -788,12 +831,12 @@
   color: var(--text-muted); border-style: dashed;
 }
 
-/* Description — scent notes, perfume story */
+/* Description */
 .pd-desc {
   font-size: 13px; color: var(--text-dim); line-height: 1.65;
   margin-top: 14px;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
+  font-family: var(--niche-font-body, 'Inter', sans-serif);
+  font-style: normal;
   white-space: pre-line;
 }
 
@@ -1059,22 +1102,22 @@
 }
 .ct-chip:hover { background: rgba(255,255,255,0.10); }
 .ct-chip.on {
-  background: var(--text);
-  color: var(--accent-inv, #000);
-  border-color: var(--text);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(255,106,0,0.30);
 }
 .ct-cnt {
   font-size: 11px; font-weight: 700;
   padding: 2px 7px;
   border-radius: 99px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.10);
   color: inherit;
   opacity: 0.7;
 }
 .ct-chip.on .ct-cnt {
-  background: rgba(0,0,0,0.15);
-  opacity: 0.85;
+  background: rgba(0,0,0,0.18);
+  opacity: 0.9;
 }
 
 /* ── PD MULTI-PHOTO GALLERY ───────────────────────── */

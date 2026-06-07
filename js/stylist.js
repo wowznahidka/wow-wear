@@ -4,7 +4,7 @@
    opens t.me/wowwear with it. Saves draft in localStorage.
    ============================================================ */
 
-const ST_TG_HANDLE = 'wowznahidka_bot';
+const ST_TG_HANDLE = 'wowwea';
 const ST_LS_KEY    = 'wow_stylist_draft';
 
 function initStylist() {

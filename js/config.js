@@ -8,7 +8,7 @@
   FB_PIXEL_ID: '970568042186153',
   TT_PIXEL_ID: '',
   OG_IMAGE: '',
-  CACHE_KEY:    'wow_wear_v1',
+  CACHE_KEY:    'wow_wear_v2',
   CACHE_TTL_MS: 5 * 60 * 1000,
   MIN_PRODUCTS: 3,
   SIZES_ALL:    ['XS','S','M','L','XL','XXL','XXXL','ONE SIZE'],

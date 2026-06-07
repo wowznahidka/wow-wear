@@ -84,10 +84,16 @@ function normalizeProduct(p) {
     if (m) typeRaw = m[1].trim();
   }
   if (!typeRaw) typeRaw = String(p['category_name'] || p.category_name || '').trim();
+  // Supplier names that leaked into the Бренд column — never show on cards.
+  // Falls through to the 'WOW' default below.
+  const SUPPLIER_NOT_BRAND = ['AGER','ANGELLS','STILLI','CALLIOPE','OPT','DROP24','PROM'];
+  let rawBrand = String(p['Бренд'] || p['бренд'] || p.brand || p.Brand || '').trim();
+  if (SUPPLIER_NOT_BRAND.includes(rawBrand.toUpperCase())) rawBrand = '';
+
   return {
     id:          String(p['ID'] || p['id'] || p['Артикул'] || Math.random().toString(36).slice(2)),
     name:        String(p['Назва']  || p['назва']  || p['Модель'] || p.name || p.model || ''),
-    brand:       String(p['Бренд']  || p['бренд']  || p.brand  || p.Brand  || '') || 'WOW',
+    brand:       rawBrand || 'WOW',
     price,
     oldPrice,
     image,

@@ -1,4 +1,4 @@
-const C = 'wow-wear-v4';
+const C = 'wow-wear-v5';
 const SHELL = ['/'];
 
 self.addEventListener('install', e => {

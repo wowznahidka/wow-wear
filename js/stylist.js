@@ -110,6 +110,20 @@ function submitStylistLead() {
 
   if (btn) { btn.disabled = true; btn.textContent = '✈️ Відкриваю Telegram…'; }
 
+  // Fire-and-forget POST to GAS — saves lead + sends TG notification to owner.
+  // We don't await: the TG link must open inside the same user-gesture tick
+  // (especially on iOS), otherwise the popup is blocked.
+  try {
+    let utm = {};
+    try { utm = JSON.parse(localStorage.getItem('wow_utm') || '{}'); } catch(_) {}
+    const payload = { action:'stylist_lead', ...d, utm };
+    if (typeof postData === 'function') {
+      postData(payload);
+    } else if (typeof CFG !== 'undefined' && CFG.GAS_URL) {
+      fetch(CFG.GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), mode:'no-cors' });
+    }
+  } catch(_) {}
+
   const msg = _stylistBuildMsg(d);
   const url = `https://t.me/${ST_TG_HANDLE}?text=${encodeURIComponent(msg)}`;
 

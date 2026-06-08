@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -23,12 +23,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/base.css?v=21">
-<link rel="stylesheet" href="css/layout.css?v=21">
-<link rel="stylesheet" href="css/cards.css?v=21">
-<link rel="stylesheet" href="css/animations.css?v=21">
-<link rel="stylesheet" href="css/mobile.css?v=21">
-<link rel="stylesheet" href="css/niche.css?v=21">
+<link rel="stylesheet" href="css/base.css?v=22">
+<link rel="stylesheet" href="css/layout.css?v=22">
+<link rel="stylesheet" href="css/cards.css?v=22">
+<link rel="stylesheet" href="css/animations.css?v=22">
+<link rel="stylesheet" href="css/mobile.css?v=22">
+<link rel="stylesheet" href="css/niche.css?v=22">
 </head>
 <body>
 <div id="app-root">
@@ -353,6 +353,35 @@
       </a>
     </nav>
 
+    <!-- TG channel CTA -->
+    <a class="tg-channel-cta" href="https://t.me/wowwear" onclick="return openLink(this.href)" rel="noopener noreferrer">
+      <div class="tg-cta-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </div>
+      <div class="tg-cta-body">
+        <div class="tg-cta-eyebrow"><span class="tg-cta-dot"></span>ЕКСКЛЮЗИВНО В TELEGRAM</div>
+        <div class="tg-cta-title">Підпишись на канал</div>
+        <div class="tg-cta-sub">Нові колекції, знижки та ексклюзивні пропозиції</div>
+      </div>
+      <div class="tg-cta-arrow" aria-hidden="true">→</div>
+    </a>
+
+    <!-- Action buttons -->
+    <div class="contacts-action-row">
+      <a class="cab cab-order" href="https://t.me/znahidkawow?text=%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%B0%D0%B9%D1%82" onclick="return openLink(this.href)" rel="noopener noreferrer" aria-label="Замовити сайт">
+        <div class="cab-shine" aria-hidden="true"></div>
+        <span class="cab-icon">🌐</span>
+        <span class="cab-label">Замовити сайт</span>
+        <span class="cab-sub">магазин · PWA · лендінг</span>
+      </a>
+      <a class="cab cab-collab" href="https://wowznahidka.github.io/wow-studio/" onclick="return openLink(this.href)" rel="noopener noreferrer" aria-label="WOW.STUDIO">
+        <div class="cab-shine" aria-hidden="true"></div>
+        <span class="cab-icon">✦</span>
+        <span class="cab-label">WOW.STUDIO</span>
+        <span class="cab-sub">наші роботи · портфоліо</span>
+      </a>
+    </div>
+
     <div class="contacts-list">
       <div class="contact-item">
         <div class="ci-ico">📦</div>
@@ -459,6 +488,7 @@
     <div id="sp-product-info" class="sp-product-info"></div>
     <div id="sp-my-size-bar-wrap"></div>
     <div id="sp-urgency"></div>
+    <div id="sp-notify-wrap"></div>
     <div id="sp-size-grid" class="sp-size-grid" role="group" aria-label="Розміри"></div>
     <div id="sp-guide-wrap"></div>
     <div class="sp-actions">
@@ -542,6 +572,7 @@
   <h1 class="success-title">Замовлення прийнято!</h1>
   <p class="success-sub">Ми зв'яжемося з вами найближчим часом. Слідкуйте за статусом у Telegram.</p>
   <div class="success-order" id="success-order-info" aria-live="polite"></div>
+  <div id="success-upsell" class="success-upsell"></div>
   <a class="success-tg-btn" href="https://t.me/wowwear" onclick="return openTgLink(this.href)" rel="noopener noreferrer">✈️ Telegram WOW.WEAR</a>
   <button class="success-home-btn" onclick="goHome()"><span class="i-arr-back" aria-hidden="true"></span> На головну</button>
   <button class="success-home-btn" style="background:var(--red);color:#fff;margin-top:-6px" onclick="document.getElementById('view-success').classList.remove('on');changeTab('match')">🔥 Свайпати ще →</button>
@@ -558,20 +589,20 @@
   </div>
 </div>
 
-<script src="js/config.js?v=21"   defer></script>
-<script src="js/state.js?v=21"    defer></script>
-<script src="js/lang.js?v=21"     defer></script>
-<script src="js/api.js?v=21"      defer></script>
-<script src="js/products.js?v=21" defer></script>
-<script src="js/ui.js?v=21"       defer></script>
-<script src="js/match.js?v=21"    defer></script>
-<script src="js/filters.js?v=21"  defer></script>
-<script src="js/cart.js?v=21"     defer></script>
-<script src="js/modal.js?v=21"    defer></script>
-<script src="js/deals.js?v=21"    defer></script>
+<script src="js/config.js?v=22"   defer></script>
+<script src="js/state.js?v=22"    defer></script>
+<script src="js/lang.js?v=22"     defer></script>
+<script src="js/api.js?v=22"      defer></script>
+<script src="js/products.js?v=22" defer></script>
+<script src="js/ui.js?v=22"       defer></script>
+<script src="js/match.js?v=22"    defer></script>
+<script src="js/filters.js?v=22"  defer></script>
+<script src="js/cart.js?v=22"     defer></script>
+<script src="js/modal.js?v=22"    defer></script>
+<script src="js/deals.js?v=22"    defer></script>
 <script src="js/stylist.js?v=22" defer></script>
-<script src="js/referral.js?v=21" defer></script>
-<script src="js/push.js?v=21"     defer></script>
-<script src="js/app.js?v=21"      defer></script>
+<script src="js/referral.js?v=22" defer></script>
+<script src="js/push.js?v=22"     defer></script>
+<script src="js/app.js?v=22"      defer></script>
 </body>
 </html>

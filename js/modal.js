@@ -107,6 +107,25 @@ function openSizePicker(product) {
       </table>` : '';
   }
 
+
+  // Notify-me panel
+  const notifyWrap = document.getElementById('sp-notify-wrap');
+  if (notifyWrap) {
+    const pid   = product.id;
+    const brand = esc(product.brand);
+    const name  = esc(product.name);
+    notifyWrap.innerHTML = `
+      <button class="sp-notify-trigger" onclick="toggleNotifyPanel()">🔔 Немає мого розміру? Повідомити</button>
+      <div class="sp-notify-panel" id="sp-notify-panel">
+        <div class="sp-notify-label">Вкажіть розмір і телефон — повідомимо, коли з'явиться</div>
+        <div class="sp-notify-row">
+          <input class="sp-notify-sz" id="sp-notify-sz" type="text" placeholder="Розмір" maxlength="5">
+          <input class="sp-notify-phone" id="sp-notify-phone" type="tel" placeholder="+380...">
+        </div>
+        <button class="sp-notify-send" onclick="submitNotifyMe('${pid}','${brand}','${name}')">🔔 Повідомити мене</button>
+      </div>`;
+  }
+
   // Open sheet
   closeAllSheets();
   document.getElementById('sheet-size')?.classList.add('on');
@@ -122,6 +141,24 @@ function toggleSizeGuide(btn) {
   btn.classList.toggle('open', open);
   btn.setAttribute('aria-expanded', open);
 }
+
+function toggleNotifyPanel() {
+  const panel = document.getElementById('sp-notify-panel');
+  if (panel) panel.classList.toggle('vis');
+}
+
+function submitNotifyMe(productId, brand, name) {
+  const sz    = document.getElementById('sp-notify-sz')?.value.trim()    || '';
+  const phone = document.getElementById('sp-notify-phone')?.value.trim() || '';
+  if (!sz || phone.replace(/\D/g,'').length < 9) {
+    toast('⚠️ Вкажіть розмір та телефон'); return;
+  }
+  postData({ action: 'notify_me', product_id: productId, brand, name, size: sz, phone }).catch(() => {});
+  toast('🔔 Запам'ятали! Повідомимо при надходженні');
+  const panel = document.getElementById('sp-notify-panel');
+  if (panel) panel.classList.remove('vis');
+}
+
 
 function selectSize(sz) {
   S.spSelectedSize = sz;

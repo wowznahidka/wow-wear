@@ -52,7 +52,7 @@ function renderFavSheet() {
     }
     return `<div class="fav-item">
       ${p.image && p.image.startsWith('http')
-        ? `<img class="fav-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onload="this.classList.add('loaded')">`
+        ? `<img class="fav-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onload="this.classList.add('loaded')" onclick="event.stopPropagation();openImageZoom('${esc(p.image)}','${esc(p.brand)} ${esc(p.name)}')" style="cursor:zoom-in">`
         : `<div class="fav-img-ph" aria-hidden="true">👗</div>`}
       <div class="fav-body">
         <div class="fav-brand">${esc(p.brand)}</div>
@@ -122,7 +122,7 @@ function renderCartSheet() {
     return `
     <div class="cart-item">
       ${p.image && p.image.startsWith('http')
-        ? `<img class="cart-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onload="this.classList.add('loaded')">`
+        ? `<img class="cart-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onload="this.classList.add('loaded')" onclick="event.stopPropagation();openImageZoom('${esc(p.image)}','${esc(p.brand)} ${esc(p.name)}')" style="cursor:zoom-in">`
         : `<div class="cart-img-ph" aria-hidden="true"></div>`}
       <div class="cart-body">
         <div class="cart-brand">${esc(p.brand)}</div>
@@ -212,6 +212,7 @@ function _renderCheckoutSummary() {
 }
 
 function openCheckout() {
+  _partialSent = false;
   const total    = S.cart.reduce((s, p) => s + (Number(p.price) || 0) * (p.qty || 1), 0);
   const contents = S.cart.map(c => ({ content_id: c.id, content_name: `${c.brand} ${c.name}`, price: Number(c.price) || 0, quantity: c.qty || 1 }));
   if (window.fbq)  fbq('track', 'InitiateCheckout', { currency: 'UAH', value: total, contents, num_items: S.cart.length, content_type: 'product' });
@@ -242,6 +243,24 @@ function setDelivTab(t) {
   if (inp) inp.placeholder = t === 'dept' ? L.deptPh : L.postPh;
 }
 
+// ── ABANDONED CHECKOUT CAPTURE ───────────────────── */
+let _partialTimer = null;
+let _partialSent  = false;
+function _capturePartial() {
+  if (_partialSent) return;
+  clearTimeout(_partialTimer);
+  _partialTimer = setTimeout(() => {
+    const phone = document.getElementById('f-phone')?.value.trim() || '';
+    const name  = document.getElementById('f-name')?.value.trim()  || '';
+    if (phone.replace(/\D/g,'').length < 9 || name.length < 3) return;
+    _partialSent = true;
+    const total = S.cart.reduce((s, p) => s + (Number(p.price)||0)*(p.qty||1), 0);
+    postData({ action: 'partial_order', name, phone, total,
+      items: S.cart.map(c => `${c.brand} ${c.name}, розмір ${c.size} — ${c.price}₴`).join('; '),
+      cart: S.cart.map(c => ({...c})), utm: S.utm || null }).catch(() => {});
+  }, 4000);
+}
+
 function formatPhone(inp) {
   let v = inp.value.replace(/\D/g,'');
   if (v.startsWith('380')) v = v.slice(3);
@@ -256,6 +275,7 @@ function formatPhone(inp) {
   const digits = v.length;
   const valid  = digits >= 9;
   _setFieldState(inp, 'phone', valid, digits > 0);
+  _capturePartial();
 }
 
 function validateField(inp, type) {
@@ -265,6 +285,7 @@ function validateField(inp, type) {
   else if (type === 'name') valid = v.length >= 3 && /[а-яёіїєa-z]/i.test(v);
   else valid = v.length >= 2;
   _setFieldState(inp, type, valid, v.length > 0);
+  if (type === 'name') _capturePartial();
 }
 
 function _setFieldState(inp, type, valid, touched) {
@@ -398,6 +419,7 @@ async function submitOrder() {
   }
   closeAllSheets();
   document.getElementById('view-success')?.classList.add('on');
+  _renderSuccessUpsell();
 
   S.cart = [];
   saveCart();
@@ -408,6 +430,29 @@ async function submitOrder() {
   S.catalog.loadedFromServer = false;
   bgRefreshCatalog();
 }
+
+// ── POST-PURCHASE UPSELL ──────────────────────────── */
+function _renderSuccessUpsell() {
+  const wrap = document.getElementById('success-upsell');
+  if (!wrap) return;
+  const brand = S.cart[0]?.brand || '';
+  const pool  = (S.catalog.all || [])
+    .filter(p => p.brand === brand && p.sizes.length > 0 && !S.cart.find(c => c.id === p.id))
+    .slice(0, 6);
+  if (!pool.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `
+    <div class="success-upsell-title">Ще від ${brand}</div>
+    <div class="success-upsell-row">
+      ${pool.map(p => `
+        <div class="success-upsell-card" onclick="openProductDetail(findProd('${p.id}'))">
+          ${p.image && p.image.startsWith('http')
+            ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`
+            : `<div class="success-upsell-card-ph">👗</div>`}
+          <div class="success-upsell-name">${esc(p.name)}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
 
 function goHome() {
   document.getElementById('view-success')?.classList.remove('on');

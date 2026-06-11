@@ -156,7 +156,7 @@ function _giftBoxHtml() {
        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();return openDailyGift(event);}">
     <div class="dd-gift" style="pointer-events:none">
       <div class="dd-gift-brand">
-        <span class="dd-gift-brand-logo">WOW<span class="dd-gift-brand-dot">.</span>ZNAHIDKA</span>
+        <span class="dd-gift-brand-logo">WOW<span class="dd-gift-brand-dot">.</span>WEAR</span>
         <span class="dd-gift-brand-tag">
           <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M2 11.5V5.5C2 4.67 2.67 4 3.5 4H10V11.5C10 12.33 9.33 13 8.5 13H3.5C2.67 13 2 12.33 2 11.5Z" stroke="currentColor" stroke-width="1.4"/>
@@ -176,7 +176,7 @@ function _giftBoxHtml() {
           <svg class="dd-shoe-swoosh" viewBox="0 0 110 42" fill="rgba(255,255,255,0.22)" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M110 2.5L26 40c-3.8 2.1-7.8 3.2-12.1 3.2-4.3 0-7.7-1.4-10.1-4.1C1.4 36.4 0 32.9 0 28.6c0-4.4 1.7-8.5 5.1-12.3.2-.3.5-.3.7-.1.1.1.1.2 0 .4C4 20 3.3 22.8 3.3 25.8c0 9.8 7.2 16.2 21.5 19.1L110 2.5z"/>
           </svg>
-          <div class="dd-shoe-base-label" aria-hidden="true">WOW.ZNAHIDKA</div>
+          <div class="dd-shoe-base-label" aria-hidden="true">WOW.WEAR</div>
         </div>
         <div class="dd-gift-shine" aria-hidden="true"></div>
         <div class="dd-confetti" aria-hidden="true">

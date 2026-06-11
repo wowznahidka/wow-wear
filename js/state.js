@@ -32,6 +32,8 @@ const S = {
   catView:      'brands',  // 'brands' | 'products'
   catBrand:     null,
   catScrollTop: 0,
+  quickFilter:  'all',     // 'all' | 'discount' | 'new' | 'free'
+  sortMode:     'popular', // 'popular' | 'new' | 'price_asc' | 'price_desc' | 'discount'
 
   // ── Match engine ──
   matchPool: [],
@@ -46,6 +48,8 @@ const S = {
   starRating:    0,
   delivType:     'dept',
   promoDiscount: 0,
+  promoFixed:    0,
+  promoCode:     '',
 
   // ── UTM attribution ──
   utm: _loadUtm(),

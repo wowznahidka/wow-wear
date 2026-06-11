@@ -26,7 +26,9 @@ function openSizePicker(product) {
   // Product info row
   document.getElementById('sp-product-info').innerHTML = `
     ${product.image && product.image.startsWith('http')
-      ? `<img class="sp-img" src="${esc(product.image)}" alt="${esc(product.name)}" loading="lazy" onload="this.classList.add('loaded')">`
+      ? `<img class="sp-img" src="${esc(product.image)}" alt="${esc(product.name)}" loading="lazy"
+            onclick="event.stopPropagation();openImageZoom('${esc(product.image)}','${esc(product.brand)} ${esc(product.name)}')"
+            onload="this.classList.add('loaded')">`
       : `<div class="sp-img-ph" aria-hidden="true"></div>`}
     <div class="sp-info">
       <div class="sp-brand">${esc(product.brand)}</div>
@@ -86,43 +88,18 @@ function openSizePicker(product) {
     confirmBtn.style.boxShadow  = isLastSize ? 'var(--shadow-red)' : '';
   }
 
-  // Size guide (clothing: letter sizes only)
-  const guideWrap = document.getElementById('sp-guide-wrap');
-  if (guideWrap) {
-    const hasLetterSizes = product.sizes.some(s => /^(XS|S|M|L|XL|XXL|XXXL)$/i.test(String(s)));
-    guideWrap.innerHTML = hasLetterSizes ? `
-      <button class="sp-guide-toggle" onclick="toggleSizeGuide(this)" aria-expanded="false">
-        📏 Таблиця розмірів <span class="sp-guide-arr">▾</span>
-      </button>
-      <table class="sp-guide-table" role="table" aria-label="Таблиця розмірів">
-        <thead><tr><th>Розмір</th><th>Груди</th><th>Талія</th><th>Стегна</th></tr></thead>
-        <tbody>
-          <tr><td>XS (40)</td><td>80–84</td><td>62–66</td><td>86–90</td></tr>
-          <tr><td>S (42)</td><td>84–88</td><td>66–70</td><td>90–94</td></tr>
-          <tr><td>M (44)</td><td>88–92</td><td>70–74</td><td>94–98</td></tr>
-          <tr><td>L (46)</td><td>92–96</td><td>74–78</td><td>98–102</td></tr>
-          <tr><td>XL (48)</td><td>96–100</td><td>78–82</td><td>102–106</td></tr>
-          <tr><td>XXL (50)</td><td>100–104</td><td>82–86</td><td>106–110</td></tr>
-        </tbody>
-      </table>` : '';
-  }
-
-
-  // Notify-me panel
+  // Notify me panel
   const notifyWrap = document.getElementById('sp-notify-wrap');
   if (notifyWrap) {
-    const pid   = product.id;
-    const brand = esc(product.brand);
-    const name  = esc(product.name);
     notifyWrap.innerHTML = `
       <button class="sp-notify-trigger" onclick="toggleNotifyPanel()">🔔 Немає мого розміру? Повідомити</button>
       <div class="sp-notify-panel" id="sp-notify-panel">
-        <div class="sp-notify-label">Вкажіть розмір і телефон — повідомимо, коли з'явиться</div>
+        <div class="sp-notify-label">Вкажіть бажаний розмір і телефон — ми повідомимо, коли з'явиться:</div>
         <div class="sp-notify-row">
-          <input class="sp-notify-sz" id="sp-notify-sz" type="text" placeholder="Розмір" maxlength="5">
+          <input class="sp-notify-sz" id="sp-notify-sz" type="number" placeholder="Розмір" min="35" max="48">
           <input class="sp-notify-phone" id="sp-notify-phone" type="tel" placeholder="+380...">
         </div>
-        <button class="sp-notify-send" onclick="submitNotifyMe('${pid}','${brand}','${name}')">🔔 Повідомити мене</button>
+        <button class="sp-notify-send" onclick="submitNotifyMe()">🔔 Повідомити мене</button>
       </div>`;
   }
 
@@ -131,32 +108,6 @@ function openSizePicker(product) {
   document.getElementById('sheet-size')?.classList.add('on');
   document.getElementById('overlay')?.classList.add('on');
   _openSheetId = 'sheet-size';
-}
-
-
-function toggleSizeGuide(btn) {
-  const table = btn.nextElementSibling;
-  if (!table) return;
-  const open = table.classList.toggle('vis');
-  btn.classList.toggle('open', open);
-  btn.setAttribute('aria-expanded', open);
-}
-
-function toggleNotifyPanel() {
-  const panel = document.getElementById('sp-notify-panel');
-  if (panel) panel.classList.toggle('vis');
-}
-
-function submitNotifyMe(productId, brand, name) {
-  const sz    = document.getElementById('sp-notify-sz')?.value.trim()    || '';
-  const phone = document.getElementById('sp-notify-phone')?.value.trim() || '';
-  if (!sz || phone.replace(/\D/g,'').length < 9) {
-    toast('⚠️ Вкажіть розмір та телефон'); return;
-  }
-  postData({ action: 'notify_me', product_id: productId, brand, name, size: sz, phone }).catch(() => {});
-  toast('🔔 Запам'ятали! Повідомимо при надходженні');
-  const panel = document.getElementById('sp-notify-panel');
-  if (panel) panel.classList.remove('vis');
 }
 
 
@@ -173,10 +124,11 @@ function selectSize(sz) {
 function requestPhoto() {
   if (!S.spProduct) return;
   const p = S.spProduct;
+  // Якщо в товара є посилання на пост в каналі — там вже альбом фото, кидаємо туди
+  if (p.tgLink) { openTgLink(p.tgLink); return; }
   const szText = S.spSelectedSize ? `Розмір: ${S.spSelectedSize}` : 'Розмір: уточнимо';
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
-  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n${szText}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
-  postData({ action: 'photo_request', product: p, size: S.spSelectedSize });
+  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👕 ${p.brand} ${p.name}\n${szText}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
   openTgLink(`https://t.me/znahidkawow?text=${encodeURIComponent(msg)}`);
 }
 
@@ -215,9 +167,10 @@ function confirmSize() {
 function _pdPhotoTg() {
   const p = S.pdProduct;
   if (!p) return;
+  // Якщо в товара є пост в каналі — там альбом, відкриваємо напряму
+  if (p.tgLink) { openTgLink(p.tgLink); return; }
   const productUrl = `${location.origin}${location.pathname}?product=${p.id}`;
-  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👟 ${p.brand} ${p.name}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
-  postData({ action: 'photo_request', product: p, size: null });
+  const msg = `Привіт! 👋 Хочу побачити більше фото 📸\n👕 ${p.brand} ${p.name}\n💰 ${p.price}₴\n🔗 ${productUrl}`;
   openTgLink(`https://t.me/znahidkawow?text=${encodeURIComponent(msg)}`);
 }
 
@@ -240,9 +193,9 @@ function openProductDetail(product) {
     : product.sizes.length;
   const hasRealSizes = product.sizes.length > 0 && product.sizes[0] !== 'ONE SIZE';
   const scarcHtml = hasRealSizes && total === 1
-    ? `<div class="pd-scarc-hero sc-last">🔥 Остання пара!</div>`
+    ? `<div class="pd-scarc-hero sc-last">🔥 Остання в наявності!</div>`
     : hasRealSizes && total === 2
-      ? `<div class="pd-scarc-hero sc-low">⚡ Залишилось 2 пари</div>`
+      ? `<div class="pd-scarc-hero sc-low">⚡ Залишилось 2 шт</div>`
       : '';
 
   // Price row
@@ -267,29 +220,14 @@ function openProductDetail(product) {
     <path d="M21.944 2.56a1.5 1.5 0 0 0-1.53-.22L2.53 9.6c-.96.37-1.02 1.7-.1 2.16l4.06 2.02 1.56 5.14c.2.65.99.87 1.49.41l2.3-2.12 4.48 3.29c.59.43 1.42.1 1.57-.61L22.44 4.04a1.5 1.5 0 0 0-.5-1.48zM9.4 14.83l-.83 2.72-.94-3.1 8.33-5.9-6.56 6.28z" fill="#fff"/>
   </svg>`;
 
-  // Photos array — підтримка множинних фото. Якщо немає масиву — fallback на image.
-  const _photoList = (Array.isArray(product.photos) && product.photos.length
-                      ? product.photos
-                      : (product.image ? [product.image] : []))
-                      .filter(u => typeof u === 'string' && u.startsWith('http'));
-
-  const _galleryHtml = _photoList.length === 0
-    ? `<div class="pd-img-ph" aria-hidden="true">👗</div>`
-    : _photoList.length === 1
-      ? `<img class="pd-img" src="${esc(_photoList[0])}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
-      : `<div class="pd-gallery" id="pd-gallery" data-index="0" data-count="${_photoList.length}">
-          <div class="pd-gallery-track" id="pd-gallery-track">
-            ${_photoList.map((u, i) => `<div class="pd-gallery-slide"><img class="pd-img pd-thumb-img loaded" src="${esc(u)}" alt="${esc(product.brand)} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async" draggable="false" onload="this.classList.add('loaded')"></div>`).join('')}
-          </div>
-          <button class="pd-gal-nav pd-gal-prev" onclick="pdGalleryNav(-1)" aria-label="Попереднє фото">‹</button>
-          <button class="pd-gal-nav pd-gal-next" onclick="pdGalleryNav(1)" aria-label="Наступне фото">›</button>
-          <div class="pd-gal-dots" id="pd-gal-dots">${_photoList.map((_, i) => `<span class="pd-gal-dot${i===0?' active':''}" onclick="pdGalleryGo(${i})"></span>`).join('')}</div>
-          <div class="pd-gal-counter"><span id="pd-gal-cur">1</span>/${_photoList.length}</div>
-        </div>`;
-
   document.getElementById('product-detail-content').innerHTML = `
     <div class="pd-hero">
-      ${_galleryHtml}
+      ${product.image && product.image.startsWith('http')
+        ? `<img class="pd-img" src="${esc(product.image)}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async"
+             onclick="openImageZoom('${esc(product.image)}','${esc(product.brand)} ${esc(product.name)}')"
+             onload="this.classList.add('loaded')">
+           <div class="pd-zoom-hint" aria-hidden="true">🔍 Тап для збільшення</div>`
+        : `<div class="pd-img-ph" aria-hidden="true">👕</div>`}
       <div class="pd-hero-vignette" aria-hidden="true"></div>
       <button class="pd-fav-float ${faved ? 'on' : ''}" id="pd-fav-btn"
         onclick="togglePdFav()" aria-label="${faved ? 'Видалити з улюблених' : 'Додати в улюблені'}">
@@ -302,6 +240,11 @@ function openProductDetail(product) {
       <div class="pd-brand">${esc(product.brand)}</div>
       <h2 class="pd-name">${esc(product.name)}</h2>
       <div class="pd-price-row">${priceHtml}</div>
+      <p class="pd-lead">
+        ${product.isFreeShipping
+          ? `<b>Безкоштовна доставка</b> по Україні. Оплата після примірки на відділенні Нової Пошти — без передоплати, без ризику.`
+          : `Замовляй <b>без передоплати</b> — оплата після примірки на відділенні Нової Пошти. Не підійшло — відмов без зайвих питань.`}
+      </p>
       ${sizeChips}
       <div class="pd-trust">
         <span class="pd-trust-item">✅ Без передоплати</span>
@@ -314,7 +257,7 @@ function openProductDetail(product) {
 
     <div class="pd-cta">
       <button class="pd-btn-size" onclick="openSizePicker(S.pdProduct)">
-        Обрати розмір → в кошик
+        Обрати розмір
       </button>
       <button class="pd-btn-tg" onclick="_pdPhotoTg()">
         ${tgIco}
@@ -323,11 +266,30 @@ function openProductDetail(product) {
       <button class="pd-btn-brand" onclick="closeAllSheets();changeTab('catalog');setTimeout(()=>openBrand('${esc(product.brand)}'),220)">
         Ще від ${esc(product.brand)} <span class="i-arr" aria-hidden="true"></span>
       </button>
-    </div>
-
-    ${_pdCrossSell(product)}`;
+    </div>`;
 
   openSheet('sheet-product');
+}
+
+// ── NOTIFY ME ─────────────────────────────────────────── */
+function toggleNotifyPanel() {
+  document.getElementById('sp-notify-panel')?.classList.toggle('open');
+}
+
+function submitNotifyMe() {
+  const sz    = document.getElementById('sp-notify-sz')?.value.trim()    || '';
+  const phone = document.getElementById('sp-notify-phone')?.value.trim() || '';
+  if (!sz || phone.replace(/\D/g,'').length < 9) {
+    toast('⚠️ Вкажіть розмір і номер телефону');
+    return;
+  }
+  const p = S.spProduct;
+  if (!p) return;
+  postData({ action: 'notify_me', product_id: p.id, brand: p.brand, name: p.name, size: sz, phone }).catch(() => {});
+  toast(`🔔 Збережено! Повідомимо, коли з'явиться розмір ${sz}`);
+  document.getElementById('sp-notify-panel')?.classList.remove('open');
+  const szEl = document.getElementById('sp-notify-sz'); if (szEl) szEl.value = '';
+  const phEl = document.getElementById('sp-notify-phone'); if (phEl) phEl.value = '';
 }
 
 function togglePdFav() {
@@ -346,77 +308,3 @@ function togglePdFav() {
   }
   toast(faved ? '❤️ Додано до улюблених' : 'Видалено з улюблених');
 }
-
-// ── CROSS-SELL ────────────────────────────────────── */
-function _pdCrossSell(product) {
-  const all = getCatalog() || [];
-  const pool = all.filter(p =>
-    p.id !== product.id &&
-    p.image && p.image.startsWith('http') &&
-    p.gender === product.gender &&
-    p.category !== product.category
-  );
-  if (!pool.length) return '';
-  const items = shuffleSeeded(pool, hashStr(product.id)).slice(0, 6);
-  return `<div class="pd-cross-sell">
-    <div class="pd-cross-title">З цим носять</div>
-    <div class="pd-cross-row">
-      ${items.map(p => `
-        <div class="pd-cross-card" onclick="openProductDetail(findProd('${esc(p.id)}'))">
-          <div class="pd-cross-img-wrap">
-            <img class="pd-cross-img loaded" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">
-          </div>
-          <div class="pd-cross-info">
-            <div class="pd-cross-name">${esc(p.name).slice(0,28)}${p.name.length>28?'…':''}</div>
-            <div class="pd-cross-price">${p.price}₴</div>
-          </div>
-        </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-// ── MULTI-PHOTO GALLERY ───────────────────────────── */
-function pdGalleryNav(dir) {
-  const g = document.getElementById('pd-gallery');
-  if (!g) return;
-  const count = parseInt(g.dataset.count) || 1;
-  let idx = parseInt(g.dataset.index) || 0;
-  idx = (idx + dir + count) % count;
-  pdGalleryGo(idx);
-}
-function pdGalleryGo(idx) {
-  const g = document.getElementById('pd-gallery');
-  const track = document.getElementById('pd-gallery-track');
-  if (!g || !track) return;
-  g.dataset.index = idx;
-  track.style.transform = `translateX(-${idx * 100}%)`;
-  // dots
-  const dots = g.querySelectorAll('.pd-gal-dot');
-  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-  // counter
-  const cur = document.getElementById('pd-gal-cur');
-  if (cur) cur.textContent = idx + 1;
-}
-// Touch swipe binding (attached on first call after gallery render)
-(function _bindPdGallerySwipe() {
-  let startX = 0, startY = 0, deltaX = 0, dragging = false;
-  document.addEventListener('pointerdown', e => {
-    const slide = e.target.closest && e.target.closest('.pd-gallery-slide');
-    if (!slide) return;
-    dragging = true; startX = e.clientX; startY = e.clientY; deltaX = 0;
-  }, { passive: true });
-  document.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    deltaX = e.clientX - startX;
-    const dy = Math.abs(e.clientY - startY);
-    // Якщо вертикально-домінантний рух — це скрол, не свайп
-    if (dy > Math.abs(deltaX) * 1.2) dragging = false;
-  }, { passive: true });
-  document.addEventListener('pointerup', () => {
-    if (!dragging) return;
-    dragging = false;
-    if (Math.abs(deltaX) < 40) return;
-    pdGalleryNav(deltaX < 0 ? 1 : -1);
-  });
-  document.addEventListener('pointercancel', () => { dragging = false; });
-})();

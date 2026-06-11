@@ -1,113 +1,382 @@
-﻿const STRINGS = {
+/* ============================================================
+   WOW.ZNAHIDKA — INTERNATIONALISATION
+   UA (default) + EN strings
+   ============================================================ */
+
+const STRINGS = {
   ua: {
-    splashYear:'NO PREPAYMENT', splashTag:'МОДНИЙ ОДЯГ',
-    splashChoose:'Оберіть свій розділ',
+    splashYear:'NO PREPAYMENT', splashTag:'МОДНИЙ ОДЯГ І БІЛИЗНА',
+    splashChoose:'Оберіть свій каталог',
     spNopay:'Без передоплати', spNp:'Нова Пошта', spFit:'Примірка',
-    sblMale:'Чоловічий', sblFemale:'Жіночий',
-    sbcMale:'200+ образів', sbcFemale:'500+ образів',
+    sblMale:'Чоловік', sblFemale:'Жінка',
+    sbcMale:'Чоловічий каталог', sbcFemale:'Жіночий каталог',
     splashHint:'Можна змінити внизу сторінки',
     hdrSub:'МОДНИЙ ОДЯГ',
-    greeting0:'Одягайся краще за всіх ☀️', greeting1:'Стиль без переплати 🔥',
-    greeting2:'Look на вечір — тут 👗', greeting3:'Знаходимо. Ти береш. 🌙',
-    homeTitle:'Твій ідеальний<br>образ тут 👗',
+    greeting0:'Доброго ранку! ☀️', greeting1:'Привіт! 👋',
+    greeting2:'Добрий вечір! 🌙', greeting3:'Доброї ночі! 🌟',
+    homeTitle:'Стиль без<br>переплати 🔥',
     popular:'🔥 Популярне зараз', newIn:'✨ Новинки',
-    brands:'👗 Бренди', recent:'👀 Нещодавно переглянуті',
+    brands:'👕 Бренди', recent:'👀 Нещодавно переглянуті',
     allModels:'Весь асортимент', seeAll:'Всі',
     navHome:'Головна', navMatch:'Match', navCatalog:'Каталог', navContacts:'Контакти',
-    gMale:'♂ Чоловічий', gFemale:'♀ Жіночий',
-    sizesIn:'Розмір: ',
-    updated:'Оновлено о',
-    searchPh:'Пошук по назві або стилю…',
-    models:'образів',
-    noSizes:'Немає товарів з вибраними фільтрами',
+    gMale:'♂ Чоловік', gFemale:'♀ Жінка',
+    sizesIn:'Розміри: ',
+    updated:'🔄 Оновлено: сьогодні о',
+    searchPh:'Пошук по бренду або моделі…',
+    models:'моделей',
+    noSizes:'Немає товарів з вибраними розмірами',
     sizeLabel:'РОЗМІР',
     favsTitle:'Улюблені', cartTitle:'Кошик',
-    favsEmpty:'Тут з\'являться образи,<br>які ти лайкнув у Match',
-    cartEmpty:'Кошик порожній',
-    matchLike:'ХОЧУ', matchNope:'НЕ ТЕ',
-    matchDone:'Переглянуто все!',
-    updated:'Updated at',
-    csbLabel:'речей у кошику',
+    favsEmpty:'Тут з\'являться товари,<br>які ти лайкнув у Match',
+    cartEmpty:'Кошик порожній.<br>Додай речі з Улюблених!',
     cartItems:'шт.',
-    cartDelivery:'Безкоштовно від 500₴',
-    cartToPay:'До сплати:',
-    cartCheckout:'Оформити замовлення →',
-    cartRowItems:'Товари', cartRowDelivery:'Доставка',
-    formName:'Ваше ім\'я', formPhone:'Номер телефону',
-    formCity:'Місто', formDept:'Відділення НП',
-    formPost:'Поштомат НП',
-    deptPh:'Номер відділення', postPh:'Номер поштомату',
-    submitting:'Відправляємо…', submitOrder:'Замовити →',
-    mySizeLabel:'Мій розмір', mySizeTap:'Торкнись',
-    scarcity1:'⚡️ Останній розмір!', scarcityLow:'🔥 Лише', scarcityLowSuffix:' розміри',
+    lastSizes:'🔴 Останні розміри!',
+    noPrep:'Оплата після примірки на Новій Пошті. Без передоплати.',
+    chooseSize:'📦 Обрати розмір',
+    share:'🔗 Поділитись', telegram:'✈️ Telegram',
+    matchTitle:'Match', matchHint:'Свайп вправо — ❤️ в Улюблені · вліво — пропустити',
+    matchLike:'❤️ ЛАЙК', matchNope:'✕ ПРОПУСК',
+    matchDone:'Ти переглянув усі речі!',
+    matchDoneSub:'Перевір Улюблені або онови колоду.',
+    matchRestart:'🔄 Переглянути ще раз',
+    tgBtn:'💬 Написати нам',
     sendReview:'Надіслати відгук',
+    reviewsTitle:'💬 Що кажуть покупці',
+    leaveReview:'✍️ Залишити відгук',
+    cartCheckout:'Оформити замовлення <span class="i-arr-lg" aria-hidden="true"></span>',
+    cartDelivery:'За тарифами НП',
+    cartToPay:'До сплати',
+    chooseSizeTitle:'Оберіть розмір',
+    mySizeLabel:'Мій розмір',
+    mySizeTap:'Натисни щоб вибрати <span class="i-arr" aria-hidden="true"></span>',
+    alsoSee:'Також дивляться:',
+    requestPhoto:'📸 Запросити фото',
+    confirmAdd:'Додати в кошик',
+    orderTitle:'📦 Оформлення',
+    codTitle:'Оплата після примірки',
+    codSub:'Без передоплати · Нова Пошта',
+    formName:'Ваше ім\'я', namePh:'Ім\'я та прізвище', nameErr:'Введіть ваше ім\'я',
+    formPhone:'Телефон', phonePh:'+380 (XX) XXX-XX-XX', phoneErr:'Введіть повний номер телефону',
+    formCity:'Місто', cityPh:'Наприклад: Київ', cityErr:'Введіть назву міста',
+    formDept:'Номер відділення', deptPh:'Наприклад: 12', deptErr:'Введіть номер відділення або поштомату',
+    formPost:'Номер поштомату', postPh:'Наприклад: 5043',
+    tabDept:'🏢 Відділення', tabPost:'📮 Поштомат',
+    promoPh:'Промокод (якщо є)', promoApply:'Застосувати',
+    submitOrder:'✅ Підтвердити замовлення',
+    submitting:'⏳ Відправляємо…',
+    orderSuccess:'Замовлення прийнято!',
+    orderSuccessSub:'Ми зв\'яжемося з вами найближчим часом.',
+    ratingLabel:'Ваша оцінка',
+    revNamePh:'Ваше ім\'я та місто (напр. Аня, Київ)',
+    revTextPh:'Розкажіть про ваш досвід замовлення…',
+    priceAll:'Всі ціни', priceLow:'До 2000₴', priceMid:'2000–3500₴', priceHigh:'3500₴+',
+    cartRowItems:'Товари', cartRowDelivery:'Доставка', csbLabel:'речей у кошику',
+    scarcity1:'⚡️ Останній розмір!', scarcityLow:'🔥 Лише', scarcityLowSuffix:' розміри',
     faqTitle:'❓ Часті запитання',
     faqItems:[
-      {q:'Як замовити?', a:'Обери товар → натисни "Замовити" → вибери розмір → заповни форму. Все просто!'},
-      {q:'Є примірка?', a:'Так! Ти отримуєш посилку на Нову Пошту, приміряєш і якщо не підходить — просто відмовляєшся. Безкоштовно.'},
-      {q:'Скільки часу доставка?', a:'1–3 дні по всій Україні. Нова Пошта.'},
-      {q:'Як дізнатися про новинки?', a:'Підпишись на наш Telegram-канал або дозволь push-сповіщення на сайті.'},
+      {q:'Потрібна передоплата?', a:'Ні! Жодної передоплати. Ти отримуєш посилку на відділення Нової Пошти, примірюєш — і лише тоді платиш. Не підійшло? Повертаєш і нічого не платиш. 100% гарантія задоволення.'},
+      {q:'Як відбувається доставка?', a:'Відправляємо Новою Поштою по всій Україні. Терміни: 1–3 робочих дні. Доставка — за тарифами НП (зазвичай 50–80₴). Ти отримуєш трекінг-номер і можеш відстежити посилку онлайн.'},
+      {q:'Чи є доставка за кордон?', a:'Так! Відправляємо у Польщу, Чехію, Словаччину та інші країни ЄС через міжнародні служби доставки. Уточнення деталей і вартості — через Telegram.'},
+      {q:'Як обрати правильний розмір?', a:'Напиши нам у Telegram — підберемо розмір за довжиною стопи або звичним розміром. Також можна примірювати прямо на відділенні: відкрив посилку, виміряв — і вирішив. Ніяких ризиків!'},
+      {q:'Що якщо не підійшли?', a:'Просто відмовся від посилки на відділенні або поверни назад — без жодних витрат з твого боку. Ми покриваємо зворотню доставку. Ніяких питань, ніяких проблем.'},
     ],
-    catAll:'Все', catWear:'Одяг', catBilyzna:'Білизна',
+    // ── 2026 нові рядки ──
+    trustNoPrepay:'0₴ передоплати', trustTopQuality:'Топ якість', trustFast:'1–3 дні',
+    counterTpl:'моделей в наявності',
+    ddEyebrow:'Випадкові 3 речі', ddTitle:'Знахідка дня', ddTimerLbl:'До оновлення:',
+    ddSubtitle:'3 моделі щодня <b>з безкоштовною доставкою</b>',
+    giftCtaTitle:'🎁 Відкрий подарунок дня',
+    giftCtaSub:'3 речі з <b>безкоштовною доставкою</b> · лише сьогодні',
+    catQAll:'Всі', catQDiscount:'🔥 Знижки', catQNew:'✨ Новинки', catQFree:'🚚 Безкоштовна',
+    sortLabel:'Сортувати', sortPopular:'🔥 Популярне', sortNew:'✨ Новинки',
+    sortPriceAsc:'↑ Ціна: дешевше', sortPriceDesc:'↓ Ціна: дорожче', sortDiscount:'🎁 Найбільша знижка',
+    afClearAll:'Скинути все',
+    rvTitle:'Нещодавно переглянуті', rvClear:'Очистити',
+    findYourPair:'Знайди свій образ 🔥',
+    bannerTag:'TRENDY FASHION STORE',
+    bannerStat1:'моделей', bannerStat2:'передоплати', bannerStat3:'дні доставка',
+    refTag:'🤝 РЕФЕРАЛЬНА', refTitle:'Поділись і заробляй',
+    refSub:'Поширюй своє посилання у соцмережах. <b>Винагороду уточни в менеджера</b> — рахуємо персонально під твою активність.',
+    refStat1Lbl:'уточни в TG', refStat2Lbl:'друзів', refStat3Lbl:'cookie життя',
+    refBtn:'🔗 Отримати моє посилання', refHint:'Пиши менеджеру в Telegram — обговоримо умови',
+    tgCtaEyebrow:'ЕКСКЛЮЗИВНО В TELEGRAM', tgCtaTitle:'Підпишись на канал',
+    tgCtaSub:'Перші — про знижки, дропи нових моделей, ексклюзивні розіграші',
+    ciDelivery:'Доставка по Україні', ciDeliverySub:'Нова Пошта · 1–3 дні · ~50–80₴ · Оплата після примірки',
+    ciIntl:'Міжнародна доставка', ciIntlSub:'Польща, Чехія, Словаччина та інші країни ЄС',
+    ciReturn:'Повернення безкоштовно', ciReturnSub:'Не підійшло — просто відмовся на відділенні, без витрат',
   },
   en: {
-    splashYear:'NO PREPAYMENT', splashTag:'FASHION WEAR',
-    splashChoose:'Choose your style',
+    splashYear:'NO PREPAYMENT', splashTag:'TRENDY CLOTHING',
+    splashChoose:'Choose your catalog',
     spNopay:'No prepayment', spNp:'Nova Poshta', spFit:'Try-on',
     sblMale:'Men', sblFemale:'Women',
-    sbcMale:'200+ styles', sbcFemale:'500+ styles',
-    splashHint:'Can be changed below',
-    hdrSub:'FASHION WEAR',
-    greeting0:'Good morning! ☀️', greeting1:'Hey! 👋',
+    sbcMale:'Men catalog', sbcFemale:'Women catalog',
+    splashHint:'You can change this anytime',
+    hdrSub:'TRENDY CLOTHING',
+    greeting0:'Good morning! ☀️', greeting1:'Hi there! 👋',
     greeting2:'Good evening! 🌙', greeting3:'Good night! 🌟',
-    homeTitle:'Your perfect<br>look is here 👗',
-    popular:'🔥 Popular now', newIn:'✨ New arrivals',
-    brands:'👗 Brands', recent:'👀 Recently viewed',
-    allModels:'All items', seeAll:'All',
-    navHome:'Home', navMatch:'Match', navCatalog:'Catalog', navContacts:'Contacts',
+    homeTitle:'Style without<br>overpaying 🔥',
+    popular:'🔥 Trending now', newIn:'✨ New arrivals',
+    brands:'👕 Brands', recent:'👀 Recently viewed',
+    allModels:'Full catalog', seeAll:'All',
+    navHome:'Home', navMatch:'Match', navCatalog:'Catalog', navContacts:'Contact',
     gMale:'♂ Men', gFemale:'♀ Women',
-    sizesIn:'Size: ',
-    updated:'🔄 Updated today at',
-    searchPh:'Search by name or style…',
-    models:'styles',
-    noSizes:'No products with selected filters',
+    sizesIn:'Sizes: ',
+    updated:'🔄 Updated: today at',
+    searchPh:'Search brand or model…',
+    models:'models',
+    noSizes:'No items with selected sizes',
     sizeLabel:'SIZE',
     favsTitle:'Favourites', cartTitle:'Cart',
-    favsEmpty:'Liked items<br>will appear here',
-    cartEmpty:'Cart is empty',
-    matchLike:'WANT', matchNope:'NOPE',
-    matchDone:'All seen!',
-    csbLabel:'items in cart',
-    cartItems:'pcs.',
-    cartDelivery:'Free from 500₴',
-    cartToPay:'Total:',
-    cartCheckout:'Checkout →',
-    cartRowItems:'Items', cartRowDelivery:'Delivery',
-    formName:'Your name', formPhone:'Phone number',
-    formCity:'City', formDept:'Nova Poshta branch',
-    formPost:'Nova Poshta locker',
-    deptPh:'Branch number', postPh:'Locker number',
-    submitting:'Sending…', submitOrder:'Order →',
-    mySizeLabel:'My size', mySizeTap:'Tap',
-    scarcity1:'⚡️ Last size!', scarcityLow:'🔥 Only', scarcityLowSuffix:' sizes',
-    sendReview:'Send review',
+    favsEmpty:'Items you liked in Match<br>will appear here',
+    cartEmpty:'Cart is empty.<br>Add items from Favourites!',
+    cartItems:'item(s)',
+    lastSizes:'🔴 Last sizes!',
+    noPrep:'Pay after try-on at Nova Poshta. No prepayment.',
+    chooseSize:'📦 Choose size',
+    share:'🔗 Share', telegram:'✈️ Telegram',
+    matchTitle:'Match', matchHint:'Swipe right to like · left to skip',
+    matchLike:'❤️ LIKE', matchNope:'✕ SKIP',
+    matchDone:'You\'ve seen all items!',
+    matchDoneSub:'Check Favourites or refresh the deck.',
+    matchRestart:'🔄 See again',
+    tgBtn:'💬 Contact us',
+    sendReview:'Submit review',
+    reviewsTitle:'💬 Customer reviews',
+    leaveReview:'✍️ Leave a review',
+    cartCheckout:'Place order <span class="i-arr-lg" aria-hidden="true"></span>',
+    cartDelivery:'Nova Poshta rates',
+    cartToPay:'Total',
+    chooseSizeTitle:'Choose size',
+    mySizeLabel:'My size',
+    mySizeTap:'Tap to select <span class="i-arr" aria-hidden="true"></span>',
+    alsoSee:'Also viewed:',
+    requestPhoto:'📸 Request photo',
+    confirmAdd:'Add to cart',
+    orderTitle:'📦 Order',
+    codTitle:'Pay after try-on',
+    codSub:'No prepayment · Nova Poshta',
+    formName:'Your name', namePh:'First and last name', nameErr:'Please enter your name',
+    formPhone:'Phone', phonePh:'+380 (XX) XXX-XX-XX', phoneErr:'Enter a valid phone number',
+    formCity:'City', cityPh:'e.g. Kyiv', cityErr:'Enter your city',
+    formDept:'Branch number', deptPh:'e.g. 12', deptErr:'Enter branch or parcel locker number',
+    formPost:'Parcel locker number', postPh:'e.g. 5043',
+    tabDept:'🏢 Branch', tabPost:'📮 Parcel locker',
+    promoPh:'Promo code (if any)', promoApply:'Apply',
+    submitOrder:'✅ Confirm order',
+    submitting:'⏳ Sending…',
+    orderSuccess:'Order received!',
+    orderSuccessSub:'We\'ll contact you shortly.',
+    ratingLabel:'Your rating',
+    revNamePh:'Your name and city (e.g. Ann, Kyiv)',
+    revTextPh:'Tell us about your experience…',
+    priceAll:'All prices', priceLow:'Under ₴2000', priceMid:'₴2000–3500', priceHigh:'₴3500+',
+    cartRowItems:'Items', cartRowDelivery:'Delivery', csbLabel:'items in cart',
+    scarcity1:'⚡️ Last size!', scarcityLow:'🔥 Only', scarcityLowSuffix:' sizes left',
     faqTitle:'❓ FAQ',
     faqItems:[
-      {q:'How to order?', a:'Choose item → tap Order → select size → fill form. Easy!'},
-      {q:'Is try-on available?', a:'Yes! Receive at Nova Poshta, try it on. If it does not fit — refuse for free.'},
-      {q:'Delivery time?', a:'1–3 days across Ukraine. Nova Poshta.'},
-      {q:'How to know about new arrivals?', a:'Subscribe to our Telegram channel or allow push notifications.'},
+      {q:'No prepayment required?', a:'No prepayment! You receive your package at Nova Poshta, try it on — and only then pay. Not a fit? Return it for free. 100% satisfaction guaranteed.'},
+      {q:'How does delivery work?', a:'We ship via Nova Poshta across all of Ukraine. Delivery: 1–3 business days. Standard Nova Poshta rates apply (usually ₴50–80). You receive a tracking number to follow your parcel online.'},
+      {q:'Do you ship internationally?', a:'Yes! We ship to Poland, Czech Republic, Slovakia and other EU countries. Contact us on Telegram for details and shipping costs.'},
+      {q:'How to choose the right size?', a:'Message us on Telegram — we\'ll recommend a size based on foot length or your usual size. You can also try on at the branch: open the parcel, check the fit — and decide. Zero risk!'},
+      {q:'What if it doesn\'t fit?', a:'Simply refuse the parcel at the branch or return it — at no cost to you. We cover return shipping. No questions asked, no hassle.'},
     ],
-    catAll:'All', catWear:'Clothing', catBilyzna:'Lingerie',
-  },
+    // ── 2026 strings ──
+    trustNoPrepay:'₴0 prepayment', trustTopQuality:'Top quality', trustFast:'1–3 days',
+    counterTpl:'models in stock',
+    ddEyebrow:'3 random items', ddTitle:'Daily find', ddTimerLbl:'Updates in:',
+    ddSubtitle:'3 models daily <b>with free shipping</b>',
+    giftCtaTitle:'🎁 Open today\'s gift',
+    giftCtaSub:'3 items with <b>free shipping</b> · today only',
+    catQAll:'All', catQDiscount:'🔥 Sale', catQNew:'✨ New', catQFree:'🚚 Free shipping',
+    sortLabel:'Sort by', sortPopular:'🔥 Popular', sortNew:'✨ Newest',
+    sortPriceAsc:'↑ Price: low to high', sortPriceDesc:'↓ Price: high to low', sortDiscount:'🎁 Biggest discount',
+    afClearAll:'Clear all',
+    rvTitle:'Recently viewed', rvClear:'Clear',
+    findYourPair:'Find your style 🔥',
+    bannerTag:'TRENDY FASHION STORE',
+    bannerStat1:'models', bannerStat2:'prepayment', bannerStat3:'days delivery',
+    refTag:'🤝 REFERRAL', refTitle:'Share & earn',
+    refSub:'Share your link on social. <b>Ask the manager about reward</b> — calculated per your activity.',
+    refStat1Lbl:'ask in TG', refStat2Lbl:'friends', refStat3Lbl:'cookie days',
+    refBtn:'🔗 Get my link', refHint:'Message the manager on Telegram for terms',
+    tgCtaEyebrow:'EXCLUSIVE ON TELEGRAM', tgCtaTitle:'Subscribe to channel',
+    tgCtaSub:'First to know about sales, drops, exclusive giveaways',
+    ciDelivery:'Delivery in Ukraine', ciDeliverySub:'Nova Poshta · 1–3 days · ~₴50–80 · Pay after try-on',
+    ciIntl:'International delivery', ciIntlSub:'Poland, Czech Republic, Slovakia and other EU countries',
+    ciReturn:'Free returns', ciReturnSub:'Not a fit — just refuse at the branch, no costs',
+  }
 };
 
-let L = STRINGS.ua;
+// Active language strings (mutable reference)
+let L = STRINGS[S.lang] || STRINGS.ua;
+
+function toggleLang() {
+  S.lang = S.lang === 'en' ? 'ua' : 'en';
+  L = STRINGS[S.lang];
+  localStorage.setItem('wow_lang', S.lang);
+  applyLang();
+  refreshCurrentTab();
+}
+
 function applyLang() {
-  L = STRINGS[S.lang] || STRINGS.ua;
-  const hSub = document.getElementById('hdr-sub');
-  if (hSub) hSub.textContent = L.hdrSub;
-  const srch = document.getElementById('cat-search');
-  if (srch) srch.placeholder = L.searchPh;
-  renderFaq();
+  const btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = S.lang === 'en' ? 'EN' : 'UA';
+
+  _setText('hdr-sub', L.hdrSub);
+
+  // Nav labels
+  [['home','navHome'],['match','navMatch'],['catalog','navCatalog'],['contacts','navContacts']].forEach(([tab,key]) => {
+    const el = document.querySelector(`.nav-item[data-tab="${tab}"] .nav-label`);
+    if (el) el.textContent = L[key];
+    const dsk = document.getElementById('dsk-btn-' + tab);
+    if (dsk) dsk.textContent = L[key];
+  });
+
+  // Gender toggle (home) + g-chip (match/catalog)
+  document.querySelectorAll('.g-btn[data-gender="male"] .g-lbl, .g-chip[data-gender="male"]').forEach(el => el.textContent = L.gMale);
+  document.querySelectorAll('.g-btn[data-gender="female"] .g-lbl, .g-chip[data-gender="female"]').forEach(el => el.textContent = L.gFemale);
+
+  // Catalog
+  const search = document.getElementById('cat-search');
+  if (search) search.placeholder = L.searchPh;
+  document.querySelectorAll('.cat-quick[data-quick="all"] span').forEach(el => el.textContent = L.catQAll);
+  document.querySelectorAll('.cat-quick[data-quick="discount"] span').forEach(el => el.textContent = L.catQDiscount);
+  document.querySelectorAll('.cat-quick[data-quick="new"] span').forEach(el => el.textContent = L.catQNew);
+  document.querySelectorAll('.cat-quick[data-quick="free"] span').forEach(el => el.textContent = L.catQFree);
+
+  // Sort dropdown
+  const sortSel = document.getElementById('cat-sort');
+  if (sortSel) {
+    const opts = sortSel.options;
+    if (opts.length >= 5) {
+      opts[0].text = L.sortPopular; opts[1].text = L.sortNew;
+      opts[2].text = L.sortPriceAsc; opts[3].text = L.sortPriceDesc;
+      opts[4].text = L.sortDiscount;
+    }
+  }
+
+  // Daily Find
+  _setTextSel('#daily-deals-section .sec-eyebrow', '', L.ddEyebrow, true);
+  _setTextSel('#daily-deals-section .dd-title', '', L.ddTitle);
+  const ddSub = document.querySelector('#daily-deals-section .dd-subtitle');
+  if (ddSub) ddSub.innerHTML = L.ddSubtitle;
+  _setTextSel('#daily-deals-section .dd-timer-lbl', '', L.ddTimerLbl);
+
+  // Hero trust chips
+  const trustItems = document.querySelectorAll('.hero-trust-item');
+  if (trustItems.length >= 3) {
+    _replaceTextNode(trustItems[0], L.trustNoPrepay);
+    _replaceTextNode(trustItems[1], L.trustTopQuality);
+    _replaceTextNode(trustItems[2], L.trustFast);
+  }
+
+  // Home counter — keep number, change suffix
+  const counterChip = document.querySelector('.home-counter-chip');
+  if (counterChip) {
+    const txt = counterChip.childNodes;
+    for (const n of txt) {
+      if (n.nodeType === 3 && n.textContent.trim() && !/^\d+/.test(n.textContent.trim())) {
+        n.textContent = ' ' + L.counterTpl;
+        break;
+      }
+    }
+  }
+
+  // Section headings
+  document.querySelectorAll('.sec-title').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt.includes('Популярне') || txt.includes('Trending')) el.textContent = L.popular;
+    else if (txt.includes('Новинки') || txt.includes('New arrivals')) el.textContent = L.newIn;
+    else if (txt.includes('Бренди') || txt.includes('Brands')) el.textContent = L.brands;
+    else if (txt.includes('Нещодавно') || txt.includes('Recently')) el.textContent = L.rvTitle;
+    else if (txt.includes('Що кажуть') || txt.includes('Customer reviews')) el.textContent = L.reviewsTitle;
+    else if (txt.includes('Весь асортимент') || txt.includes('Full catalog')) el.textContent = L.allModels;
+  });
+
+  // Recently viewed clear button
+  const rvClear = document.querySelector('.rv-clear');
+  if (rvClear) rvClear.textContent = L.rvClear;
+
+  // "Знайди свою пару"
+  _setTextSel('.cat-vibe-line', '', L.findYourPair.replace(' 🔥','').trim());
+
+  // Contacts banner
+  _setTextSel('.contacts-banner-tag', '', L.bannerTag);
+  const stats = document.querySelectorAll('.cb-stat-lbl');
+  if (stats.length >= 3) {
+    stats[0].textContent = L.bannerStat1;
+    stats[1].textContent = L.bannerStat2;
+    stats[2].textContent = L.bannerStat3;
+  }
+
+  // Contacts list (delivery/intl/return)
+  const ciTitles = document.querySelectorAll('.contact-item .ci-title');
+  const ciSubs   = document.querySelectorAll('.contact-item .ci-sub');
+  const ciData = [[L.ciDelivery,L.ciDeliverySub],[L.ciIntl,L.ciIntlSub],[L.ciReturn,L.ciReturnSub]];
+  ciTitles.forEach((el,i) => { if (ciData[i]) el.textContent = ciData[i][0]; });
+  ciSubs.forEach((el,i) => { if (ciData[i]) el.textContent = ciData[i][1]; });
+
+  // Referral section
+  _setTextSel('.ref-section-tag', '', L.refTag);
+  _setTextSel('.ref-section-title', '', L.refTitle);
+  const refSub = document.querySelector('.ref-section-sub');
+  if (refSub) refSub.innerHTML = L.refSub;
+  const refLbls = document.querySelectorAll('.ref-stat-lbl');
+  if (refLbls.length >= 3) {
+    refLbls[0].textContent = L.refStat1Lbl;
+    refLbls[1].textContent = L.refStat2Lbl;
+    refLbls[2].textContent = L.refStat3Lbl;
+  }
+  const refBtn = document.querySelector('.ref-section-btn > span:first-child');
+  if (refBtn) refBtn.textContent = L.refBtn;
+  _setTextSel('.ref-section-hint', '', L.refHint);
+
+  // TG Channel CTA
+  _setTextSel('.tg-cta-eyebrow', 'dot', L.tgCtaEyebrow);
+  _setTextSel('.tg-cta-title', '', L.tgCtaTitle);
+  _setTextSel('.tg-cta-sub', '', L.tgCtaSub);
+
+  // Gift box CTA (if rendered)
+  const giftStrong = document.querySelector('.dd-gift-cta strong');
+  const giftSpan   = document.querySelector('.dd-gift-cta span');
+  if (giftStrong) giftStrong.textContent = L.giftCtaTitle;
+  if (giftSpan)   giftSpan.innerHTML     = L.giftCtaSub;
+
+  // Match
+  _setTextSel('.match-hint', '', L.matchHint);
+
+  // Cart
+  _setTextSel('.sh-title-cart', '', L.cartTitle);
+
+  updateTimestamp();
+  if (typeof renderFaq === 'function') renderFaq();
+}
+
+// Helper: set text of element matched by selector. ignoreChild = class name to preserve (sets only LAST text node)
+function _setTextSel(sel, ignoreChild, val, addIcon) {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  // знаходимо текстовий вузол, не зачіпаючи дочірні елементи (іконки/SVG)
+  let txtNode = null;
+  for (const n of el.childNodes) {
+    if (n.nodeType === 3 && n.textContent.trim()) { txtNode = n; break; }
+  }
+  if (txtNode) txtNode.textContent = (txtNode.textContent.startsWith(' ') ? ' ' : '') + val;
+  else el.appendChild(document.createTextNode(val));
+}
+
+function _replaceTextNode(el, val) {
+  for (const n of el.childNodes) {
+    if (n.nodeType === 3 && n.textContent.trim()) {
+      n.textContent = val;
+      return;
+    }
+  }
+  el.appendChild(document.createTextNode(val));
+}
+
+function _setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }

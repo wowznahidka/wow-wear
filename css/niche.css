@@ -1804,3 +1804,35 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .cart-checkout-btn, .exit-cta {
   background: linear-gradient(135deg, #23232a 0%, #0f0f14 100%);
 }
+
+/* ============================================================
+   WOW.WEAR — EDITORIAL FASHION UPGRADE · Mauve & Charcoal
+   Ref: COS, Arket, & Other Stories
+   ============================================================ */
+:root {
+  --accent:      #9b3f6e;
+  --red:         #9b3f6e;
+  --red-dim:     rgba(155,63,110,0.10);
+  --red-glow:    rgba(155,63,110,0.28);
+  --border-accent: rgba(155,63,110,0.22);
+  --shadow-red:  0 6px 28px rgba(155,63,110,0.22);
+  --shadow-card-hover: 0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(155,63,110,0.14);
+  --accent-rgb: 155,63,110;
+}
+.home-hero {
+  background:
+    radial-gradient(ellipse 70% 55% at 85% -15%, rgba(155,63,110,0.28), transparent 55%),
+    radial-gradient(ellipse 55% 45% at -5% 115%, rgba(90,20,55,0.2), transparent 55%),
+    linear-gradient(160deg, #120a0e 0%, #1c0f16 45%, #0f090c 100%) !important;
+  min-height: 340px !important;
+}
+.home-hero .home-greeting { color: rgba(245,220,230,0.52) !important; }
+.home-hero .home-title    { color: #faeef3 !important; font-weight:900 !important; }
+.home-hero .home-title span { color: #c96a9a !important; }
+.home-hero .home-subtitle  { color: rgba(245,220,230,0.6) !important; }
+.cart-checkout-btn, .exit-cta { background: linear-gradient(135deg, #b34f80 0%, #7a2852 100%); }
+
+.style-chips { display:flex; gap:8px; flex-wrap:nowrap; padding:14px 16px 2px; overflow-x:auto; scrollbar-width:none; }
+.style-chips::-webkit-scrollbar { display:none; }
+.style-chip { flex-shrink:0; display:inline-flex; align-items:center; gap:5px; font-family:'Archivo','Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; padding:7px 14px; border-radius:99px; border:1.5px solid rgba(155,63,110,0.28); background:rgba(155,63,110,0.06); color:#7a2852; cursor:pointer; transition:all .2s; white-space:nowrap; -webkit-tap-highlight-color:transparent; }
+.style-chip.active, .style-chip:hover { background:rgba(155,63,110,0.15); border-color:rgba(155,63,110,0.6); color:#9b3f6e; box-shadow:0 2px 12px rgba(155,63,110,0.2); }

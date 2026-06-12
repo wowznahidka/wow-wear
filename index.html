@@ -150,8 +150,8 @@
   <!-- ── HOME ── -->
   <section id="page-home" class="page active" aria-labelledby="home-title">
     <div class="home-hero">
-      <div class="home-greeting" id="home-greeting">Привіт! 👋</div>
-      <h1 class="home-title" id="home-title">Стиль без<br><span>переплати <span class="fire-anim">🔥</span></span></h1>
+      <div class="home-greeting" id="home-greeting">WOW.WEAR</div>
+      <h1 class="home-title" id="home-title">Твій образ —<br><span>твої правила <span class="fire-anim">🔥</span></span></h1>
       <div class="home-counter-chip" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span id="models-counter">0</span> моделей в наявності
@@ -169,6 +169,16 @@
       <button class="g-btn active" data-gender="mixed"  onclick="setGender('mixed')"  aria-pressed="true" ><span class="g-lbl">Всі</span></button>
       <button class="g-btn"        data-gender="male"   onclick="setGender('male')"   aria-pressed="false"><span class="g-lbl">Чоловіки</span></button>
       <button class="g-btn"        data-gender="female" onclick="setGender('female')" aria-pressed="false"><span class="g-lbl">Жінки</span></button>
+    </div>
+
+    <!-- Style Category Chips -->
+    <div class="style-chips" id="style-chips" role="group" aria-label="Стиль">
+      <button class="style-chip active" data-style="all"     onclick="setStyleCategory(this,'all')">✨ Всі</button>
+      <button class="style-chip"        data-style="casual"  onclick="setStyleCategory(this,'casual')">👕 Casual</button>
+      <button class="style-chip"        data-style="sport"   onclick="setStyleCategory(this,'sport')">🏃 Sport</button>
+      <button class="style-chip"        data-style="office"  onclick="setStyleCategory(this,'office')">💼 Офіс</button>
+      <button class="style-chip"        data-style="evening" onclick="setStyleCategory(this,'evening')">🌙 Вечірній</button>
+      <button class="style-chip"        data-style="summer"  onclick="setStyleCategory(this,'summer')">☀️ Літо</button>
     </div>
 
     <!-- Daily Deals -->
@@ -1113,6 +1123,11 @@
 <script src="js/stylist.js?v=40" defer></script>
 <script src="js/app.js?v=40"                defer></script>
 <script src="shared/js/motion.js?v=40" defer></script>
+<script>
+window._styleCategory='all';
+function setStyleCategory(el,cat){window._styleCategory=cat;document.querySelectorAll('.style-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');_applyStyleFilter();}
+function _applyStyleFilter(){const f=window._styleCategory;if(f==='all'){document.querySelectorAll('.prod-card,.product-card').forEach(c=>c.style.display='');return;}const MAP={casual:['casual','повсяк','буденн','футбо','джинс','худ','светр','базов'],sport:['спорт','sport','тренув','фітн','активн'],office:['офіс','ділов','класич','брюк','сорочк','піджак','блуз'],evening:['вечірн','вечір','плаття','сукн','коктейл'],summer:['літн','літо','пляж','легк','шорт','сарафан']};const keys=MAP[f]||[];document.querySelectorAll('.prod-card,.product-card').forEach(c=>{const txt=(c.textContent||'').toLowerCase();c.style.display=keys.some(k=>txt.includes(k))?'':'none';});}
+</script>
 
 </body>
 </html>

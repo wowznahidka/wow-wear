@@ -1,20 +1,20 @@
 /* Шрифти підключені у <head> index.html (preconnect + link rel=stylesheet) — НЕ через @import */
 
 :root {
-  --accent:     #ff3e3e;
-  --red:        #ff3e3e;
-  --red-dim:    rgba(255,62,62,0.10);
-  --red-glow:   rgba(255,62,62,0.28);
-  --orange:     #ff7a1a;
+  --accent:     #2742d6;
+  --red:        #2742d6;
+  --red-dim:    rgba(39,66,214,0.10);
+  --red-glow:   rgba(39,66,214,0.28);
+  --orange:     #15151a;
   --green:      #18c75a;
   --gold:       #f5a623;
-  --border-accent: rgba(255,62,62,0.22);
-  --shadow-red:    0 6px 28px rgba(255,62,62,0.22);
-  --shadow-card-hover: 0 12px 40px rgba(0,0,0,0.14), 0 0 0 1px rgba(255,62,62,0.12);
-  --niche-font:      'Sora', sans-serif;
+  --border-accent: rgba(39,66,214,0.22);
+  --shadow-red:    0 6px 28px rgba(39,66,214,0.22);
+  --shadow-card-hover: 0 12px 40px rgba(0,0,0,0.14), 0 0 0 1px rgba(39,66,214,0.12);
+  --niche-font:      'Archivo', sans-serif;
   --niche-font-body: 'Inter', sans-serif;
   --grain-opacity:   0.018;
-  --accent-rgb: 255,62,62;
+  --accent-rgb: 39,66,214;
 }
 
 body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
@@ -28,8 +28,8 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,62,62,0); }
-  50%       { box-shadow: 0 0 0 8px rgba(255,62,62,0.08); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(39,66,214,0); }
+  50%       { box-shadow: 0 0 0 8px rgba(39,66,214,0.08); }
 }
 
 @keyframes floatBadge {
@@ -42,10 +42,10 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   overflow: hidden;
   padding: 32px 16px 24px !important;
   background: linear-gradient(135deg,
-    #fff9f9 0%,
-    #fff5f0 25%,
+    #f8f9fe 0%,
+    #f1f2f9 25%,
     #fff 50%,
-    #fff5f5 75%,
+    #f3f4fb 75%,
     #fff 100%) !important;
   background-size: 400% 400% !important;
   animation: heroFlow 8s ease infinite !important;
@@ -58,7 +58,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   right: -10%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(255,62,62,0.10) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(39,66,214,0.10) 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -69,12 +69,12 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   left: -5%;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(255,122,26,0.06) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(21,21,26,0.06) 0%, transparent 60%);
   pointer-events: none;
 }
 
 .home-greeting {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-size: 11px !important;
   font-weight: 900 !important;
   letter-spacing: 5px !important;
@@ -84,7 +84,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 .home-title {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: clamp(34px, 9vw, 56px) !important;
   letter-spacing: -0.01em !important;
@@ -100,7 +100,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 
 .home-title br + span,
 .home-title > span {
-  background: linear-gradient(135deg, #ff3e3e 0%, #ff7a1a 100%);
+  background: linear-gradient(135deg, #2742d6 0%, #15151a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -115,8 +115,8 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   gap: 6px !important;
   margin-top: 14px !important;
   padding: 6px 14px !important;
-  background: rgba(255,62,62,0.07) !important;
-  border: 1.5px solid rgba(255,62,62,0.18) !important;
+  background: rgba(39,66,214,0.07) !important;
+  border: 1.5px solid rgba(39,66,214,0.18) !important;
   border-radius: 100px !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 800 !important;
@@ -186,7 +186,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 
 .live-dot {
   background: var(--accent) !important;
-  box-shadow: 0 0 0 3px rgba(255,62,62,0.2) !important;
+  box-shadow: 0 0 0 3px rgba(39,66,214,0.2) !important;
 }
 
 #gender-toggle {
@@ -207,7 +207,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: transparent !important;
   border: none !important;
   color: rgba(0,0,0,0.4) !important;
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-size: 14px !important;
   font-weight: 800 !important;
   letter-spacing: 0.03em !important;
@@ -226,7 +226,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .g-cnt { display: none !important; }
 
 .sec-title {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: 24px !important;
   letter-spacing: 0.02em !important;
@@ -240,7 +240,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
 }
 .header-logo {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: 22px !important;
   letter-spacing: 0.06em !important;
@@ -282,7 +282,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 .card-brand {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: 10px !important;
   letter-spacing: 3px !important;
@@ -294,28 +294,28 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .badge-hot {
   background: var(--accent) !important;
   color: #fff !important;
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   animation: floatBadge 2.5s ease-in-out infinite !important;
 }
 .badge-new  { background: rgba(24,199,90,0.14) !important; color: #18c75a !important; font-weight: 800 !important; }
-.badge-sale { background: rgba(255,122,26,0.14) !important; color: #ff7a1a !important; font-weight: 800 !important; }
+.badge-sale { background: rgba(21,21,26,0.14) !important; color: #15151a !important; font-weight: 800 !important; }
 
 .cart-checkout-btn {
-  background: linear-gradient(135deg, #ff3e3e 0%, #cc1a1a 100%) !important;
+  background: linear-gradient(135deg, #2742d6 0%, #1d31a8 100%) !important;
   color: #fff !important;
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   font-size: 17px !important;
-  box-shadow: 0 4px 20px rgba(255,62,62,0.30) !important;
+  box-shadow: 0 4px 20px rgba(39,66,214,0.30) !important;
 }
 
 #cart-sticky-bar {
-  background: linear-gradient(135deg, #ff3e3e 0%, #cc1a1a 100%) !important;
+  background: linear-gradient(135deg, #2742d6 0%, #1d31a8 100%) !important;
   color: #fff !important;
-  box-shadow: 0 -4px 24px rgba(255,62,62,0.18) !important;
+  box-shadow: 0 -4px 24px rgba(39,66,214,0.18) !important;
 }
 
 .cod-banner {
@@ -328,7 +328,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: var(--accent) !important;
   border-color: var(--accent) !important;
   color: #fff !important;
-  box-shadow: 0 2px 12px rgba(255,62,62,0.28) !important;
+  box-shadow: 0 2px 12px rgba(39,66,214,0.28) !important;
 }
 .range-track-fill  { background: var(--accent) !important; }
 .price-range-thumb { background: var(--accent) !important; }
@@ -336,7 +336,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: var(--accent) !important;
   border-color: var(--accent) !important;
   color: #fff !important;
-  box-shadow: 0 2px 12px rgba(255,62,62,0.28) !important;
+  box-shadow: 0 2px 12px rgba(39,66,214,0.28) !important;
 }
 
 .sheet {
@@ -355,13 +355,13 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .form-inp:focus, .checkout-input:focus {
   border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px rgba(255,62,62,0.10) !important;
+  box-shadow: 0 0 0 3px rgba(39,66,214,0.10) !important;
 }
 
 .brand-chip {
   background: #f5f5f7 !important;
   border-color: rgba(0,0,0,0.07) !important;
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 800 !important;
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
@@ -369,22 +369,22 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 .wow-marquee-item {
-  color: rgba(255,62,62,0.20) !important;
-  font-family: 'Sora', sans-serif !important;
+  color: rgba(39,66,214,0.20) !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   letter-spacing: 3px !important;
 }
 
 .niche-fam-chip {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 800 !important;
   font-size: 11px !important;
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
 }
 .niche-fam-chip.active {
-  background: rgba(255,62,62,0.09) !important;
-  border-color: rgba(255,62,62,0.30) !important;
+  background: rgba(39,66,214,0.09) !important;
+  border-color: rgba(39,66,214,0.30) !important;
   color: var(--accent) !important;
 }
 
@@ -403,7 +403,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  font-family: 'Sora', sans-serif;
+  font-family: 'Archivo', sans-serif;
   background: transparent;
   border: none;
   color: rgba(0,0,0,0.4);
@@ -422,7 +422,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 .match-page-title {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: 28px !important;
   letter-spacing: 0.04em !important;
@@ -430,11 +430,11 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 
 .m-action {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
 }
 
 .contacts-banner-title {
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'Archivo', sans-serif !important;
   font-weight: 900 !important;
   font-size: 32px !important;
   letter-spacing: 0.06em !important;
@@ -466,11 +466,11 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
     position: fixed !important;
     left: max(16px, calc(50% - var(--half-max) - 120px)) !important;
     top: 38vh !important;
-    font-family: 'Sora', sans-serif !important;
+    font-family: 'Archivo', sans-serif !important;
     font-weight: 900 !important;
     font-size: clamp(48px, 5vw, 88px) !important;
     letter-spacing: .12em !important;
-    color: rgba(255,62,62,.12) !important;
+    color: rgba(39,66,214,.12) !important;
     writing-mode: vertical-rl !important;
     text-orientation: mixed !important;
     text-transform: uppercase !important;
@@ -489,7 +489,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
     right: max(16px, calc(50% - var(--half-max) - 100px));
     top: 25vh;
     width: 80px; height: 80px;
-    border: 3px solid rgba(255,62,62,.14);
+    border: 3px solid rgba(39,66,214,.14);
     border-radius: 50%;
     animation: sideFloatR 9s ease-in-out infinite;
     pointer-events: none;
@@ -501,7 +501,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
     right: max(24px, calc(50% - var(--half-max) - 80px));
     top: calc(25vh + 110px);
     width: 40px; height: 40px;
-    background: rgba(255,62,62,.10);
+    background: rgba(39,66,214,.10);
     border-radius: 50%;
     animation: sideFloat 11s ease-in-out infinite reverse;
     pointer-events: none;
@@ -559,7 +559,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   flex-shrink: 0;
   padding: 8px 14px;
   border-radius: 10px;
-  background: #ff3e3e;
+  background: #2742d6;
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -660,7 +660,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   .dsk-nav-btn.active {
     opacity: 1 !important;
     color: var(--accent) !important;
-    background: rgba(255,62,62,0.09) !important;
+    background: rgba(39,66,214,0.09) !important;
     font-weight: 700 !important;
   }
 
@@ -695,10 +695,10 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   }
-  .hdr-btn:hover .badge { background: #ff3e3e !important; }
+  .hdr-btn:hover .badge { background: #2742d6 !important; }
   .hdr-btn .badge {
     border: 2px solid #fff;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Archivo', sans-serif;
     font-weight: 800;
   }
 
@@ -726,7 +726,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   }
   .dsf-section + .dsf-section { margin-top: 24px; }
   .dsf-title {
-    font-family: 'Sora', sans-serif;
+    font-family: 'Archivo', sans-serif;
     font-size: 11px; font-weight: 900; letter-spacing: .14em;
     text-transform: uppercase; color: var(--text-muted);
     margin-bottom: 10px;
@@ -746,7 +746,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   }
   .dsf-chip.active {
     background: var(--accent); color: #fff; border-color: var(--accent);
-    box-shadow: 0 2px 10px rgba(255,62,62,0.25);
+    box-shadow: 0 2px 10px rgba(39,66,214,0.25);
   }
 
   /* sidebar показуємо ТІЛЬКИ на каталозі */
@@ -1020,7 +1020,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   cursor: pointer; padding: 6px 14px; border-radius: 8px;
   transition: all .15s; color: inherit; opacity: .65;
 }
-.dsk-nav-btn.active, .dsk-nav-btn:hover { opacity: 1; background: rgba(255,62,62,0.08); color: var(--accent); }
+.dsk-nav-btn.active, .dsk-nav-btn:hover { opacity: 1; background: rgba(39,66,214,0.08); color: var(--accent); }
 
 /* ── ЗНАХІДКА ДНЯ — NIKE SHOEBOX ─────────────────────── */
 @keyframes ddNikeGlow {
@@ -1043,7 +1043,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 
 /* Base — Nike orange */
 .dd-gift-base {
-  background: linear-gradient(170deg, #F26322 0%, #C94E10 100%) !important;
+  background: linear-gradient(170deg, #2E2E36 0%, #0F0F14 100%) !important;
   box-shadow: 0 5px 18px rgba(194,78,16,0.5), inset 0 1px 0 rgba(255,255,255,0.18) !important;
   border-radius: 4px 4px 10px 10px !important;
   overflow: hidden !important;
@@ -1071,7 +1071,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 
 /* "ЗНАХІДКА ДНЯ" on lid */
 .dd-shoe-lid-label {
-  font-family: 'Sora', sans-serif;
+  font-family: 'Archivo', sans-serif;
   font-size: 8px;
   font-weight: 900;
   letter-spacing: 0.18em;
@@ -1090,7 +1090,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 /* "WOW.ZNAHIDKA" at bottom of box */
 .dd-shoe-base-label {
-  font-family: 'Sora', sans-serif;
+  font-family: 'Archivo', sans-serif;
   font-size: 7px;
   font-weight: 900;
   letter-spacing: 0.20em;
@@ -1100,14 +1100,14 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   align-self: flex-end;
 }
 /* Confetti colors — Nike palette */
-.dd-confetti span:nth-child(3n+1) { background: #F26322 !important; }
+.dd-confetti span:nth-child(3n+1) { background: #2E2E36 !important; }
 .dd-confetti span:nth-child(3n+2) { background: #ffffff !important; }
 .dd-confetti span:nth-child(3n)   { background: #222222 !important; }
 
 /* CTA text */
 .dd-gift-cta strong { color: #0d0d0d !important; }
 .dd-gift-cta span   { color: rgba(0,0,0,0.45) !important; }
-.dd-gift-cta b      { color: #F26322 !important; }
+.dd-gift-cta b      { color: #2E2E36 !important; }
 /* Brand row */
 .dd-gift-brand-logo { color: #0d0d0d !important; }
 .dd-gift-brand-tag  { color: rgba(0,0,0,0.45) !important; border-color: rgba(0,0,0,0.14) !important; }
@@ -1138,7 +1138,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .proof-toast-ico {
   width: 40px; height: 40px; border-radius: 8px;
-  background: rgba(255,62,62,0.07);
+  background: rgba(39,66,214,0.07);
   display: flex; align-items: center; justify-content: center;
   font-size: 20px; flex-shrink: 0;
 }
@@ -1152,14 +1152,14 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .sp-notify-trigger {
   width: 100%; padding: 10px 16px;
   border-radius: 12px;
-  border: 1.5px dashed rgba(255,62,62,0.22);
-  background: rgba(255,62,62,0.025);
+  border: 1.5px dashed rgba(39,66,214,0.22);
+  background: rgba(39,66,214,0.025);
   color: var(--accent); font-size: 13px; font-weight: 600;
   font-family: 'Inter', sans-serif; text-align: center;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   transition: background .18s;
 }
-.sp-notify-trigger:active { background: rgba(255,62,62,0.07); }
+.sp-notify-trigger:active { background: rgba(39,66,214,0.07); }
 .sp-notify-panel { display: none; flex-direction: column; gap: 8px; padding: 10px 0 2px; }
 .sp-notify-panel.open { display: flex; }
 .sp-notify-label { font-size: 12px; color: rgba(0,0,0,0.45); line-height: 1.4; }
@@ -1177,11 +1177,11 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: #f5f5f7; font-size: 14px; font-family: 'Inter', sans-serif;
   color: #0d0d0d; outline: none;
 }
-.sp-notify-phone:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,62,62,0.08); }
+.sp-notify-phone:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(39,66,214,0.08); }
 .sp-notify-send {
   width: 100%; padding: 11px; border-radius: 12px;
   background: var(--accent); color: #fff;
-  font-size: 14px; font-weight: 700; font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 700; font-family: 'Archivo', sans-serif;
   cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity .15s;
 }
 .sp-notify-send:active { opacity: .85; }
@@ -1191,7 +1191,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .success-upsell-title {
   font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
   text-transform: uppercase; color: rgba(0,0,0,0.38);
-  font-family: 'Sora', sans-serif; margin-bottom: 10px; text-align: left;
+  font-family: 'Archivo', sans-serif; margin-bottom: 10px; text-align: left;
 }
 .success-upsell-row {
   display: flex; gap: 8px;
@@ -1206,7 +1206,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .success-upsell-card-ph {
   width: 100px; height: 128px; border-radius: 10px;
-  background: rgba(255,62,62,0.06);
+  background: rgba(39,66,214,0.06);
   display: flex; align-items: center; justify-content: center; font-size: 28px;
 }
 .success-upsell-name {
@@ -1221,8 +1221,8 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   100% { transform: translateX(220%)  skewX(-18deg); }
 }
 @keyframes cabPulseOrder {
-  0%,100% { box-shadow: 0 6px 28px rgba(255,62,62,0.38), 0 2px 8px rgba(255,62,62,0.22); }
-  50%     { box-shadow: 0 8px 40px rgba(255,62,62,0.60), 0 2px 12px rgba(255,62,62,0.30); }
+  0%,100% { box-shadow: 0 6px 28px rgba(39,66,214,0.38), 0 2px 8px rgba(39,66,214,0.22); }
+  50%     { box-shadow: 0 8px 40px rgba(39,66,214,0.60), 0 2px 12px rgba(39,66,214,0.30); }
 }
 @keyframes cabPulseCollab {
   0%,100% { box-shadow: 0 6px 28px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.14); }
@@ -1244,7 +1244,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .cab:active { transform: scale(.95); opacity: .88; }
 .cab-order {
-  background: linear-gradient(145deg, #ff3e3e 0%, #b01212 100%);
+  background: linear-gradient(145deg, #2742d6 0%, #16267f 100%);
   animation: cabPulseOrder 2.6s ease-in-out infinite;
 }
 .cab-collab {
@@ -1265,7 +1265,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .cab-icon { font-size: 30px; line-height: 1; }
 .cab-label {
   font-size: 14px; font-weight: 900; letter-spacing: 0.04em;
-  font-family: 'Sora', sans-serif; color: #fff;
+  font-family: 'Archivo', sans-serif; color: #fff;
   text-transform: uppercase; text-align: center; line-height: 1.2;
 }
 .cab-sub {
@@ -1280,7 +1280,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .wow-eco-label {
   font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
   text-transform: uppercase; color: rgba(0,0,0,0.35);
-  font-family: 'Sora', sans-serif; margin-bottom: 10px;
+  font-family: 'Archivo', sans-serif; margin-bottom: 10px;
 }
 .wow-eco-row {
   display: flex; gap: 10px;
@@ -1299,7 +1299,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .wow-eco-icon { font-size: 24px; line-height: 1; }
 .wow-eco-name {
   font-size: 14px; font-weight: 900; letter-spacing: 0.04em;
-  font-family: 'Sora', sans-serif; color: #fff;
+  font-family: 'Archivo', sans-serif; color: #fff;
   margin-top: 6px;
 }
 .wow-eco-desc {
@@ -1324,7 +1324,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-hero-kicker {
   display: inline-block;
-  font-family: var(--niche-font, 'Sora', 'Inter', sans-serif);
+  font-family: var(--niche-font, 'Archivo', 'Inter', sans-serif);
   font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
   color: var(--accent, #ff6a00);
   padding: 5px 10px;
@@ -1333,7 +1333,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   margin-bottom: 14px;
 }
 .st-hero-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: clamp(26px, 6.5vw, 34px);
   font-weight: 900;
   line-height: 1.1;
@@ -1355,7 +1355,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: linear-gradient(135deg, #ff6a00 0%, #ff3e52 100%);
   color: #fff;
   border: none;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 700; font-size: 15px;
   padding: 14px 22px;
   border-radius: 14px;
@@ -1372,7 +1372,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   border-radius: 18px;
 }
 .st-steps-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 18px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin-bottom: 14px;
@@ -1389,13 +1389,13 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: linear-gradient(135deg, rgba(255,106,0,0.25), rgba(255,62,82,0.18));
   border: 1px solid rgba(255,106,0,0.40);
   color: var(--accent, #ff6a00);
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 800; font-size: 14px;
   border-radius: 10px;
 }
 .st-step b {
   display: block;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 15px; font-weight: 700; color: var(--text, #f5f5f5);
   margin-bottom: 2px;
 }
@@ -1411,7 +1411,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   padding: 22px 18px 18px;
 }
 .st-quiz-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 20px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin-bottom: 4px;
@@ -1423,7 +1423,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .st-q { margin: 14px 0 18px; }
 .st-q-lbl {
   display: block;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
   color: var(--text, #f5f5f5);
   margin-bottom: 10px;
@@ -1476,7 +1476,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: linear-gradient(135deg, #ff6a00 0%, #ff3e52 100%);
   color: #fff;
   border: none;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 800; font-size: 16px;
   padding: 16px 20px;
   border-radius: 14px;
@@ -1518,7 +1518,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-home-banner-body { flex: 1 1 auto; min-width: 0; }
 .st-home-banner-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 15px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin: 0 0 2px;
@@ -1562,7 +1562,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 .st-loader-orbit span:nth-child(2) { animation-delay: -0.47s; opacity: 0.7; }
 .st-loader-orbit span:nth-child(3) { animation-delay: -0.94s; opacity: 0.4; }
 .st-loader-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 17px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin-bottom: 6px;
@@ -1581,7 +1581,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-error-ico { font-size: 36px; margin-bottom: 10px; }
 .st-error-title {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 17px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin-bottom: 6px;
@@ -1595,7 +1595,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: linear-gradient(135deg, #ff6a00, #ff3e52);
   color: #fff;
   border: none;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 700; font-size: 14px;
   padding: 11px 22px;
   border-radius: 12px;
@@ -1618,7 +1618,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-res-tag {
   display: inline-block;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em;
   color: var(--accent, #ff6a00);
   padding: 4px 10px;
@@ -1627,7 +1627,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   margin-bottom: 10px;
 }
 .st-res-season {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: clamp(22px, 5.8vw, 28px);
   font-weight: 900; line-height: 1.15;
   color: var(--text, #f5f5f5);
@@ -1647,7 +1647,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-res-section:last-of-type { border-bottom: 0; }
 .st-res-h3 {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 14px; font-weight: 800;
   color: var(--text, #f5f5f5);
   margin-bottom: 12px;
@@ -1724,7 +1724,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   min-height: 34px;
 }
 .st-pick-price {
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-size: 14px; font-weight: 800;
   color: var(--accent, #ff6a00);
 }
@@ -1737,7 +1737,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: linear-gradient(135deg, #ff6a00 0%, #ff3e52 100%);
   color: #fff;
   border: none;
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 800; font-size: 16px;
   padding: 15px 20px;
   border-radius: 14px;
@@ -1751,7 +1751,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   background: transparent;
   color: var(--text-dim, rgba(245,245,245,0.7));
   border: 1px solid rgba(255,255,255,0.10);
-  font-family: var(--niche-font, 'Sora', sans-serif);
+  font-family: var(--niche-font, 'Archivo', sans-serif);
   font-weight: 600; font-size: 14px;
   padding: 12px 20px;
   border-radius: 12px;
@@ -1759,3 +1759,48 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
 }
 .st-res-redo:hover { color: var(--text, #f5f5f5); border-color: rgba(255,255,255,0.20); }
 :root{--niche-font:inherit}
+
+
+/* ============================================================
+   WOW.WEAR — IDENTITY LAYER · Editorial Monochrome
+   Mood: Fashion Editorial · Ref: SSENSE, COS, Zara
+   ============================================================ */
+:root {
+  --accent:      #2742d6;
+  --accent-rgb:  39,66,214;
+  --border-accent: rgba(21,21,26,0.30);
+  --shadow-red:  0 6px 24px rgba(39,66,214,0.20);
+  --r-xs: 4px; --r-sm: 7px; --r: 10px; --r-lg: 14px; --r-xl: 18px;
+}
+
+/* Editorial заголовки: верхній регістр, щільний трекінг */
+.home-title,
+.sec-title,
+.match-page-title {
+  font-family: 'Archivo', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-weight: 800;
+}
+
+/* Монохромний hero — як обкладинка лукбука */
+.home-hero {
+  background:
+    linear-gradient(115deg, rgba(21,21,26,0.045) 0%, transparent 42%),
+    linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+}
+
+/* Картки: пласкі, графічні, з тонкою лінією замість тіні */
+.card, .m-card {
+  box-shadow: none;
+  border: 1px solid rgba(21,21,26,0.10);
+}
+.card:hover, .m-card:hover {
+  border-color: rgba(21,21,26,0.32);
+  box-shadow: 0 10px 32px rgba(21,21,26,0.10);
+}
+
+/* Основна CTA — чорна, як у SSENSE */
+.cart-checkout-btn, .exit-cta {
+  background: linear-gradient(135deg, #23232a 0%, #0f0f14 100%);
+}

@@ -1,1 +1,43 @@
-{"name":"WOW.WEAR","short_name":"WOW.WEAR","description":"Модний одяг і білизна без передоплати","start_url":"/wow-wear/","scope":"/wow-wear/","display":"standalone","background_color":"#f5f5f7","theme_color":"#f5f5f7","orientation":"portrait","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{
+  "name": "WOW.WEAR — Модний одяг",
+  "short_name": "WOW.WEAR",
+  "description": "Модний одяг і білизна без передоплати. Оплата після отримання.",
+  "lang": "uk",
+  "start_url": "/wow-wear/index.html?source=pwa",
+  "scope": "/wow-wear/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "background_color": "#120a0e",
+  "theme_color": "#9b3f6e",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Match — свайп одяг",
+      "short_name": "Match",
+      "description": "Свайп вправо — в Улюблені, вліво — пропустити",
+      "url": "/wow-wear/index.html?tab=match&source=shortcut",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Каталог одягу",
+      "short_name": "Каталог",
+      "description": "Пошук, фільтри, всі бренди",
+      "url": "/wow-wear/index.html?tab=catalog&source=shortcut",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Стиліст",
+      "short_name": "Стиліст",
+      "description": "Підібрати образ",
+      "url": "/wow-wear/index.html?tab=stylist&source=shortcut",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -126,17 +126,13 @@
   <div class="dsf-section" style="margin-top:14px">
     <div class="dsf-title">Розмір</div>
     <div class="dsf-chips" style="flex-wrap:wrap">
-      <button class="dsf-chip" onclick="dsfSize(35)">35</button>
-      <button class="dsf-chip" onclick="dsfSize(36)">36</button>
-      <button class="dsf-chip" onclick="dsfSize(37)">37</button>
-      <button class="dsf-chip" onclick="dsfSize(38)">38</button>
-      <button class="dsf-chip" onclick="dsfSize(39)">39</button>
-      <button class="dsf-chip" onclick="dsfSize(40)">40</button>
-      <button class="dsf-chip" onclick="dsfSize(41)">41</button>
-      <button class="dsf-chip" onclick="dsfSize(42)">42</button>
-      <button class="dsf-chip" onclick="dsfSize(43)">43</button>
-      <button class="dsf-chip" onclick="dsfSize(44)">44</button>
-      <button class="dsf-chip" onclick="dsfSize(45)">45</button>
+      <button class="dsf-chip" onclick="dsfSize('XS')">XS</button>
+      <button class="dsf-chip" onclick="dsfSize('S')">S</button>
+      <button class="dsf-chip" onclick="dsfSize('M')">M</button>
+      <button class="dsf-chip" onclick="dsfSize('L')">L</button>
+      <button class="dsf-chip" onclick="dsfSize('XL')">XL</button>
+      <button class="dsf-chip" onclick="dsfSize('XXL')">XXL</button>
+      <button class="dsf-chip" onclick="dsfSize('3XL')">3XL</button>
     </div>
   </div>
   <div style="margin-top:16px;padding:0 2px" id="price-filter-wrap-dsf"></div>
@@ -229,7 +225,7 @@
     <div class="h-scroll" id="new-row" role="list" aria-label="Новинки"></div>
 
     <div class="section">
-      <div class="sec-head"><h2 class="sec-title">👟 Бренди</h2></div>
+      <div class="sec-head"><h2 class="sec-title">👕 Бренди</h2></div>
       <div class="brands-grid" id="home-brands-grid" role="list" aria-label="Бренди"></div>
     </div>
 
@@ -497,176 +493,96 @@
       <div class="contacts-banner-art" id="contacts-hero-fallback" aria-hidden="true">
         <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
           <defs>
-            <linearGradient id="hero-shoe-body" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2a2a2c"/>
-              <stop offset="50%" stop-color="#161618"/>
-              <stop offset="100%" stop-color="#000"/>
+            <linearGradient id="wear-dress-body" x1="20%" y1="0%" x2="80%" y2="100%">
+              <stop offset="0%" stop-color="#2a1a22"/>
+              <stop offset="60%" stop-color="#1c1018"/>
+              <stop offset="100%" stop-color="#0f080e"/>
             </linearGradient>
-            <linearGradient id="hero-sole" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#fafafa"/>
-              <stop offset="50%" stop-color="#ededed"/>
-              <stop offset="100%" stop-color="#d4d4d4"/>
+            <linearGradient id="wear-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#9b3f6e"/>
+              <stop offset="100%" stop-color="#c4527f"/>
             </linearGradient>
-            <linearGradient id="hero-midsole" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#f0f0f0"/>
-              <stop offset="100%" stop-color="#c2c2c2"/>
-            </linearGradient>
-            <linearGradient id="hero-accent" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#2742d6"/>
-              <stop offset="100%" stop-color="#15151a"/>
-            </linearGradient>
-            <linearGradient id="hero-shine" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.16)"/>
+            <linearGradient id="wear-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.14)"/>
               <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
             </linearGradient>
-            <radialGradient id="hero-floor" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(0,0,0,0.28)"/>
-              <stop offset="60%" stop-color="rgba(0,0,0,0.10)"/>
+            <radialGradient id="wear-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(155,63,110,0.22)"/>
               <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
             </radialGradient>
           </defs>
 
-          <!-- Ambient orbs (light) -->
-          <circle class="hero-orb hero-orb-1" cx="60" cy="60" r="48" fill="#2742d6" opacity="0.10"/>
-          <circle class="hero-orb hero-orb-2" cx="420" cy="200" r="60" fill="#15151a" opacity="0.10"/>
-          <circle class="hero-orb hero-orb-3" cx="380" cy="50" r="28" fill="#2742d6" opacity="0.06"/>
+          <!-- Ambient orbs -->
+          <circle class="hero-orb hero-orb-1" cx="100" cy="60" r="70" fill="#9b3f6e" opacity="0.10"/>
+          <circle class="hero-orb hero-orb-2" cx="380" cy="220" r="55" fill="#c4527f" opacity="0.07"/>
+          <circle class="hero-orb hero-orb-3" cx="350" cy="40" r="30" fill="#9b3f6e" opacity="0.05"/>
 
-          <!-- Decorative dotted grid -->
-          <g fill="rgba(0,0,0,0.06)">
-            <circle cx="30"  cy="200" r="1.5"/>
-            <circle cx="45"  cy="210" r="1.5"/>
-            <circle cx="60"  cy="220" r="1.5"/>
-            <circle cx="440" cy="80"  r="1.5"/>
-            <circle cx="455" cy="90"  r="1.5"/>
-            <circle cx="425" cy="70"  r="1.5"/>
+          <!-- Dotted grid -->
+          <g fill="rgba(155,63,110,0.15)">
+            <circle cx="30" cy="200" r="1.5"/><circle cx="45" cy="212" r="1.5"/>
+            <circle cx="60" cy="224" r="1.5"/><circle cx="440" cy="80" r="1.5"/>
+            <circle cx="455" cy="92" r="1.5"/><circle cx="425" cy="68" r="1.5"/>
           </g>
 
-          <!-- Floor shadow under shoe -->
-          <ellipse cx="240" cy="232" rx="170" ry="12" fill="url(#hero-floor)"/>
+          <!-- Floor glow -->
+          <ellipse cx="240" cy="252" rx="150" ry="10" fill="url(#wear-glow)" opacity="0.6"/>
 
-          <!-- ── SNEAKER (low-top side profile, Air-Max inspired) ── -->
-          <g class="hero-shoe" filter="drop-shadow(0 18px 30px rgba(0,0,0,0.32))">
+          <!-- ── DRESS ON HANGER ── -->
+          <!-- Hook -->
+          <path d="M240,22 Q240,10 250,10 Q262,10 262,22 Q262,34 248,38"
+                stroke="#9b3f6e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Hanger bar -->
+          <path d="M248,38 L155,72 Q148,75 148,80 L156,80 Q156,77 163,74 L248,40 L328,74 Q335,77 335,80 L343,80 Q343,75 336,72 Z"
+                fill="#9b3f6e"/>
 
-            <!-- Midsole (gray foam) -->
-            <path d="M55,200
-                     Q55,222 80,222
-                     L405,222
-                     Q428,222 432,210
-                     L432,196
-                     Q422,192 408,192
-                     L75,192
-                     Q60,192 55,200 Z"
-                  fill="url(#hero-midsole)"/>
-
-            <!-- Outsole (white rubber) -->
-            <path d="M55,210
-                     Q55,228 82,228
-                     L408,228
-                     Q428,228 430,218
-                     L432,212
-                     Q400,210 360,210
-                     L100,210
-                     Q70,210 55,210 Z"
-                  fill="url(#hero-sole)"/>
-
-            <!-- Sole tread lines -->
-            <g stroke="#b0b0b0" stroke-width="0.7" opacity="0.55">
-              <line x1="85"  y1="222" x2="85"  y2="226"/>
-              <line x1="115" y1="222" x2="115" y2="226"/>
-              <line x1="145" y1="222" x2="145" y2="226"/>
-              <line x1="175" y1="222" x2="175" y2="226"/>
-              <line x1="205" y1="222" x2="205" y2="226"/>
-              <line x1="235" y1="222" x2="235" y2="226"/>
-              <line x1="265" y1="222" x2="265" y2="226"/>
-              <line x1="295" y1="222" x2="295" y2="226"/>
-              <line x1="325" y1="222" x2="325" y2="226"/>
-              <line x1="355" y1="222" x2="355" y2="226"/>
-              <line x1="385" y1="222" x2="385" y2="226"/>
+          <!-- Dress body -->
+          <g filter="drop-shadow(0 16px 32px rgba(155,63,110,0.30))">
+            <!-- Bodice (fitted top) -->
+            <path d="M175,80 Q178,78 195,76 Q218,72 240,72 Q262,72 285,76 Q302,78 305,80 L302,145 Q280,140 240,140 Q200,140 178,145 Z"
+                  fill="url(#wear-dress-body)"/>
+            <!-- Skirt (A-line) -->
+            <path d="M178,145 Q200,140 240,140 Q280,140 302,145 L328,252 Q280,256 240,256 Q200,256 152,252 Z"
+                  fill="url(#wear-dress-body)"/>
+            <!-- Left strap -->
+            <path d="M195,76 Q192,60 188,52 L198,52 Q202,60 205,76 Z" fill="url(#wear-dress-body)"/>
+            <!-- Right strap -->
+            <path d="M285,76 Q288,60 292,52 L282,52 Q278,60 275,76 Z" fill="url(#wear-dress-body)"/>
+            <!-- Bodice shine -->
+            <path d="M178,80 Q185,78 200,76 L198,145 Q186,142 178,145 Z" fill="url(#wear-shine)"/>
+            <!-- Waist accent -->
+            <path d="M178,145 Q240,136 302,145" stroke="#9b3f6e" stroke-width="1.2" fill="none" opacity="0.6"/>
+            <!-- Waistband -->
+            <rect x="195" y="140" width="90" height="8" rx="4" fill="url(#wear-accent)" opacity="0.7"/>
+            <!-- Skirt fold lines -->
+            <g stroke="rgba(155,63,110,0.18)" stroke-width="0.8" fill="none">
+              <path d="M205,148 Q200,200 192,252"/>
+              <path d="M225,146 Q222,198 218,252"/>
+              <path d="M255,146 Q258,198 262,252"/>
+              <path d="M275,148 Q280,200 288,252"/>
             </g>
-
-            <!-- Upper body (toe to heel, smoother profile) -->
-            <path d="M58,196
-                     Q50,170 65,148
-                     Q88,118 130,108
-                     L195,98
-                     Q250,94 300,108
-                     Q340,118 365,140
-                     Q400,170 410,192
-                     L75,192 Z"
-                  fill="url(#hero-shoe-body)"/>
-
-            <!-- Toe cap accent (smooth highlight on toe) -->
-            <path d="M385,150 Q405,170 412,185 L380,185 Q375,165 385,150 Z"
-                  fill="rgba(255,255,255,0.06)"/>
-
-            <!-- Heel counter -->
-            <path d="M58,196 Q50,170 65,148 L75,140 L88,148 L88,192 L75,192 Q60,192 58,196 Z"
-                  fill="#0a0a0c"/>
-            <!-- Heel pull tab -->
-            <rect x="60" y="130" width="20" height="14" rx="4" fill="#1a1a1a"/>
-            <rect x="64" y="134" width="12" height="6" rx="2" fill="url(#hero-accent)"/>
-
-            <!-- Mid-foot panel highlight -->
-            <path d="M120,118 Q170,102 240,98 Q290,96 330,108 L320,140 Q260,128 200,130 Q150,134 130,142 Z"
-                  fill="url(#hero-shine)"/>
-
-            <!-- Lacing panel (tongue area) -->
-            <path d="M170,110 L170,180 L260,180 L260,110 L235,100 L195,100 Z"
-                  fill="rgba(0,0,0,0.25)"/>
-
-            <!-- Tongue label -->
-            <rect x="200" y="116" width="30" height="14" rx="3" fill="#1a1a1a" stroke="#2742d6" stroke-width="0.8"/>
-            <text x="215" y="126" font-family="Sora,sans-serif" font-weight="900" font-size="8" fill="#2742d6" text-anchor="middle">WOW</text>
-
-            <!-- Laces -->
-            <g stroke="#fafafa" stroke-width="2.8" stroke-linecap="round" fill="none">
-              <path d="M178,138 Q215,144 252,138"/>
-              <path d="M178,154 Q215,160 252,154"/>
-              <path d="M178,170 Q215,176 252,170"/>
-            </g>
-            <!-- Eyelets -->
-            <g fill="#0a0a0a">
-              <circle cx="178" cy="138" r="2.6"/><circle cx="252" cy="138" r="2.6"/>
-              <circle cx="178" cy="154" r="2.6"/><circle cx="252" cy="154" r="2.6"/>
-              <circle cx="178" cy="170" r="2.6"/><circle cx="252" cy="170" r="2.6"/>
-            </g>
-
-            <!-- Side accent stripe (the brand swoosh — modern arc) -->
-            <path d="M100,182
-                     Q170,170 250,158
-                     Q320,148 380,128
-                     L390,142
-                     Q330,168 250,182
-                     Q170,194 105,196 Z"
-                  fill="url(#hero-accent)" opacity="0.96"/>
-
-            <!-- Heel logo "Z" -->
-            <text x="80" y="178" font-family="Sora,sans-serif" font-weight="900" font-size="14" fill="#fff" opacity="0.92">Z</text>
-
-            <!-- Air bubble window (visible foam) -->
-            <ellipse cx="120" cy="208" rx="22" ry="6" fill="rgba(255,255,255,0.7)"/>
-            <ellipse cx="120" cy="208" rx="20" ry="4" fill="rgba(255,255,255,0.96)"/>
-            <ellipse cx="380" cy="208" rx="22" ry="6" fill="rgba(255,255,255,0.7)"/>
-            <ellipse cx="380" cy="208" rx="20" ry="4" fill="rgba(255,255,255,0.96)"/>
           </g>
 
-          <!-- Speed lines (left side, motion feel) -->
-          <g stroke="#2742d6" stroke-width="2.2" stroke-linecap="round" opacity="0.22">
-            <line class="hero-speed hero-speed-1" x1="15" y1="100" x2="55"  y2="100"/>
-            <line class="hero-speed hero-speed-2" x1="6"  y1="118" x2="42"  y2="118"/>
-            <line class="hero-speed hero-speed-3" x1="20" y1="136" x2="50"  y2="136"/>
+          <!-- WOW label on bodice -->
+          <rect x="224" y="100" width="32" height="14" rx="3" fill="#0f080e" stroke="#9b3f6e" stroke-width="0.8"/>
+          <text x="240" y="110" font-family="Archivo,sans-serif" font-weight="900" font-size="8" fill="#9b3f6e" text-anchor="middle">WOW</text>
+
+          <!-- Speed lines -->
+          <g stroke="#9b3f6e" stroke-width="1.8" stroke-linecap="round" opacity="0.20">
+            <line class="hero-speed hero-speed-1" x1="15" y1="100" x2="50" y2="100"/>
+            <line class="hero-speed hero-speed-2" x1="8"  y1="116" x2="38" y2="116"/>
+            <line class="hero-speed hero-speed-3" x1="20" y1="132" x2="46" y2="132"/>
           </g>
 
-          <!-- Year + premium mark (top-right) -->
+          <!-- Year mark -->
           <g>
-            <text x="455" y="30" font-family="Sora,sans-serif" font-weight="900" font-size="13" fill="#2742d6" text-anchor="end" letter-spacing="3">2026</text>
-            <line x1="380" y1="36" x2="455" y2="36" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
-            <text x="455" y="50" font-family="Inter,sans-serif" font-weight="700" font-size="9" fill="rgba(0,0,0,0.45)" text-anchor="end" letter-spacing="3.5">EDITION</text>
+            <text x="455" y="30" font-family="Archivo,sans-serif" font-weight="900" font-size="13" fill="#9b3f6e" text-anchor="end" letter-spacing="3">2026</text>
+            <line x1="380" y1="36" x2="455" y2="36" stroke="rgba(155,63,110,0.22)" stroke-width="1"/>
+            <text x="455" y="50" font-family="sans-serif" font-weight="700" font-size="9" fill="rgba(155,63,110,0.55)" text-anchor="end" letter-spacing="3.5">EDITION</text>
           </g>
 
-          <!-- Bottom-left ribbon -->
+          <!-- Bottom ribbon -->
           <g opacity="0.5">
-            <text x="22" y="262" font-family="Inter,sans-serif" font-weight="700" font-size="8" fill="rgba(0,0,0,0.6)" letter-spacing="2">UA · NEW POSHTA · COD</text>
+            <text x="22" y="268" font-family="sans-serif" font-weight="700" font-size="8" fill="rgba(155,63,110,0.45)" letter-spacing="2">UA · NEW POSHTA · COD</text>
           </g>
         </svg>
       </div>
@@ -1071,7 +987,7 @@
      ════════════════════════════════════════════════ -->
 <div id="pwa-android" role="complementary" aria-label="Встановити додаток">
   <button class="pwa-close" onclick="dismissPwa('android')" aria-label="Закрити">✕</button>
-  <div class="pwa-ico" aria-hidden="true">👟</div>
+  <div class="pwa-ico" aria-hidden="true">👕</div>
   <div class="pwa-text">
     <div class="pwa-title">WOW.WEAR</div>
     <div class="pwa-sub">Додай на головний екран</div>

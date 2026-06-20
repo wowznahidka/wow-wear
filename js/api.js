@@ -106,6 +106,7 @@ function normalizeProduct(p) {
     category,                                       // bilyzna / wear (старе)
     categoryType: typeRaw,                          // "Жіночі сукні" (нове — категорія для UI)
     clothingType: String(p['ТипОдягу'] || p['типодягу'] || '').trim() || _classifyClothingType(typeRaw) || '',
+    material:    String(p['Матеріал'] || p['матеріал'] || p.material || '').trim(),
     tgLink:      String(p['TG'] || p['tg_link'] || ''),
   };
 }

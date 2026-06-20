@@ -287,6 +287,7 @@ function openProductDetail(product) {
           : `Замовляй <b>без передоплати</b> — оплата після примірки на відділенні Нової Пошти. Не підійшло — відмов без зайвих питань.`}
       </p>
       ${sizeChips}
+      ${product.material ? `<div class="pd-material">🧵 ${esc(product.material)}</div>` : ''}
       <div class="pd-trust">
         <span class="pd-trust-item">✅ Без передоплати</span>
         <span class="pd-trust-sep">·</span>

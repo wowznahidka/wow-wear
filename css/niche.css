@@ -2668,3 +2668,80 @@ body, #pages, #page-home, #page-catalog, #page-match, #page-contacts,
 }
 .g-compact { padding: 0 16px 8px; display: flex; gap: 8px; }
 
+
+/* ── FAQ SIZE TABLE ─────────────────────────────────────── */
+.faq-size-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 8px;
+  font-size: 13px;
+}
+.faq-size-table th {
+  background: rgba(255,46,147,0.12);
+  color: var(--wow-magenta);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,46,147,0.20);
+}
+.faq-size-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-soft);
+  font-weight: 600;
+}
+.faq-size-table td:first-child {
+  font-weight: 900;
+  font-family: 'Archivo', sans-serif;
+  color: var(--text);
+  font-size: 14px;
+}
+.faq-size-table tr:last-child td { border-bottom: none; }
+.faq-size-table tr:nth-child(even) td {
+  background: rgba(255,255,255,0.03);
+}
+.faq-size-note {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding: 4px 2px 2px;
+}
+.faq-a { white-space: pre-line; }
+
+/* ── FAQ OVERALL DARK STYLE ────────────────────────────── */
+.faq-block {
+  background: var(--surface) !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--line) !important;
+  overflow: hidden;
+}
+.faq-block-hdr {
+  background: rgba(255,46,147,0.08) !important;
+  border-bottom: 1px solid var(--line) !important;
+  padding: 14px 18px !important;
+}
+.faq-block-ttl { color: var(--text) !important; font-weight: 800 !important; }
+.faq-block-ico { color: var(--wow-magenta) !important; }
+.faq-item {
+  border-bottom: 1px solid var(--line) !important;
+}
+.faq-item:last-child { border-bottom: none !important; }
+.faq-q {
+  color: var(--text-soft) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+.faq-toggle {
+  color: var(--wow-magenta) !important;
+  font-size: 20px !important;
+  font-weight: 300 !important;
+}
+.faq-a {
+  color: var(--text-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+

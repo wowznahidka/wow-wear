@@ -74,7 +74,7 @@ function renderFaq() {
     ${L.faqItems.map(item => `
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-q">${esc(item.q)}<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">${esc(item.a)}</div>
+      <div class="faq-a">${item.aHtml || esc(item.a).replace(/\n/g,'<br>')}</div>
     </div>`).join('')}
   </div>`;
 }

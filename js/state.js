@@ -31,6 +31,7 @@ const S = {
   searchQ:      '',
   catView:      'brands',  // 'brands' | 'products'
   catBrand:     null,
+  catType:      null,      // 'Футболка' | 'Худі' | 'Шорти' | ... | null = all
   catScrollTop: 0,
   quickFilter:  'all',     // 'all' | 'discount' | 'new' | 'free'
   sortMode:     'popular', // 'popular' | 'new' | 'price_asc' | 'price_desc' | 'discount'

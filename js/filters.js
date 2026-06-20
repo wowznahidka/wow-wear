@@ -51,6 +51,7 @@ async function renderCatalog() {
   }
   const data = await fetchCatalog();
   updateTimestamp();
+  renderTypeChips();
   renderSizeChips();
   renderPriceSlider();
   if (S.searchQ) renderSearchResults(data);
@@ -88,6 +89,40 @@ function clearSizeFilters() {
 function filterBySize(products) {
   if (!S.sizeFilters.length) return products;
   return products.filter(p => S.sizeFilters.some(sz => p.sizes.includes(sz)));
+}
+
+// ── CLOTHING TYPE CHIPS ──────────────────────────── */
+function renderTypeChips() {
+  const row = document.getElementById('type-chips-row');
+  if (!row) return;
+  const data = getCatalog();
+  const all  = S.catalog.all || [];
+  if (!all.length) return;
+  const cats = getTopCategories(all, 12);
+  if (!cats.length) { row.closest('.type-filter-wrap')?.style.setProperty('display','none'); return; }
+  row.innerHTML = cats.map(({ name }) =>
+    `<button class="type-chip ${S.catType === name ? 'on' : ''}" data-type="${esc(name)}"
+       onclick="setCatType('${esc(name)}')" aria-pressed="${S.catType === name}">${esc(name)}</button>`
+  ).join('') + `<button class="type-chip-clear ${S.catType ? 'vis' : ''}" id="type-clear-btn" onclick="setCatType(null)">× Скинути</button>`;
+}
+
+function setCatType(type) {
+  S.catType = type || null;
+  _haptic(8);
+  document.querySelectorAll('.type-chip').forEach(b => {
+    const on = b.dataset.type === S.catType;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const clr = document.getElementById('type-clear-btn');
+  if (clr) clr.classList.toggle('vis', !!S.catType);
+  _applyFilters();
+  updateActiveFiltersChips();
+}
+
+function filterByType(products) {
+  if (!S.catType) return products;
+  return products.filter(p => p.clothingType === S.catType);
 }
 
 // ── PRICE SLIDER ─────────────────────────────────── */
@@ -522,6 +557,9 @@ function updateActiveFiltersChips() {
   if (S.catBrand) {
     chips.push({ k: 'brand', label: S.catBrand });
   }
+  if (S.catType) {
+    chips.push({ k: 'type', label: S.catType });
+  }
   if (S.quickFilter && S.quickFilter !== 'all') {
     const ql = { discount: '🔥 Знижки', new: '✨ Новинки', free: '🚚 Безкоштовна' }[S.quickFilter] || '';
     if (ql) chips.push({ k: 'quick', label: ql });
@@ -540,6 +578,7 @@ function clearOneFilter(kind) {
   if      (kind === 'gender') setGender('mixed');
   else if (kind === 'size')   clearSizeFilters();
   else if (kind === 'brand')  _selectBrandStory(null);
+  else if (kind === 'type')   setCatType(null);
   else if (kind === 'quick')  setQuickFilter('all');
   else if (kind === 'price')  { S.priceMin = 0; S.priceMax = 6000; renderPriceSlider(); _applyFilters(); }
   updateActiveFiltersChips();
@@ -549,11 +588,14 @@ function clearAllFilters() {
   S.gender = 'mixed';
   S.sizeFilters = [];
   S.catBrand = null;
+  S.catType = null;
   S.quickFilter = 'all';
   S.priceMin = 0;
   S.priceMax = 6000;
   document.querySelectorAll('.g-chip').forEach(b => b.classList.toggle('active', b.dataset.gender === 'mixed'));
   document.querySelectorAll('.cat-quick').forEach(b => b.classList.toggle('on', b.dataset.quick === 'all'));
+  document.querySelectorAll('.type-chip').forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed','false'); });
+  document.getElementById('type-clear-btn')?.classList.remove('vis');
   renderSizeChips();
   renderPriceSlider();
   _applyFilters();
@@ -574,9 +616,8 @@ function updateResultsCount(n) {
 // Override the existing _renderUnifiedCatalog to include quick + sort + counter + active chips
 const __origUnified = _renderUnifiedCatalog;
 _renderUnifiedCatalog = function(data) {
-  const filtered = filterByPrice(filterBySize(filterByQuick(data)));
+  const filtered = filterByType(filterByPrice(filterBySize(filterByQuick(data))));
   __origUnified(filtered);
-  // After unified render, _renderCatalogGrid was called inside; show count of products after brand filter
   const finalCount = (S.catBrand ? filtered.filter(p => p.brand === S.catBrand) : filtered).length;
   updateResultsCount(finalCount);
   updateActiveFiltersChips();
@@ -584,7 +625,7 @@ _renderUnifiedCatalog = function(data) {
 
 const __origUpdateGrid = _updateCatalogGrid;
 _updateCatalogGrid = function(data) {
-  const filtered = filterByPrice(filterBySize(filterByQuick(data)));
+  const filtered = filterByType(filterByPrice(filterBySize(filterByQuick(data))));
   __origUpdateGrid(filtered);
   const finalCount = (S.catBrand ? filtered.filter(p => p.brand === S.catBrand) : filtered).length;
   updateResultsCount(finalCount);

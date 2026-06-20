@@ -105,16 +105,42 @@ function normalizeProduct(p) {
     gender:      String(p['Стать']  || p['стать']  || p.gender || p.Gender || 'Жінка'),
     category,                                       // bilyzna / wear (старе)
     categoryType: typeRaw,                          // "Жіночі сукні" (нове — категорія для UI)
+    clothingType: String(p['ТипОдягу'] || p['типодягу'] || '').trim() || _classifyClothingType(typeRaw) || '',
     tgLink:      String(p['TG'] || p['tg_link'] || ''),
   };
+}
+
+// ── Класифікатор типу одягу (за ключовими словами в назві категорії) ── */
+const _CLOTHING_TYPES = [
+  ['Зіп-худі',  ['зіп-худі', 'зіп худ', 'zip-худ']],
+  ['Худі',      ['худі', 'толстовк', 'hoodie', 'hoody']],
+  ['Світшот',   ['світшот', 'sweatshirt']],
+  ['Поло',      ['поло', 'polo']],
+  ['Футболка',  ['футболк', 't-shirt', 'tshirt']],
+  ['Шорти',     ['шорти', 'shorts']],
+  ['Штани',     ['штани', 'штан', 'брюк', 'pants', 'трико']],
+  ['Комплект',  ['комплект', 'набір']],
+  ['Куртка',    ['куртк', 'вітровк', 'jacket', 'анорак']],
+  ['Аксесуари', ['месенджер', 'сумк', 'поясн', 'рюкзак', 'кепк', 'шапк', 'шкарпет']],
+  ['Тактичні',  ['тактич', 'milita']],
+  ['Светр',     ['светр', 'джемпер', 'jumper', 'кофт']],
+];
+
+function _classifyClothingType(raw) {
+  if (!raw) return null;
+  const s = raw.toLowerCase();
+  for (const [type, kws] of _CLOTHING_TYPES) {
+    if (kws.some(k => s.includes(k))) return type;
+  }
+  return null;
 }
 
 // ── Витягуємо унікальні top-категорії з каталогу (для chip-bar) ── */
 function getTopCategories(prods, limit = 10) {
   const counts = {};
   (prods || []).forEach(p => {
-    const t = (p.categoryType || '').trim();
-    if (!t || t.length < 3) return;
+    const t = (p.clothingType || '').trim();
+    if (!t || t === 'Інше') return;
     counts[t] = (counts[t] || 0) + 1;
   });
   return Object.entries(counts)

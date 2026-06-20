@@ -180,7 +180,12 @@ async function bgRefreshCatalog() {
   // Спроба 1: статичний products.json (миттєво, без лімітів)
   const staticJson = await _fetchStaticCatalog();
   if (staticJson) {
-    const normalized = staticJson.products.map(normalizeProduct);
+    const _SIZE_TABLE_KW = ['розмірн', 'size table', 'size chart', 'база для індивід', 'шаблон замовлення'];
+    const filtered = staticJson.products.filter(p => {
+      const n = (p['Назва'] || p.name || '').toLowerCase();
+      return !_SIZE_TABLE_KW.some(kw => n.includes(kw));
+    });
+    const normalized = filtered.map(normalizeProduct);
     if (normalized.length >= CFG.MIN_PRODUCTS) {
       S.catalog.all = normalized;
       S.catalog.loadedFromServer = true;

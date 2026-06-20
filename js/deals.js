@@ -222,12 +222,9 @@ function openDailyGift(evt) {
 function renderDailyDeals(catalog) {
   const sec = document.getElementById('daily-deals-section');
   if (!sec) return;
-
+  sec.hidden = true; // Знахідка дня відключена для одягу
   if (_ddTimerID) { clearInterval(_ddTimerID); _ddTimerID = null; }
-
-  const deals = getDailyDeals(catalog, 3);
-  if (!deals.length) { sec.hidden = true; return; }
-  sec.hidden = false;
+  return;
 
   const row = sec.querySelector('.dd-row');
   if (row) {

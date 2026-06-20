@@ -1950,3 +1950,378 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
   gap: 8px !important;
 }
 
+
+/* ╔══════════════════════════════════════════════════════════╗
+   ║   DESIGN SYSTEM v2 — WOW MAGENTA × DOPAMINE             ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+/* ── GLOBAL DARK BACKGROUND ────────────────────────────── */
+body, #pages, #page-home, #page-catalog, #page-match, #page-contacts,
+#catalog-view, .cat-search-wrap, .cat-quicks, .type-filter-wrap,
+.cat-bar, .size-filter-wrap, #price-filter-wrap, .cat-active-filters, .cat-meta {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+#header {
+  background: rgba(11,6,16,0.97) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+.header-logo { color: var(--text) !important; }
+.header-logo .dot { color: var(--wow-magenta) !important; }
+.header-logo small { color: var(--text-muted) !important; }
+.hdr-btn {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--text-muted) !important;
+}
+
+/* ── BOTTOM NAV ─────────────────────────────────────────── */
+#bottom-nav {
+  background: rgba(11,6,16,0.97) !important;
+  border-top: 1px solid var(--line) !important;
+}
+.nav-item { color: var(--text-muted) !important; }
+.nav-item.active { color: var(--wow-magenta) !important; }
+.nav-item.active .nav-icon {
+  filter: drop-shadow(0 0 8px rgba(255,46,147,0.7)) !important;
+}
+.nav-item.active::before {
+  background: var(--wow-grad) !important;
+  box-shadow: 0 0 12px rgba(255,46,147,0.6) !important;
+  width: 36px !important;
+  height: 3px !important;
+}
+
+/* ── HERO SECTION ───────────────────────────────────────── */
+.home-hero {
+  background: linear-gradient(180deg, #0B0610 0%, #120A16 60%, #1C1022 100%) !important;
+}
+.home-hero::before {
+  background: radial-gradient(circle at 75% 20%, rgba(255,46,147,0.22) 0%, transparent 60%) !important;
+}
+.home-hero::after {
+  background: radial-gradient(circle at 15% 85%, rgba(124,58,237,0.15) 0%, transparent 55%) !important;
+}
+.home-greeting {
+  color: var(--wow-magenta) !important;
+  letter-spacing: 6px !important;
+}
+.home-title { color: var(--text) !important; }
+.home-title > span {
+  background: var(--wow-grad) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.home-counter-chip {
+  background: rgba(255,46,147,0.12) !important;
+  border-color: rgba(255,46,147,0.30) !important;
+  color: var(--wow-magenta) !important;
+}
+.hero-trust-item { color: var(--text-muted) !important; }
+.hero-trust-item svg { color: var(--pop-cyan) !important; }
+.hero-trust-sep { background: rgba(255,255,255,0.15) !important; }
+
+/* ── HERO MARQUEE (magenta dots) ────────────────────────── */
+.hero-marquee-wrap { background: #0B0610 !important; }
+.hero-marquee-inner { color: var(--text-soft) !important; }
+.hero-marquee-dot { background: var(--wow-magenta) !important; }
+
+/* ── GENDER TOGGLE ──────────────────────────────────────── */
+#gender-toggle {
+  background: var(--surface) !important;
+}
+.g-btn { color: var(--text-muted) !important; }
+.g-btn.active {
+  background: var(--wow-grad) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 16px rgba(255,46,147,0.35) !important;
+}
+
+/* ── STYLE CHIPS ────────────────────────────────────────── */
+.style-chip {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--text-muted) !important;
+}
+.style-chip.active, .style-chip:hover {
+  background: rgba(255,46,147,0.15) !important;
+  border-color: rgba(255,46,147,0.40) !important;
+  color: var(--wow-magenta) !important;
+}
+
+/* ── SECTION HEADERS ────────────────────────────────────── */
+.sec-title {
+  color: var(--text) !important;
+  font-family: 'Archivo', sans-serif !important;
+  font-weight: 900 !important;
+}
+.sec-title::after {
+  background: var(--wow-grad) !important;
+}
+.sec-link { color: var(--wow-magenta) !important; }
+
+/* ── PRODUCT CARDS ──────────────────────────────────────── */
+.product-card {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5) !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    border-color: rgba(255,46,147,0.40) !important;
+    box-shadow: 0 8px 32px rgba(255,46,147,0.20), 0 0 0 1px rgba(255,46,147,0.25) !important;
+  }
+}
+.card-img-wrap { background: var(--surface-2) !important; }
+.card-body { background: var(--surface) !important; }
+.card-brand { color: var(--wow-magenta) !important; }
+.card-name { color: var(--text-soft) !important; }
+.card-price { color: var(--text) !important; }
+.card-old-price { color: var(--text-muted) !important; }
+.card-disc { background: var(--wow-grad) !important; }
+.card-cod-chip {
+  background: rgba(41,231,203,0.10) !important;
+  color: var(--pop-cyan) !important;
+  border-color: rgba(41,231,203,0.22) !important;
+}
+
+/* ── SIZE CHIPS ON CARD ─────────────────────────────────── */
+.sz-quick-btn, .card-sizes-preview span, .card-sizes-preview button {
+  background: rgba(255,255,255,0.07) !important;
+  color: var(--text-muted) !important;
+  border-color: var(--line) !important;
+}
+.sz-quick-btn:hover {
+  background: var(--wow-grad) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+.sz-quick-btn.sel {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* ── CATALOG FILTER CHIPS ───────────────────────────────── */
+.cat-quick {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+}
+.cat-quick.on {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+.cat-sort {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--text-soft) !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+/* ── TYPE CHIPS ─────────────────────────────────────────── */
+.type-chip {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+}
+.type-chip.on {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+
+/* ── SIZE FILTER ────────────────────────────────────────── */
+.sz-chip {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+}
+.sz-chip.on {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+
+/* ── GENDER CHIPS IN CATALOG ────────────────────────────── */
+.cat-bar .g-chip {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+}
+.cat-bar .g-chip.active {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+
+/* ── SEARCH BAR ─────────────────────────────────────────── */
+.cat-search-inner {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--line) !important;
+  border-radius: 14px !important;
+}
+.cat-search-inner:focus-within {
+  border-color: rgba(255,46,147,0.50) !important;
+  box-shadow: 0 0 0 3px rgba(255,46,147,0.12) !important;
+}
+.cat-search { color: var(--text) !important; }
+.cat-search::placeholder { color: var(--text-muted) !important; }
+.cat-search-icon { color: var(--text-muted) !important; }
+
+/* ── ACTIVE FILTER CHIPS ────────────────────────────────── */
+.cat-af-chip {
+  background: rgba(255,46,147,0.15) !important;
+  color: var(--wow-magenta) !important;
+  border: 1px solid rgba(255,46,147,0.30) !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+.cat-af-clear { color: var(--pop-cyan) !important; font-weight: 700 !important; }
+
+/* ── CTA BUTTONS ────────────────────────────────────────── */
+.checkout-submit, .sp-confirm-btn, .btn-primary, [class*="order-btn"], .cart-cta-btn {
+  background: var(--wow-grad) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+.checkout-submit:active, .sp-confirm-btn:active {
+  transform: scale(0.97) !important;
+  box-shadow: 0 6px 20px rgba(255,46,147,0.30) !important;
+}
+
+/* ── BADGES / NEÓN POPS ─────────────────────────────────── */
+.chip-new, .dd-new {
+  background: var(--wow-grad) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.chip-scarcity, .dd-hot, [class*="badge-hot"] {
+  background: rgba(215,255,62,0.15) !important;
+  color: var(--pop-lime) !important;
+  border: 1px solid rgba(215,255,62,0.30) !important;
+}
+.chip-cod, .dd-cod {
+  background: rgba(41,231,203,0.12) !important;
+  color: var(--pop-cyan) !important;
+  border: 1px solid rgba(41,231,203,0.22) !important;
+}
+
+/* ── MATCH PAGE ─────────────────────────────────────────── */
+.match-page-title { color: var(--text) !important; }
+.match-card { background: var(--surface) !important; border-color: var(--line) !important; }
+.match-like-btn {
+  background: var(--wow-grad) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+.match-skip-btn {
+  background: var(--surface-2) !important;
+  border-color: var(--line) !important;
+  color: var(--text-muted) !important;
+}
+
+/* ── CONTACTS PAGE ──────────────────────────────────────── */
+#page-contacts { background: var(--bg) !important; color: var(--text) !important; }
+.contacts-wrap { background: var(--surface) !important; }
+.contact-item { border-color: var(--line) !important; color: var(--text-soft) !important; }
+.cab-icon { color: var(--wow-magenta) !important; }
+
+/* ── STORY CIRCLES ──────────────────────────────────────── */
+.cat-story-inner {
+  background: var(--surface-2) !important;
+  border-color: rgba(255,46,147,0.25) !important;
+}
+.cat-story-abbr { color: var(--text) !important; }
+
+/* ── REVIEWS ────────────────────────────────────────────── */
+.review-card { background: var(--surface) !important; border-color: var(--line) !important; }
+.review-author { color: var(--text) !important; }
+.review-text { color: var(--text-soft) !important; }
+.review-loc { color: var(--text-muted) !important; }
+
+/* ── PRODUCT MODAL ──────────────────────────────────────── */
+.pd-sheet, .modal-sheet {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+}
+.pd-name { color: var(--text) !important; }
+.pd-price { color: var(--text) !important; }
+.pd-brand { color: var(--wow-magenta) !important; }
+.pd-material {
+  background: rgba(41,231,203,0.10) !important;
+  color: var(--pop-cyan) !important;
+  border: 1px solid rgba(41,231,203,0.18) !important;
+}
+.pd-sz-chip {
+  background: var(--surface-2) !important;
+  border-color: var(--line) !important;
+  color: var(--text-muted) !important;
+}
+.pd-sz-chip.active {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+.pd-buy-btn {
+  background: var(--wow-grad) !important;
+  box-shadow: var(--shadow-glow) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.overlay-backdrop, .modal-backdrop { background: rgba(11,6,16,0.85) !important; }
+
+/* ── SCROLLBAR DARK ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,46,147,0.40); }
+
+/* ── SPLASH / PWA ────────────────────────────────────────── */
+#splash { background: var(--bg) !important; }
+.splash-logo { color: var(--text) !important; }
+.splash-dot { background: var(--wow-magenta) !important; }
+.pwa-banner {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--text) !important;
+}
+.pwa-install-btn {
+  background: var(--wow-grad) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+/* ── PRICE FILTER ───────────────────────────────────────── */
+#price-filter-wrap input[type=range]::-webkit-slider-thumb {
+  background: var(--wow-magenta) !important;
+  box-shadow: 0 0 8px rgba(255,46,147,0.5) !important;
+}
+#price-filter-wrap input[type=range]::-webkit-slider-runnable-track {
+  background: var(--surface-2) !important;
+}
+.price-range-label { color: var(--text-muted) !important; }
+
+/* ── META / COUNTS ──────────────────────────────────────── */
+.cat-meta, .cat-count { color: var(--text-muted) !important; }
+

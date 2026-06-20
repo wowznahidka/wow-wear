@@ -1,9 +1,9 @@
 ﻿const CFG = {
   GAS_URL:  'https://script.google.com/macros/s/AKfycbzif18Ohhvp2TANIKKMtBlyJ7OuHspVeuCctJ02Iyytp0A_kHQB_cBOuYKIIJ88nwpfpQ/exec',
-  TG_URL:        'https://t.me/wowwea',
-  TG_MANAGER:    'https://t.me/wowwea',
+  TG_URL:        'https://t.me/znahidkawow',
+  TG_MANAGER:    'https://t.me/znahidkawow',
   IG_URL:   'https://instagram.com/wow.wear',
-  TT_URL:   'https://www.tiktok.com/@wowwear',
+  TT_URL:   'https://www.tiktok.com/@wow.znahidka',
   GA_ID:    'G-9L346ZDWLK',
   FB_PIXEL_ID: '970568042186153',
   TT_PIXEL_ID: '',

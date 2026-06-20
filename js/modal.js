@@ -1,3 +1,29 @@
+
+// ── PHOTO GALLERY (product detail) ───────────────── */
+let _gIdx = 0;
+function _galleryGo(idx) {
+  const imgs = document.querySelectorAll('#pd-gallery .pd-gimg');
+  const dots = document.querySelectorAll('#pd-gdots .pd-dot');
+  if (!imgs.length) return;
+  idx = Math.max(0, Math.min(idx, imgs.length - 1));
+  _gIdx = idx;
+  imgs.forEach((img, i) => img.classList.toggle('pd-gimg-on', i === idx));
+  dots.forEach((d, i) => d.classList.toggle('on', i === idx));
+}
+function _initGallery(count) {
+  _gIdx = 0;
+  if (count <= 1) return;
+  const wrap = document.getElementById('pd-gallery');
+  if (!wrap) return;
+  let sx = 0, sy = 0;
+  wrap.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; }, { passive: true });
+  wrap.addEventListener('pointerup', e => {
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38)
+      _galleryGo(_gIdx + (dx < 0 ? 1 : -1));
+  });
+}
+
 /* ============================================================
    WOW.ZNAHIDKA — MODALS: SIZE PICKER & PRODUCT DETAIL
    ============================================================ */
@@ -222,12 +248,27 @@ function openProductDetail(product) {
 
   document.getElementById('product-detail-content').innerHTML = `
     <div class="pd-hero">
-      ${product.image && product.image.startsWith('http')
-        ? `<img class="pd-img" src="${esc(product.image)}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async"
-             onclick="openImageZoom('${esc(product.image)}','${esc(product.brand)} ${esc(product.name)}')"
-             onload="this.classList.add('loaded')">
-           <div class="pd-zoom-hint" aria-hidden="true">🔍 Тап для збільшення</div>`
-        : `<div class="pd-img-ph" aria-hidden="true">👕</div>`}
+      ${(product.photos && product.photos.length > 1)
+        ? `<div class="pd-gallery" id="pd-gallery">
+             ${product.photos.slice(0,6).map((src,i) =>
+               `<img class="pd-gimg${i===0?' pd-gimg-on':''}" src="${esc(src)}"
+                loading="${i<2?'eager':'lazy'}"
+                onclick="openImageZoom('${esc(src)}','')"
+                onload="this.classList.add('loaded')">`
+             ).join('')}
+             <div class="pd-gdots" id="pd-gdots">
+               ${product.photos.slice(0,6).map((_,i) =>
+                 `<span class="pd-dot${i===0?' on':''}" onclick="_galleryGo(${i})"></span>`
+               ).join('')}
+             </div>
+             <div class="pd-zoom-hint" aria-hidden="true">← свайп для фото →</div>
+           </div>`
+        : product.image && product.image.startsWith('http')
+          ? `<img class="pd-img" src="${esc(product.image)}" alt="${esc(product.brand)} ${esc(product.name)}" loading="lazy" decoding="async"
+               onclick="openImageZoom('${esc(product.image)}','${esc(product.brand)} ${esc(product.name)}')"
+               onload="this.classList.add('loaded')">
+             <div class="pd-zoom-hint" aria-hidden="true">🔍 Тап для збільшення</div>`
+          : `<div class="pd-img-ph" aria-hidden="true">👕</div>`}
       <div class="pd-hero-vignette" aria-hidden="true"></div>
       <button class="pd-fav-float ${faved ? 'on' : ''}" id="pd-fav-btn"
         onclick="togglePdFav()" aria-label="${faved ? 'Видалити з улюблених' : 'Додати в улюблені'}">
@@ -269,6 +310,7 @@ function openProductDetail(product) {
     </div>`;
 
   openSheet('sheet-product');
+  _initGallery(product.photos ? product.photos.length : 1);
 }
 
 // ── NOTIFY ME ─────────────────────────────────────────── */

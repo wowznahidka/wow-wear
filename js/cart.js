@@ -539,8 +539,6 @@ async function submitReview() {
   const ok = await postData({ action: 'review', author: author || 'Анонім', stars, text }).catch(() => false);
   if (btn) { btn.disabled = false; btn.textContent = L.sendReview; }
   if (ok === false) { toast('⚠️ Помилка відправки. Спробуйте ще раз.'); return; }
-  S.reviews.unshift({ emoji: '😊', author: author || 'Анонім', stars, text, location: '' });
-  renderReviews();
   closeAllSheets();
   resetReviewForm();
   toast(`⭐ Дякуємо за відгук! <a href="${CFG.TG_URL}" target="_blank" rel="noopener">Написати у Telegram →</a>`);

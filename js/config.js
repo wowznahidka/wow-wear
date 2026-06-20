@@ -8,7 +8,7 @@
   FB_PIXEL_ID: '970568042186153',
   TT_PIXEL_ID: '',
   OG_IMAGE: 'https://wowznahidka.github.io/wow-wear/og-cover.png',
-  CACHE_KEY:    'wow_wear_v11',
+  CACHE_KEY:    'wow_wear_v12',
   CACHE_TTL_MS: 5 * 60 * 1000,
   MIN_PRODUCTS: 3,
   SIZES_ALL:    ['XS','S','M','L','XL','XXL','XXXL','ONE SIZE'],
@@ -24,10 +24,4 @@
   },
 };
 
-const STATIC_REVIEWS = [
-  { emoji:'🔥', author:'Аня',    location:'Київ',   stars:5, text:'Якість відмінна! Замовляла плаття — точно відповідає розміру, тканина приємна.' },
-  { emoji:'😍', author:'Юля',    location:'Харків', stars:5, text:'Купила комплект білизни, дуже задоволена. Все якісно, оплата після — супер!' },
-  { emoji:'😎', author:'Оксана', location:'Одеса',  stars:5, text:'Замовляю вже втретє. Одяг відповідає фото. Рекомендую всім!' },
-  { emoji:'🤩', author:'Катя',   location:'Львів',  stars:4, text:'Доставка швидка, упаковка акуратна. Розмір підійшов ідеально.' },
-  { emoji:'💫', author:'Марія',  location:'Дніпро', stars:5, text:'Без передоплати — це взагалі кайф! Прийшло все як описано.' },
-];
+const STATIC_REVIEWS = [];

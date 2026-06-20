@@ -64,7 +64,7 @@ function renderSizeChips() {
   if (!row) return;
   const chips = CFG.SIZES_ALL.map(sz =>
     `<button class="sz-chip ${S.sizeFilters.includes(sz) ? 'on' : ''}"
-       onclick="toggleSizeFilter(${sz})" aria-pressed="${S.sizeFilters.includes(sz)}">${sz}</button>`
+       onclick="toggleSizeFilter(${/^\d+$/.test(sz) ? sz : `'${sz}'`})" aria-pressed="${S.sizeFilters.includes(sz)}">${sz}</button>`
   ).join('');
   const clearBtn = `<button class="sz-clear ${S.sizeFilters.length ? 'vis' : ''}"
     id="sz-clear-btn" onclick="clearSizeFilters()">× Скинути</button>`;

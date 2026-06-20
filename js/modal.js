@@ -72,7 +72,7 @@ function openSizePicker(product) {
   const hasQtyData = Object.keys(qty).length > 0;
 
   grid.innerHTML = product.sizes.map(sz => {
-    const szArg    = sz === 'ONE SIZE' ? "'ONE SIZE'" : sz;
+    const szArg    = /^\d+$/.test(sz) ? sz : `'${sz}'`;
     const pairQty  = hasQtyData ? (qty[sz] || 1) : null;
     const isLast   = low || (hasQtyData && pairQty === 1);
     const badge    = (hasQtyData && pairQty >= 2)

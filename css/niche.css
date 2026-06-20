@@ -2745,3 +2745,64 @@ body, #pages, #page-home, #page-catalog, #page-match, #page-contacts,
   line-height: 1.6 !important;
 }
 
+/* ── SIZE BUTTONS — підвищена видимість у темній темі ── */
+.sz-btn {
+  background: var(--bg4) !important;
+  border: 1.5px solid rgba(255,255,255,0.22) !important;
+  color: var(--text) !important;
+}
+.sz-btn.sel {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(255,46,147,0.40) !important;
+}
+.sz-btn.sel .sz-qty { color: rgba(255,255,255,0.65) !important; }
+.sz-btn-last {
+  border-color: rgba(255,46,147,0.45) !important;
+  color: var(--red) !important;
+  background: rgba(255,46,147,0.10) !important;
+}
+
+/* ── SIZE QUICK CHIPS ON CARDS — більш помітні ── */
+.sz-quick-btn,
+.card-sizes-preview span,
+.card-sizes-preview button {
+  background: rgba(255,255,255,0.12) !important;
+  color: var(--text-soft) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+}
+
+/* ── SIZE FILTER CHIPS — помітніша рамка ── */
+.sz-chip {
+  background: var(--surface-2) !important;
+  border: 1.5px solid rgba(255,255,255,0.22) !important;
+  color: var(--text-soft) !important;
+}
+.sz-chip.on {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+
+/* ── PRODUCT DETAIL SIZE CHIPS ── */
+.pd-sz-chip {
+  background: var(--bg4) !important;
+  border: 1.5px solid rgba(255,255,255,0.22) !important;
+  color: var(--text-soft) !important;
+}
+.pd-sz-chip.active {
+  background: var(--wow-grad) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,46,147,0.35) !important;
+}
+
+/* ── TYPE FILTER CHIPS — краще читаються ── */
+.type-chip {
+  background: var(--surface-2) !important;
+  border: 1.5px solid rgba(255,255,255,0.18) !important;
+  color: var(--text-soft) !important;
+}
+

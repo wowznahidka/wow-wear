@@ -150,7 +150,8 @@ body { background: #f0eded; }
   font-size: 10px; font-weight: 700; letter-spacing: .2px;
   transition: color var(--t-base); position: relative;
 }
-.nav-icon { font-size: 22px; line-height: 1; }
+.nav-icon { font-size: 22px; line-height: 1; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+.nav-icon svg { width: 22px; height: 22px; flex-shrink: 0; }
 .nav-item.active { color: var(--text); }
 .nav-item.active .nav-icon {
   filter: drop-shadow(0 0 7px rgba(39,66,214,.55));

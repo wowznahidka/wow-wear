@@ -8,7 +8,7 @@
   FB_PIXEL_ID: '970568042186153',
   TT_PIXEL_ID: '',
   OG_IMAGE: 'https://wowznahidka.github.io/wow-wear/og-cover.png',
-  CACHE_KEY:    'wow_wear_v9',
+  CACHE_KEY:    'wow_wear_v10',
   CACHE_TTL_MS: 5 * 60 * 1000,
   MIN_PRODUCTS: 3,
   SIZES_ALL:    ['XS','S','M','L','XL','XXL','XXXL','ONE SIZE'],

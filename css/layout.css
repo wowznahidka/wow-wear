@@ -217,9 +217,11 @@ body { background: #f0eded; }
   max-height: 92vh; overflow-y: auto;
   padding-bottom: calc(20px + var(--safe-bottom));
   scrollbar-width: none; border-top: 1px solid var(--border);
+  pointer-events: none;
+  visibility: hidden;
 }
 .sheet::-webkit-scrollbar { display: none; }
-.sheet.on { transform: translateY(0); }
+.sheet.on { transform: translateY(0); pointer-events: auto; visibility: visible; }
 
 .sh-handle {
   width: 36px; height: 4px; background: rgba(255,255,255,0.10);

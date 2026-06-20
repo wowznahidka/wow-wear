@@ -912,7 +912,7 @@ body { font-family: 'Inter', var(--niche-font-body), sans-serif; }
     transition: transform .3s var(--ease, cubic-bezier(.16,1,.3,1)), opacity .2s ease !important;
     box-shadow: 0 24px 80px rgba(0,0,0,0.32), 0 8px 24px rgba(0,0,0,0.12) !important;
   }
-  .sheet.on { transform: translate(-50%, -50%) scale(1) !important; opacity: 1; }
+  .sheet.on { transform: translate(-50%, -50%) scale(1) !important; opacity: 1; pointer-events: auto !important; visibility: visible !important; }
   .sh-handle { display: none !important; }
 
   /* Product detail — ширша модалка */

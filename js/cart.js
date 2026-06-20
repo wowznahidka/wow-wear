@@ -366,6 +366,7 @@ function applyPromo() {
 
 async function submitOrder() {
   if (_submitLock) return;
+  if (!document.getElementById('sheet-checkout')?.classList.contains('on')) return;
   _submitLock = true;
 
   const name  = document.getElementById('f-name')?.value.trim()  || '';

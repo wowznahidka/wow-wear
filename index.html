@@ -11,7 +11,7 @@
 <!-- ── Primary Meta ── -->
 <meta name="description" content="Модний жіночий і чоловічий одяг та білизна без передоплати. Оплата після примірки на Новій Пошті. Доставка по всій Україні.">
 <meta name="keywords"    content="одяг, бренди, вулиця, Manto, Trapstar, Nike, без передоплати, Нова Пошта">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0B0610">
 <meta name="robots"      content="index, follow">
 
 <!-- ── Open Graph ── -->
@@ -66,18 +66,18 @@
 
 <!-- ── CSS MODULES ── -->
 <!-- base.css is render-critical — stays synchronous -->
-<link rel="stylesheet" href="css/base.css?v=40">
-<link rel="stylesheet" href="css/layout.css?v=40">
-<link rel="stylesheet" href="css/cards.css?v=40">
-<link rel="stylesheet" href="css/animations.css?v=40">
-<link rel="stylesheet" href="css/mobile.css?v=40">
+<link rel="stylesheet" href="css/base.css?v=41">
+<link rel="stylesheet" href="css/layout.css?v=41">
+<link rel="stylesheet" href="css/cards.css?v=41">
+<link rel="stylesheet" href="css/animations.css?v=41">
+<link rel="stylesheet" href="css/mobile.css?v=41">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;600;700&display=swap"></noscript>
-<link rel="stylesheet" href="shared/css/premium.css?v=40">
-<link rel="stylesheet" href="css/niche.css?v=40">
+<link rel="stylesheet" href="shared/css/premium.css?v=41">
+<link rel="stylesheet" href="css/niche.css?v=41">
 </head>
 <body>
 
@@ -915,19 +915,20 @@
 <!-- ════════════════════════════════════════════════
      PWA BANNERS
      ════════════════════════════════════════════════ -->
+<!-- PWA Android / Chrome -->
 <div id="pwa-android" role="complementary" aria-label="Встановити додаток">
   <button class="pwa-close" onclick="dismissPwa('android')" aria-label="Закрити">✕</button>
   <div class="pwa-ico" aria-hidden="true">👕</div>
   <div class="pwa-text">
     <div class="pwa-title">WOW.WEAR</div>
-    <div class="pwa-sub">Додай на головний екран</div>
+    <div class="pwa-sub">Встанови на головний екран — без AppStore</div>
   </div>
   <button class="pwa-install-btn" id="pwa-install-btn">Встановити</button>
 </div>
 
+<!-- PWA iOS / Safari -->
 <div id="pwa-ios" role="complementary" aria-label="Інструкція iOS">
-  <button style="position:absolute;top:10px;right:14px;background:none;font-size:18px;color:var(--text-muted);padding:0"
-    onclick="dismissPwa('ios')" aria-label="Закрити">✕</button>
+  <button class="pwa-close" onclick="dismissPwa('ios')" aria-label="Закрити">✕</button>
   <div class="pwa-ios-title">👕 Додай WOW.WEAR</div>
   <div class="pwa-ios-steps">
     1. Натисни <strong>⬆️ Поділитись</strong> внизу Safari<br>
@@ -954,20 +955,20 @@
 <!-- ════════════════════════════════════════════════
      JS MODULES  (load order matters)
      ════════════════════════════════════════════════ -->
-<script src="js/config.js?v=40"             defer></script>
-<script src="js/state.js?v=40"              defer></script>
-<script src="js/lang.js?v=40"               defer></script>
-<script src="js/api.js?v=40"                defer></script>
-<script src="js/products.js?v=40"           defer></script>
-<script src="js/ui.js?v=40"                 defer></script>
-<script src="js/match.js?v=40"              defer></script>
-<script src="js/filters.js?v=40"            defer></script>
-<script src="js/cart.js?v=40"               defer></script>
-<script src="js/modal.js?v=40"              defer></script>
-<script src="js/deals.js?v=40"              defer></script>
-<script src="shared/js/referral.js?v=40" defer></script>
-<script src="js/app.js?v=40"                defer></script>
-<script src="shared/js/motion.js?v=40" defer></script>
+<script src="js/config.js?v=41"             defer></script>
+<script src="js/state.js?v=41"              defer></script>
+<script src="js/lang.js?v=41"               defer></script>
+<script src="js/api.js?v=41"                defer></script>
+<script src="js/products.js?v=41"           defer></script>
+<script src="js/ui.js?v=41"                 defer></script>
+<script src="js/match.js?v=41"              defer></script>
+<script src="js/filters.js?v=41"            defer></script>
+<script src="js/cart.js?v=41"               defer></script>
+<script src="js/modal.js?v=41"              defer></script>
+<script src="js/deals.js?v=41"              defer></script>
+<script src="shared/js/referral.js?v=41" defer></script>
+<script src="js/app.js?v=41"                defer></script>
+<script src="shared/js/motion.js?v=41" defer></script>
 <script>
 /* ── THEME TOGGLE ── */
 (function(){

@@ -3,7 +3,7 @@
    Strategy: pre-cache shell → network-first nav → stale-while-revalidate assets
    ============================================================ */
 
-const V = 'wow-wear-v6';
+const V = 'wow-wear-v7';
 
 // Critical shell — install fails if these are missing (intentional)
 const SHELL = [

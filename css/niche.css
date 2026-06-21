@@ -3081,6 +3081,16 @@ body, #pages, #page-home, #page-catalog, #page-match, #page-contacts,
   font-family: 'Archivo', sans-serif !important;
 }
 
+/* ── STACKING: nudge вище PWA коли обидва видимі ───────────── */
+#match-nudge, #partner-nudge {
+  z-index: 310 !important;
+}
+/* коли PWA android показано — піднімаємо нюдж вище нього */
+body:has(#pwa-android.on) #match-nudge,
+body:has(#pwa-android.on) #partner-nudge {
+  bottom: calc(var(--nav-h, 64px) + var(--safe-bottom, 0px) + 86px) !important;
+}
+
 /* ── SEARCH SUGGESTIONS ─────────────────────────────────────── */
 .search-sugg { background: var(--surface) !important; border-color: var(--line) !important; }
 .sugg-item { color: var(--text-soft) !important; border-color: var(--line) !important; }

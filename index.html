@@ -100,6 +100,7 @@
     <button class="dsk-nav-btn"        onclick="changeTab('contacts')" id="dsk-btn-contacts">Інфо</button>
   </nav>
   <div class="header-actions" role="toolbar" aria-label="Дії">
+    <button class="hdr-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Змінити тему" title="Тема">☀️</button>
     <button class="hdr-btn" onclick="openRefSheet()" aria-label="Поширити">🔗</button>
     <button class="hdr-btn hdr-lang" onclick="toggleLang()" id="lang-btn" aria-label="Змінити мову">UA</button>
     <button class="hdr-btn" onclick="openSheet('sheet-fav')" aria-label="Улюблені">
@@ -967,6 +968,33 @@
 <script src="shared/js/referral.js?v=40" defer></script>
 <script src="js/app.js?v=40"                defer></script>
 <script src="shared/js/motion.js?v=40" defer></script>
+<script>
+/* ── THEME TOGGLE ── */
+(function(){
+  const saved = localStorage.getItem('wow_theme');
+  if(saved === 'light') {
+    document.documentElement.setAttribute('data-theme','light');
+  }
+})();
+function toggleTheme(){
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  if(isLight){
+    html.removeAttribute('data-theme');
+    localStorage.setItem('wow_theme','dark');
+    document.getElementById('theme-toggle-btn').textContent='☀️';
+  } else {
+    html.setAttribute('data-theme','light');
+    localStorage.setItem('wow_theme','light');
+    document.getElementById('theme-toggle-btn').textContent='🌙';
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const saved = localStorage.getItem('wow_theme');
+  const btn = document.getElementById('theme-toggle-btn');
+  if(btn) btn.textContent = saved==='light' ? '🌙' : '☀️';
+});
+</script>
 <script>
 window._styleCategory='all';
 function setStyleCategory(el,cat){window._styleCategory=cat;document.querySelectorAll('.style-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');_applyStyleFilter();}

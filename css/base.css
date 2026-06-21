@@ -80,6 +80,10 @@
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
+  /* ── Fonts ── */
+  --font-display: 'Archivo', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
   /* ── Transitions ── */
   --ease:      cubic-bezier(.16,1,.3,1);
   --ease-out:  cubic-bezier(.4,0,.6,1);
@@ -132,6 +136,22 @@
   --shadow-card:       0 1px 3px rgba(0,0,0,0.05), 0 4px 14px rgba(0,0,0,0.07);
   --shadow-card-hover: 0 6px 28px rgba(0,0,0,0.11), 0 2px 8px rgba(0,0,0,0.05);
   --shadow-card-lift:  0 16px 48px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.07);
+}
+
+/* ── LIGHT THEME ────────────────────────────────── */
+[data-theme="light"] {
+  --ink:       #FFF0F6;
+  --bg:        #FFF6FB;
+  --surface:   #FFFFFF;
+  --surface-2: #FFEAF4;
+  --bg-glass:  rgba(255,246,251,0.92);
+  --bg-card:   #FFFFFF;
+  --line:      rgba(26,15,29,.10);
+  --text:      #1A0F1D;
+  --text-soft: #3A2740;
+  --text-muted:#9A7D92;
+  --border:    rgba(26,15,29,.10);
+  --shadow-glow: 0 12px 32px rgba(255,46,147,.18);
 }
 
 /* ── DESKTOP: widen app to 600px ───────────────── */

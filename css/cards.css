@@ -113,7 +113,7 @@
 }
 .card-price {
   font-family: 'Archivo', sans-serif;
-  font-size: 19.5px; font-weight: 900;
+  font-size: 19.5px; font-weight: 500;
   color: #0d0d0d;
   margin-top: 7px;
   display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
@@ -273,7 +273,7 @@
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .prod-card-price {
-  font-size: 15px; font-weight: 900; margin-top: 6px;
+  font-size: 15px; font-weight: 500; margin-top: 6px;
   display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
 }
 .prod-card-old  { font-size: 11px; color: var(--text-muted); text-decoration: line-through; font-weight: 400; }

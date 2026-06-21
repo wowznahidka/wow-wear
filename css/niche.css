@@ -2585,7 +2585,7 @@ body, #pages, #page-home, #page-catalog, #page-match, #page-contacts,
 .cat-back-btn svg { flex-shrink: 0; }
 
 /* ── MATCH PAGE IMPROVEMENTS ─────────────────────────────── */
-#page-match {
+#page-match.active {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - var(--nav-h) - var(--header-h));

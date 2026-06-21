@@ -364,25 +364,8 @@ function _renderGridBatch(el) {
 let _scrollNudgeObserver = null;
 let _scrollNudgeFired    = false;
 
-function _setupScrollNudge(total) {
-  if (_scrollNudgeFired) return;
-  if (_scrollNudgeObserver) { _scrollNudgeObserver.disconnect(); _scrollNudgeObserver = null; }
-  const sentinel = document.getElementById('home-nudge-sentinel');
-  if (!sentinel) return;
-  sentinel.style.display = 'block';
-  _scrollNudgeObserver = new IntersectionObserver(entries => {
-    if (!entries[0].isIntersecting) return;
-    _scrollNudgeFired = true;
-    _scrollNudgeObserver.disconnect(); _scrollNudgeObserver = null;
-    if (S.matchIdx > 0 || S.activeTab !== 'home') return;
-    sentinel.parentNode?.querySelectorAll('.scroll-nudge').forEach(n => n.remove());
-    const nudge = document.createElement('div');
-    nudge.className = 'scroll-nudge';
-    nudge.onclick = () => { nudge.remove(); changeTab('match'); };
-    nudge.innerHTML = `<p>👕 Ти переглянув ${total} речей</p><small>Свайпай у Match — знайди ідеальну 🔥</small>`;
-    sentinel.parentNode?.insertBefore(nudge, sentinel);
-  }, { rootMargin: '0px', threshold: 0.5 });
-  _scrollNudgeObserver.observe(sentinel);
+function _setupScrollNudge(_total) {
+  // Match nudge removed — Match is only accessible from its own tab
 }
 
 // ── GENDER COUNTS ────────────────────────────────── */

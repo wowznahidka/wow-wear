@@ -87,8 +87,13 @@ function findProd(id) {
   return all.find(p => p.id === id) || null;
 }
 
+function _isSizeTable(p) {
+  const name = (p.name || p.title || '').toLowerCase();
+  return name.includes('розмірн') || name.includes('таблиц') || name.includes('size table');
+}
+
 function getCatalog() {
-  const all = S.catalog.all || [];
+  const all = (S.catalog.all || []).filter(p => !_isSizeTable(p));
   if (S.gender === 'mixed') return all;
   const accept = S.gender === 'female'
     ? ['Жінка','female','ж','Ж','Жіночий']

@@ -468,9 +468,6 @@ function _stayOnSiteModal(reason) {
   const cartLen = S?.cart?.length || 0;
   const favsLen = S?.favs?.length || 0;
 
-  // Show promo only when cart is empty — never discount people who already added to cart
-  const showPromo = cartLen === 0;
-
   const title = cartLen
     ? 'Твій кошик чекає оформлення 🛒'
     : 'Не йди з порожніми руками';
@@ -478,12 +475,7 @@ function _stayOnSiteModal(reason) {
     cartLen ? `У кошику <b>${cartLen}</b> пар${cartLen===1?'а':cartLen<5?'и':''} — ще пів кроку до замовлення 🔥` :
     favsLen ? `У Улюблених — <b>${favsLen}</b> пар${favsLen===1?'а':''} ❤️` :
     `Знайди свою пару — <b>1300+ моделей</b> ✨`;
-  const bonusHtml = showPromo
-    ? `<p class="exit-bonus">Промокод <b>WOW100</b> — <b>−100₴</b> на твоє перше замовлення. Дійсний 24 години.</p>`
-    : '';
-  const tgText = showPromo
-    ? encodeURIComponent('Привіт! Хочу знижку WOW100')
-    : encodeURIComponent('Привіт! Хочу уточнити замовлення');
+  const tgText = encodeURIComponent('Привіт! Хочу уточнити замовлення');
 
   const html = `
     <div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title">
@@ -492,7 +484,6 @@ function _stayOnSiteModal(reason) {
         <div class="exit-eyebrow">🎁 ЗАЧЕКАЙ-НО</div>
         <h3 id="exit-modal-title" class="exit-title">${title}</h3>
         <p class="exit-lead">${lead}</p>
-        ${bonusHtml}
         <div class="exit-actions">
           <button class="exit-cta" onclick="(${cartLen?`openSheet('sheet-cart');`:`openSheet('sheet-fav');`})closeExitModal();">
             ${cartLen ? '🛒 Оформити кошик' : favsLen ? '❤️ Переглянути улюблені' : '👕 До каталогу'}

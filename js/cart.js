@@ -529,17 +529,14 @@ function resetReviewForm() {
   if (a) a.value = ''; if (t) t.value = '';
 }
 
-async function submitReview() {
+function submitReview() {
   const author = document.getElementById('rev-author-inp')?.value.trim() || '';
   const text   = document.getElementById('rev-text-inp')?.value.trim()   || '';
   const stars  = S.starRating || 5;
   if (!text) { toast('⚠️ Напишіть текст відгуку'); return; }
-  const btn = document.querySelector('.rev-submit-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Надсилаємо…'; }
-  const ok = await postData({ action: 'review', author: author || 'Анонім', stars, text }).catch(() => false);
-  if (btn) { btn.disabled = false; btn.textContent = L.sendReview; }
-  if (ok === false) { toast('⚠️ Помилка відправки. Спробуйте ще раз.'); return; }
+  const starStr = '⭐'.repeat(stars);
+  const msg = encodeURIComponent(`${starStr}\n${author ? author + ':\n' : ''}${text}`);
   closeAllSheets();
   resetReviewForm();
-  toast(`⭐ Дякуємо за відгук! <a href="${CFG.TG_URL}" target="_blank" rel="noopener">Написати у Telegram →</a>`);
+  window.open(`https://t.me/znahidkawow?text=${msg}`, '_blank', 'noopener');
 }

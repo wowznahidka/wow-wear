@@ -3,7 +3,7 @@
    Strategy: pre-cache shell → network-first nav → stale-while-revalidate assets
    ============================================================ */
 
-const V = 'wow-wear-v9';
+const V = 'wow-wear-v10';
 
 // Critical shell — install fails if these are missing (intentional)
 const SHELL = [
@@ -33,6 +33,8 @@ const WARM = [
   './js/products.js',
   './js/ui.js',
   './js/match.js',
+  './js/look.js',
+  './css/look.css',
   './js/filters.js',
   './js/cart.js',
   './js/modal.js',

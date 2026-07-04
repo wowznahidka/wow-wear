@@ -1,0 +1,192 @@
+/* ============================================================
+   WOW.WEAR — LOOK BUILDER styles
+   Рейка з вішалками, слоти образу, анімації.
+   ============================================================ */
+
+#page-look { padding: 14px 16px calc(150px + env(safe-area-inset-bottom)); }
+
+.lk-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 2px;
+}
+.lk-title { font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+.lk-random {
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
+  font: 600 13px/1 'Inter', sans-serif; padding: 10px 14px; border-radius: 999px;
+  cursor: pointer; transition: transform .15s, box-shadow .2s; white-space: nowrap;
+}
+.lk-random:active { transform: scale(.94) rotate(-2deg); }
+.lk-hint { font-size: 12.5px; color: var(--text-muted); margin: 4px 0 14px; }
+
+/* ── СЛОТИ ОБРАЗУ ─────────────────────────────────── */
+.lk-slots {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 18px;
+}
+.lk-slot {
+  position: relative; border-radius: 18px; min-height: 128px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.lk-slot.empty {
+  border: 1.6px dashed var(--line); background: transparent; color: var(--text-muted);
+  cursor: pointer; gap: 4px; transition: border-color .2s, background .2s, transform .15s;
+}
+.lk-slot.empty:hover  { border-color: var(--wow-magenta); background: var(--surface); }
+.lk-slot.empty:active { transform: scale(.97); }
+.lk-slot-ico  { font-size: 26px; filter: grayscale(.4); }
+.lk-slot-lbl  { font-size: 12px; font-weight: 600; }
+.lk-slot-plus {
+  position: absolute; right: 10px; top: 8px; font-size: 16px; font-weight: 700;
+  color: var(--text-muted); opacity: .7;
+}
+.lk-slot.filled {
+  background: var(--surface); border: 1px solid var(--line);
+  padding: 10px 8px 8px; justify-content: flex-start;
+}
+.lk-slot.filled img {
+  width: 74px; height: 74px; object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.35));
+}
+.lk-slot-info { display: flex; gap: 8px; align-items: baseline; margin-top: 4px; }
+.lk-slot-brand { font-size: 11px; font-weight: 700; color: var(--text-soft); max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lk-slot-price { font-size: 12.5px; font-weight: 800; color: var(--wow-magenta); }
+.lk-slot-rm {
+  position: absolute; top: 6px; right: 6px; z-index: 2;
+  width: 24px; height: 24px; border-radius: 50%; border: none;
+  background: var(--surface-2); color: var(--text-muted); font-size: 11px;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.lk-slot-rm:hover { background: var(--wow-magenta); color: #fff; }
+.lk-slot-sizes { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; justify-content: center; }
+.lk-sz {
+  min-width: 26px; padding: 3px 5px; border-radius: 7px; border: 1px solid var(--line);
+  background: transparent; color: var(--text-soft); font: 600 10.5px/1 'Inter', sans-serif;
+  cursor: pointer; transition: all .15s;
+}
+.lk-sz.sel { background: var(--wow-grad); border-color: transparent; color: #fff; }
+
+/* drop-in коли річ прилетіла */
+.lk-drop { animation: lkDrop .5s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes lkDrop {
+  0%   { transform: translateY(-26px) scale(.85); opacity: 0; }
+  60%  { transform: translateY(4px)  scale(1.03); opacity: 1; }
+  100% { transform: translateY(0)    scale(1); }
+}
+
+/* ── КАТЕГОРІЇ ────────────────────────────────────── */
+.lk-cats { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 4px; padding-bottom: 4px; }
+.lk-cats::-webkit-scrollbar { display: none; }
+.lk-cat {
+  flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface);
+  color: var(--text-soft); font: 600 12.5px/1 'Inter', sans-serif;
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; transition: all .2s;
+}
+.lk-cat.active { background: var(--wow-grad); color: #fff; border-color: transparent; }
+
+/* ── РЕЙКА ────────────────────────────────────────── */
+.lk-rail-zone { position: relative; margin: 0 -16px; padding: 0 16px; }
+.lk-bar {
+  position: absolute; left: 8px; right: 8px; top: 13px; height: 5px; border-radius: 3px;
+  background: linear-gradient(180deg, #6b5a75, #3c2f45 60%, #241a2e);
+  box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.lk-rail {
+  --sway: 0deg;
+  display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
+  padding: 2px 6px 16px; scroll-snap-type: x proximity;
+}
+.lk-rail::-webkit-scrollbar { display: none; }
+.lk-rail-empty { padding: 40px 20px; color: var(--text-muted); font-size: 13px; }
+
+.lk-hanger {
+  flex: 0 0 118px; background: none; border: none; padding: 0; cursor: pointer;
+  scroll-snap-align: center; -webkit-tap-highlight-color: transparent;
+}
+.lk-hanger.used .lk-h-swing { opacity: .35; filter: grayscale(.8); }
+
+/* Гойдання: точка обертання = гачок вішалки */
+.lk-h-swing {
+  display: flex; flex-direction: column; align-items: center;
+  transform-origin: 50% 6px;
+  transform: rotate(calc(var(--sway) * var(--k, 1)));
+  transition: transform .35s cubic-bezier(.34, 1.4, .64, 1);
+  animation: lkIdleSway 5.5s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.7s);
+}
+.lk-hanger:hover .lk-h-swing  { animation-play-state: paused; }
+.lk-hanger:active .lk-h-swing { transform: rotate(calc(var(--sway) * var(--k, 1))) scale(.93); }
+@keyframes lkIdleSway {
+  0%, 100% { rotate: 0deg; }
+  25%      { rotate: 1.4deg; }
+  75%      { rotate: -1.2deg; }
+}
+
+.lk-h-svg { width: 58px; height: 22px; color: #baa7c4; margin-bottom: -7px; }
+.lk-h-img {
+  width: 96px; height: 96px; object-fit: contain; opacity: 0;
+  transition: opacity .35s; filter: drop-shadow(0 8px 14px rgba(0,0,0,.4));
+}
+.lk-h-img.loaded { opacity: 1; }
+.lk-h-meta {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  font-size: 11px; color: var(--text-muted); margin-top: 2px; max-width: 110px;
+}
+.lk-h-meta b {
+  color: var(--text-soft); font-size: 10.5px; font-weight: 700;
+  max-width: 106px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Привид для перельоту у слот */
+.lk-ghost {
+  position: fixed; z-index: 999; pointer-events: none; object-fit: contain;
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .5s ease;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.45));
+}
+
+/* ── ФУТЕР ────────────────────────────────────────── */
+.lk-footer {
+  position: fixed; left: 0; right: 0; bottom: calc(58px + env(safe-area-inset-bottom));
+  z-index: 40; display: flex; align-items: center; gap: 12px;
+  max-width: var(--max-w, 600px); margin: 0 auto; padding: 10px 16px;
+  background: var(--bg-glass); backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+.lk-total { display: flex; flex-direction: column; line-height: 1.15; min-width: 84px; }
+.lk-total span { font-size: 11px; color: var(--text-muted); }
+.lk-total b    { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.lk-buy {
+  flex: 1; border: none; border-radius: 14px; padding: 14px;
+  font: 700 15px/1 'Inter', sans-serif; color: #fff; cursor: pointer;
+  background: var(--wow-grad); transition: transform .15s, opacity .2s, box-shadow .3s;
+}
+.lk-buy:disabled { opacity: .35; cursor: default; }
+.lk-buy:not(:disabled):active { transform: scale(.97); }
+.lk-buy.ready { animation: lkGlow 1.8s ease-in-out infinite; }
+@keyframes lkGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,46,147,0); }
+  50%      { box-shadow: 0 4px 26px rgba(255,46,147,.55); }
+}
+
+/* Спалах сторінки коли лук зібрано */
+.lk-celebrate .lk-slots { animation: lkFlash .7s ease; }
+@keyframes lkFlash {
+  0%   { filter: brightness(1); }
+  30%  { filter: brightness(1.35) saturate(1.3); }
+  100% { filter: brightness(1); }
+}
+
+/* ── ДЕСКТОП ──────────────────────────────────────── */
+@media (min-width: 900px) {
+  .lk-slots { grid-template-columns: repeat(4, 1fr); }
+  .lk-slot { min-height: 150px; }
+  .lk-hanger { flex-basis: 132px; }
+  .lk-footer { bottom: 0; border-radius: 18px 18px 0 0; }
+}
+
+/* Поважаємо reduce-motion */
+@media (prefers-reduced-motion: reduce) {
+  .lk-h-swing { animation: none; transition: none; }
+  .lk-ghost   { transition: none; }
+  .lk-buy.ready { animation: none; }
+}

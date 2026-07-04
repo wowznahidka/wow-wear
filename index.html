@@ -78,6 +78,7 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="shared/css/premium.css?v=42">
 <link rel="stylesheet" href="css/niche.css?v=42">
+<link rel="stylesheet" href="css/look.css?v=43">
 </head>
 <body>
 
@@ -97,6 +98,7 @@
     <button class="dsk-nav-btn active" onclick="changeTab('home')"    id="dsk-btn-home">Головна</button>
     <button class="dsk-nav-btn"        onclick="changeTab('catalog')" id="dsk-btn-catalog">Каталог</button>
     <button class="dsk-nav-btn"        onclick="changeTab('match')"   id="dsk-btn-match">Match</button>
+    <button class="dsk-nav-btn"        onclick="changeTab('look')"    id="dsk-btn-look">Лук</button>
     <button class="dsk-nav-btn"        onclick="changeTab('contacts')" id="dsk-btn-contacts">Інфо</button>
   </nav>
   <div class="header-actions" role="toolbar" aria-label="Дії">
@@ -304,6 +306,27 @@
     <div class="match-kb-hint" aria-hidden="true">
       <span>← Пропустити</span>
       <span>Лайкнути →</span>
+    </div>
+  </section>
+
+  <!-- ── LOOK BUILDER ── -->
+  <section id="page-look" class="page" aria-label="Лук">
+    <div class="lk-top">
+      <h1 class="lk-title">🧥 Зібери лук</h1>
+      <button class="lk-random" type="button" onclick="randomLook()">🎲 Підбери за мене</button>
+    </div>
+    <p class="lk-hint">Тисни на вішалку — річ летить в образ. Зібрав повний лук — купуй одним кліком.</p>
+    <div class="lk-slots" id="lk-slots" aria-live="polite"></div>
+    <div class="lk-cats" id="lk-cats" role="tablist" aria-label="Категорії речей"></div>
+    <div class="lk-rail-zone">
+      <div class="lk-bar" aria-hidden="true"></div>
+      <div class="lk-rail" id="lk-rail" role="list" aria-label="Рейка з речами">
+        <div class="loading-wrap"><div class="spinner" aria-label="Завантаження"></div></div>
+      </div>
+    </div>
+    <div class="lk-footer">
+      <div class="lk-total"><span>Разом</span><b id="lk-total">0₴</b></div>
+      <button class="lk-buy" id="lk-buy" type="button" onclick="buyLook()" disabled>Купити лук</button>
     </div>
   </section>
 
@@ -678,6 +701,12 @@
     </span>
     <span class="nav-label">Match</span>
   </button>
+  <button class="nav-item" data-tab="look"     onclick="changeTab('look')">
+    <span class="nav-icon" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a2 2 0 012 2c0 .9-.6 1.6-1.4 1.9-.4.1-.6.5-.6.9v.7"/><path d="M12 8.5L2.7 15a1 1 0 00.6 1.8h17.4a1 1 0 00.6-1.8L12 8.5z"/></svg>
+    </span>
+    <span class="nav-label">Лук</span>
+  </button>
   <button class="nav-item" data-tab="catalog"  onclick="changeTab('catalog')">
     <span class="nav-icon" aria-hidden="true">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7" rx="1"/><rect x="15" y="3" width="7" height="7" rx="1"/><rect x="2" y="14" width="7" height="7" rx="1"/><rect x="15" y="14" width="7" height="7" rx="1"/></svg>
@@ -962,6 +991,7 @@
 <script src="js/products.js?v=42"           defer></script>
 <script src="js/ui.js?v=42"                 defer></script>
 <script src="js/match.js?v=42"              defer></script>
+<script src="js/look.js?v=43"               defer></script>
 <script src="js/filters.js?v=42"            defer></script>
 <script src="js/cart.js?v=42"               defer></script>
 <script src="js/modal.js?v=42"              defer></script>
